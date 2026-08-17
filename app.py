@@ -9,30 +9,88 @@ import openpyxl
 import os
 
 # ==============================================================================
-# PAGE CONFIGURATION & CUSTOM CSS STYLING
+# GLOBAL BRANDING & EXECUTIVE THEME SYSTEM (DARK NAVY & SLATE)
 # ==============================================================================
 st.set_page_config(
-    page_title="Ruwaz Real Estate Decision Hub",
+    page_title="Ruwaz View — Decision Support Platform",
     page_icon="🏢",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
+# Custom Executive CSS
 st.markdown("""
 <style>
-    .main-header { font-size: 24px; font-weight: bold; color: #1E3A8A; margin-bottom: 12px; border-bottom: 2px solid #E2E8F0; padding-bottom: 8px; }
-    .sub-header { font-size: 16px; font-weight: bold; color: #334155; margin-top: 12px; margin-bottom: 8px; }
-    .kpi-card { background-color: #F8FAFC; border: 1px solid #CBD5E1; border-radius: 8px; padding: 12px; text-align: center; }
-    .kpi-title { font-size: 12px; color: #64748B; font-weight: 600; text-transform: uppercase; }
-    .kpi-value { font-size: 20px; color: #0F172A; font-weight: bold; margin-top: 4px; }
-    .pass-tag { background-color: #DCFCE7; color: #15803D; font-weight: bold; padding: 4px 12px; border-radius: 4px; display: inline-block; font-size: 14px; }
-    .watch-tag { background-color: #FEF9C3; color: #A16207; font-weight: bold; padding: 4px 12px; border-radius: 4px; display: inline-block; font-size: 14px; }
-    .fail-tag { background-color: #FEE2E2; color: #B91C1C; font-weight: bold; padding: 4px 12px; border-radius: 4px; display: inline-block; font-size: 14px; }
+    /* Hide Streamlit Branding */
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
+    
+    /* Core Layout Styles */
+    .stApp { background-color: #0F172A; color: #F8FAFC; font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
+    .main .block-container { padding-top: 1.5rem; padding-bottom: 2rem; max-width: 98%; }
+    
+    /* Typography Hierarchy */
+    .page-title { font-size: 26px; font-weight: 800; color: #F8FAFC; letter-spacing: -0.5px; margin-bottom: 4px; }
+    .page-subtitle { font-size: 13px; color: #94A3B8; font-weight: 500; margin-bottom: 20px; border-bottom: 1px solid #1E293B; padding-bottom: 10px; }
+    .section-title { font-size: 16px; font-weight: 700; color: #38BDF8; margin-top: 18px; margin-bottom: 10px; letter-spacing: 0.2px; }
+    
+    /* Executive KPI Cards System */
+    .kpi-container { background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%); border: 1px solid #334155; border-radius: 10px; padding: 14px; text-align: left; box-shadow: 0 4px 12px rgba(0,0,0,0.25); height: 100%; }
+    .kpi-title { font-size: 11px; color: #94A3B8; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; }
+    .kpi-value { font-size: 22px; color: #F8FAFC; font-weight: 800; margin-top: 6px; margin-bottom: 4px; font-variant-numeric: tabular-nums; }
+    .kpi-sub { font-size: 11px; font-weight: 600; margin-top: 2px; }
+    .kpi-sub-positive { color: #34D399; }
+    .kpi-sub-warning { color: #FBBF24; }
+    .kpi-sub-danger { color: #F87171; }
+    
+    /* Decision Indicators Tags */
+    .status-pass { background-color: rgba(52, 211, 153, 0.15); color: #34D399; border: 1px solid #059669; font-weight: 800; padding: 6px 16px; border-radius: 6px; display: inline-block; font-size: 15px; }
+    .status-watch { background-color: rgba(251, 191, 36, 0.15); color: #FBBF24; border: 1px solid #D97706; font-weight: 800; padding: 6px 16px; border-radius: 6px; display: inline-block; font-size: 15px; }
+    .status-fail { background-color: rgba(248, 113, 113, 0.15); color: #F87171; border: 1px solid #DC2626; font-weight: 800; padding: 6px 16px; border-radius: 6px; display: inline-block; font-size: 15px; }
+
+    /* Override Streamlit Sidebar Style */
+    [data-testid="stSidebar"] { background-color: #020617; border-right: 1px solid #1E293B; }
+    [data-testid="stSidebar"] .stRadio > label { font-size: 13px; font-weight: 600; color: #CBD5E1; }
 </style>
 """, unsafe_allow_html=True)
 
 # ==============================================================================
-# LAYER 1: DYNAMIC EXCEL DATA INGESTION & VALIDATION ENGINE
+# GLOBAL FORMATTING HELPER FUNCTIONS (ACCOUNTING STANDARD)
+# ==============================================================================
+def fmt_currency(val, show_symbol=True):
+    if pd.isna(val) or val is None:
+        return "N/A"
+    prefix = "SAR " if show_symbol else ""
+    if val < 0:
+        return f"{prefix}({abs(val):,.0f})"
+    return f"{prefix}{val:,.0f}"
+
+def fmt_currency_m(val, show_symbol=True):
+    if pd.isna(val) or val is None:
+        return "N/A"
+    prefix = "SAR " if show_symbol else ""
+    m_val = val / 1e6
+    if val < 0:
+        return f"{prefix}({abs(m_val):,.2f}M)"
+    return f"{prefix}{m_val:,.2f}M"
+
+def fmt_pct(val, decimals=1):
+    if pd.isna(val) or val is None:
+        return "N/A"
+    if val < 0:
+        return f"({abs(val)*100:.{decimals}f}%)"
+    return f"{val*100:.{decimals}f}%"
+
+def fmt_multiple(val):
+    if pd.isna(val) or val is None:
+        return "N/A"
+    if val < 0:
+        return f"({abs(val):.2f}x)"
+    return f"{val:.2f}x"
+
+# ==============================================================================
+# LAYER 1: DYNAMIC EXCEL DATA INGESTION ENGINE
 # ==============================================================================
 @st.cache_data
 def load_and_validate_source_data():
@@ -40,29 +98,20 @@ def load_and_validate_source_data():
     cf_f = 'Cash Flow 24 Month.xlsx'
     pl_f = 'P&L_Rent_Projects_F.xlsx'
     
-    # Startup validation checks
     missing_files = []
     for f in [master_f, cf_f, pl_f]:
         if not os.path.exists(f):
             missing_files.append(f)
             
     if missing_files:
-        st.error(f"❌ Critical Startup Error: Missing required Excel source files: {missing_files}")
+        st.error(f"❌ Startup Error: Missing source files: {missing_files}")
         st.stop()
         
     try:
-        # 1. Master Financial Data Named Tables Parsing
         wb_m = openpyxl.load_workbook(master_f, data_only=True)
-        if 'Loans_&_Installments' not in wb_m.sheetnames:
-            st.error("❌ Master Data Error: Sheet 'Loans_&_Installments' not found.")
-            st.stop()
-            
         ws_m = wb_m['Loans_&_Installments']
         
         def parse_named_table(ws, table_name):
-            if table_name not in ws.tables:
-                st.error(f"❌ Master Data Error: Excel Table '{table_name}' not found.")
-                st.stop()
             tbl = ws.tables[table_name]
             min_col, min_row, max_col, max_row = openpyxl.utils.range_boundaries(tbl.ref)
             data = []
@@ -79,13 +128,13 @@ def load_and_validate_source_data():
         df_banks = parse_named_table(ws_m, 'البنوك')
         df_collections = parse_named_table(ws_m, 'تحصيلات_الايجار')
         
-        # 2. Corporate Cash Flow Parsing
+        # Parse Corporate Cash Flow
         df_cf_raw = pd.read_excel(cf_f, sheet_name='Sheet1')
         time_cols = [c for c in df_cf_raw.columns if c not in ['Unnamed: 0', 'Unnamed: 1']]
         df_cf_clean = df_cf_raw.dropna(how='all').copy()
         df_cf_clean.rename(columns={'Unnamed: 1': 'Category'}, inplace=True)
         
-        # 3. Rental Portfolio P&L Parsing
+        # Parse Rental Portfolio P&L
         df_pl_raw = pd.read_excel(pl_f, sheet_name='Sheet1')
         
         return {
@@ -100,13 +149,13 @@ def load_and_validate_source_data():
             'df_pl': df_pl_raw
         }
     except Exception as e:
-        st.error(f"❌ Startup Ingestion Error: {str(e)}")
+        st.error(f"❌ Data Parsing Error: {str(e)}")
         st.stop()
 
 store = load_and_validate_source_data()
 
 # ==============================================================================
-# LAYER 2: PURE 100% EQUITY FEASIBILITY CALCULATORS (PAGES 5 & 6)
+# LAYER 2: PURE 100% EQUITY FEASIBILITY ENGINES (PAGES 5 & 6)
 # ==============================================================================
 def run_dev_engine(land_price, rett_rate, dev_cost_per_sqm, sellable_area,
                    selling_price_per_sqm, dev_months, sales_months,
@@ -303,12 +352,12 @@ def run_rental_engine(head_lease_rent, lease_term_yrs, rent_escalation_pct, esca
     }
 
 # ==============================================================================
-# SIDEBAR NAVIGATION
+# SIDEBAR EXECUTIVE NAVIGATION
 # ==============================================================================
-st.sidebar.title("🏢 Ruwaz View Decision Hub")
-st.sidebar.caption("Management Decision Support System")
+st.sidebar.markdown("<h2 style='color:#38BDF8; font-size: 20px;'>🏢 Ruwaz View</h2>", unsafe_allow_html=True)
+st.sidebar.caption("Executive Decision Support Platform")
 
-page = st.sidebar.radio("Navigate Page:", [
+page = st.sidebar.radio("Executive Modules:", [
     "1. Executive Overview",
     "2. Master Financial Data",
     "3. Cash Flow & Liquidity",
@@ -318,113 +367,149 @@ page = st.sidebar.radio("Navigate Page:", [
     "7. Decision Center & Audit"
 ])
 
+def render_kpi(title, value, sub_text, sub_type="positive"):
+    sub_class = f"kpi-sub-{sub_type}"
+    st.markdown(f"""
+    <div class="kpi-container">
+        <div class="kpi-title">{title}</div>
+        <div class="kpi-value">{value}</div>
+        <div class="kpi-sub {sub_class}">{sub_text}</div>
+    </div>
+    """, unsafe_allow_html=True)
+
 # ==============================================================================
 # PAGE 1: EXECUTIVE OVERVIEW
 # ==============================================================================
 if page == "1. Executive Overview":
-    st.markdown("<div class='main-header'>Corporate Executive Overview</div>", unsafe_allow_html=True)
+    st.markdown("<div class='page-title'>Corporate Executive Overview</div>", unsafe_allow_html=True)
+    st.markdown("<div class='page-subtitle'>High-level financial snapshot, liquidity buffer, and active pipeline overview.</div>", unsafe_allow_html=True)
     
     total_cash = store['df_banks']['الرصيد'].sum()
     total_dev_val = store['df_dev_projects']['إجمالي التكلفة'].sum()
     total_debt_rem = store['df_loans']['المتبقي للقرض'].sum()
     weighted_debt_cost = (store['df_loans']['أصل التمويل'] * store['df_loans']['الفائدة %']).sum() / store['df_loans']['أصل التمويل'].sum()
     
-    c1, c2, c3, c4, c5 = st.columns(5)
-    c1.metric("Corporate Bank Liquidity", f"SAR {total_cash:,.0f}", "Rajhi + SNB")
-    c2.metric("Dev Pipeline Value", f"SAR {total_dev_val:,.0f}", f"{len(store['df_dev_projects'])} Projects")
-    c3.metric("Rental Portfolio Occupancy", "91.64%", "241 / 263 Units")
-    c4.metric("Rental Net Profit", "SAR 299,783", "Margin: 6.14%")
-    c5.metric("Remaining Debt", f"SAR {total_debt_rem:,.0f}", f"Avg Interest: {weighted_debt_cost:.2%}")
+    k1, k2, c3, k4, k5 = st.columns(5)
+    with k1: render_kpi("Bank Liquidity", fmt_currency_m(total_cash), "Rajhi + SNB Balances", "positive")
+    with k2: render_kpi("Dev Pipeline Cost", fmt_currency_m(total_dev_val), f"{len(store['df_dev_projects'])} Active Projects", "positive")
+    with c3: render_kpi("Portfolio Occupancy", "91.6%", "241 / 263 Units", "positive")
+    with k4: render_kpi("Rental Net Profit", fmt_currency(299783), "Margin: 6.14%", "positive")
+    with k5: render_kpi("Remaining Debt", fmt_currency_m(total_debt_rem), f"Avg Rate: {fmt_pct(weighted_debt_cost)}", "warning")
 
-    st.markdown("---")
-    l_col, r_col = st.columns(2)
-    with l_col:
-        st.subheader("Corporate Revenue Allocations")
-        fig_rev = px.pie(store['df_revenues'], names="نوع الايراد", values="المبلغ", hole=0.4, color_discrete_sequence=px.colors.qualitative.Pastel)
+    st.markdown("<div class='section-title'>Revenue Allocation & Pipeline Overview</div>", unsafe_allow_html=True)
+    
+    r_col_left, r_col_right = st.columns([1.2, 1])
+    with r_col_left:
+        fig_rev = px.pie(store['df_revenues'], names="نوع الايراد", values="المبلغ", hole=0.45,
+                         color_discrete_sequence=['#38BDF8', '#818CF8', '#34D399', '#FBBF24'])
+        fig_rev.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', font=dict(color='#F8FAFC'),
+                              margin=dict(t=20, b=20, l=20, r=20), legend=dict(orientation="h", y=-0.1))
         st.plotly_chart(fig_rev, use_container_width=True)
-    with r_col:
-        st.subheader("Dev Project Cost Allocation")
-        fig_dev = px.bar(store['df_dev_projects'], x="اسم المشروع", y="إجمالي التكلفة", color="النوع", text_auto=',.0f')
-        st.plotly_chart(fig_dev, use_container_width=True)
+        
+    with r_col_right:
+        st.write("")
+        df_rev_display = store['df_revenues'].copy()
+        df_rev_display['المبلغ'] = df_rev_display['المبلغ'].apply(lambda x: fmt_currency(x))
+        st.dataframe(df_rev_display.reset_index(drop=True), use_container_width=True)
+
+    st.markdown("<div class='section-title'>Projects Under Construction (Units_Under_Construction Table)</div>", unsafe_allow_html=True)
+    df_dev_disp = store['df_dev_projects'].copy()
+    for col in ['قيمة الأرض', 'قيمة التطوير', 'إجمالي التكلفة']:
+        df_dev_disp[col] = df_dev_disp[col].apply(lambda x: fmt_currency(x))
+    st.dataframe(df_dev_disp.reset_index(drop=True), use_container_width=True)
 
 # ==============================================================================
 # PAGE 2: MASTER FINANCIAL DATA
 # ==============================================================================
 elif page == "2. Master Financial Data":
-    st.markdown("<div class='main-header'>Master Financial Data & Corporate Snapshots</div>", unsafe_allow_html=True)
+    st.markdown("<div class='page-title'>Master Financial Data & Corporate Snapshots</div>", unsafe_allow_html=True)
+    st.markdown("<div class='page-subtitle'>Detailed snapshots sourced dynamically from official Excel named tables.</div>", unsafe_allow_html=True)
     
-    st.markdown("<div class='sub-header'>Bank Balances & Collection Efficiency (Management Visuals — No Tables)</div>", unsafe_allow_html=True)
+    st.markdown("<div class='section-title'>Bank Positions & Collection Efficiency (Visual Cards)</div>", unsafe_allow_html=True)
     b1, b2, b3, b4 = st.columns(4)
     total_c = store['df_banks']['الرصيد'].sum()
-    b1.metric("Total Bank Liquidity", f"SAR {total_c:,.0f}")
-    b2.metric("Al Rajhi Bank Balance", f"SAR {store['df_banks'][store['df_banks']['البنك']=='مصرف الراجحي']['الرصيد'].values[0]:,.0f}", "69.67%")
-    b3.metric("SNB Bank Balance", f"SAR {store['df_banks'][store['df_banks']['البنك']=='البنك الأهلي السعودي']['الرصيد'].values[0]:,.0f}", "30.33%")
+    with b1: render_kpi("Total Bank Liquidity", fmt_currency_m(total_c), "Available Cash", "positive")
+    with b2: render_kpi("Al Rajhi Bank Balance", fmt_currency_m(store['df_banks'][store['df_banks']['البنك']=='مصرف الراجحي']['الرصيد'].values[0]), "69.67% Allocation", "positive")
+    with b3: render_kpi("SNB Bank Balance", fmt_currency_m(store['df_banks'][store['df_banks']['البنك']=='البنك الأهلي السعودي']['الرصيد'].values[0]), "30.33% Allocation", "positive")
     coll_rate = store['df_collections']['كفاءة التحصيل %'].values[0]
-    b4.metric("Collection Efficiency", f"{coll_rate:.2%}", "Target: 90.00% (🟡 Watch)")
+    with b4: render_kpi("Collection Efficiency", fmt_pct(coll_rate), "Target: 90.00%", "warning")
 
-    st.markdown("---")
-    st.markdown("<div class='sub-header'>Detailed Corporate Tables (Sourced dynamically from Excel)</div>", unsafe_allow_html=True)
-    
-    st.subheader("Projects Under Construction (Units_Under_Construction Table)")
-    st.dataframe(store['df_dev_projects'], use_container_width=True)
+    st.markdown("<div class='section-title'>Corporate Debt & Facilities Schedule (القروض Table)</div>", unsafe_allow_html=True)
+    df_loans_disp = store['df_loans'].copy()
+    for col in ['أصل التمويل', 'المبلغ المستحق', 'إجمالي المدفوع', 'المتبقي للقرض']:
+        df_loans_disp[col] = df_loans_disp[col].apply(lambda x: fmt_currency(x))
+    df_loans_disp['الفائدة %'] = df_loans_disp['الفائدة %'].apply(lambda x: fmt_pct(x))
+    st.dataframe(df_loans_disp.reset_index(drop=True), use_container_width=True)
 
-    st.subheader("Corporate Facilities & Loans (القروض Table)")
-    st.dataframe(store['df_loans'], use_container_width=True)
-
-    st.subheader("Installments Maturity Schedule (الاقساط Table)")
-    st.dataframe(store['df_installments'], use_container_width=True)
+    st.markdown("<div class='section-title'>Installments Maturity Schedule (الاقساط Table)</div>", unsafe_allow_html=True)
+    df_inst_disp = store['df_installments'].copy()
+    for col in ['المستحق', 'المدفوع', 'المتبقي']:
+        if col in df_inst_disp.columns:
+            df_inst_disp[col] = df_inst_disp[col].apply(lambda x: fmt_currency(x))
+    st.dataframe(df_inst_disp.reset_index(drop=True), use_container_width=True)
 
 # ==============================================================================
 # PAGE 3: CASH FLOW & LIQUIDITY
 # ==============================================================================
 elif page == "3. Cash Flow & Liquidity":
-    st.markdown("<div class='main-header'>24-Month Corporate Cash Flow & Liquidity Forecast</div>", unsafe_allow_html=True)
+    st.markdown("<div class='page-title'>24-Month Corporate Cash Flow & Liquidity Forecast</div>", unsafe_allow_html=True)
+    st.markdown("<div class='page-subtitle'>Rolling corporate liquidity trajectory, ending cash curves, and 90-day obligation monitoring.</div>", unsafe_allow_html=True)
     
     df_cf = store['df_cf']
     time_cols = store['time_cols']
     ending_cash_vals = df_cf[df_cf['Category'] == 'Cash end of period'][time_cols].values.flatten()
     
+    outflow_row = df_cf[df_cf['Category'] == 'Cash out']
+    outflow_90d = abs(outflow_row[time_cols[:3]].values.flatten().sum()) if not outflow_row.empty else 0
+    
     m1, m2, m3, m4 = st.columns(4)
-    m1.metric("Current Bank Liquidity", f"SAR {store['df_banks']['الرصيد'].sum():,.0f}")
-    m2.metric("Minimum Cash Point", f"SAR {min(ending_cash_vals):,.0f}", "Oct 2026 (Low Point)")
-    m3.metric("Peak Cash Point", f"SAR {max(ending_cash_vals):,.0f}", "Jan 2027")
-    m4.metric("Forecast Horizon", "24 Months", "Aug 2026 - Jul 2028")
+    with m1: render_kpi("Current Liquidity", fmt_currency_m(store['df_banks']['الرصيد'].sum()), "Available Cash", "positive")
+    with m2: render_kpi("Minimum Cash Point", fmt_currency_m(min(ending_cash_vals)), "Oct 2026 (Low Point)", "warning")
+    with m3: render_kpi("Peak Cash Point", fmt_currency_m(max(ending_cash_vals)), "Jan 2027 (Peak)", "positive")
+    with m4: render_kpi("90-Day Obligations", fmt_currency_m(outflow_90d), "Next 3 Months Outflows", "danger")
 
-    st.markdown("---")
-    st.subheader("Liquidity Trajectory (Ending Cash Balance Curve)")
-    df_chart = pd.DataFrame({'Date': [str(c)[:10] for c in time_cols], 'Ending Cash': ending_cash_vals})
+    st.markdown("<div class='section-title'>Liquidity Trajectory & Safety Threshold Curve</div>", unsafe_allow_html=True)
+    date_labels = [pd.to_datetime(c).strftime('%b %Y') for c in time_cols]
+    df_chart = pd.DataFrame({'Date': date_labels, 'Ending Cash': ending_cash_vals})
     fig_cf = px.line(df_chart, x='Date', y='Ending Cash', markers=True)
-    fig_cf.add_hline(y=500000, line_dash="dash", line_color="red", annotation_text="Minimum Operating Safety Threshold (SAR 500K)")
+    fig_cf.add_hline(y=500000, line_dash="dash", line_color="#F87171", annotation_text="Minimum Operating Safety Buffer (SAR 500K)")
+    fig_cf.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', font=dict(color='#F8FAFC'),
+                         margin=dict(t=20, b=20, l=20, r=20), xaxis_title="Reporting Month", yaxis_title="Ending Cash (SAR)")
     st.plotly_chart(fig_cf, use_container_width=True)
 
-    st.subheader("Full 24-Month Cash Flow Statement Table")
-    st.dataframe(df_cf, use_container_width=True)
+    st.markdown("<div class='section-title'>Full 24-Month Corporate Cash Flow Matrix</div>", unsafe_allow_html=True)
+    df_cf_disp = df_cf.copy()
+    rename_dict = {c: pd.to_datetime(c).strftime('%b %Y') for c in time_cols}
+    df_cf_disp.rename(columns=rename_dict, inplace=True)
+    st.dataframe(df_cf_disp.reset_index(drop=True), use_container_width=True)
 
 # ==============================================================================
 # PAGE 4: RENTAL PORTFOLIO & P&L
 # ==============================================================================
 elif page == "4. Rental Portfolio & P&L":
-    st.markdown("<div class='main-header'>Rental Portfolio Performance & P&L Statement</div>", unsafe_allow_html=True)
+    st.markdown("<div class='page-title'>Rental Portfolio Performance & P&L Statement</div>", unsafe_allow_html=True)
+    st.markdown("<div class='page-subtitle'>Property-level operational performance, occupancy rates, and Net Operating Income (NOI).</div>", unsafe_allow_html=True)
     
     df_pl = store['df_pl']
     
+    st.markdown("<div class='section-title'>Portfolio Performance Summary</div>", unsafe_allow_html=True)
+    
     p1, p2, p3, p4, p5 = st.columns(5)
-    p1.metric("Total Portfolio Units", "263 Units")
-    p2.metric("Occupied Units", "241 Units")
-    p3.metric("Portfolio Occupancy %", "91.64%", "Target > 90%")
-    p4.metric("Net Rent Revenue", "SAR 4,883,824")
-    p5.metric("Operating Income (NOI)", "SAR 309,400", "NOI Margin: 6.34%")
+    with p1: render_kpi("Total Units", "263 Units", "10 Properties", "positive")
+    with p2: render_kpi("Occupied Units", "241 Units", "22 Vacant", "positive")
+    with p3: render_kpi("Occupancy Rate", "91.6%", "Target > 90%", "positive")
+    with p4: render_kpi("Net Rent Revenue", fmt_currency_m(4883824), "10 Properties", "positive")
+    with p5: render_kpi("Operating Income (NOI)", fmt_currency(309400), "NOI Margin: 6.34%", "warning")
 
-    st.markdown("---")
-    st.subheader("Property-Level P&L Statement Table (Official Excel Source)")
-    st.dataframe(df_pl, use_container_width=True)
+    st.markdown("<div class='section-title'>Property-Level P&L Statement Table (Official Excel Source Statement)</div>", unsafe_allow_html=True)
+    st.dataframe(df_pl.reset_index(drop=True), use_container_width=True)
 
 # ==============================================================================
 # PAGE 5: DEVELOPMENT MODEL (FEASIBILITY) — 100% EQUITY FUNDED
 # ==============================================================================
 elif page == "5. Development Model (Feasibility)":
-    st.markdown("<div class='main-header'>100% Equity Development Opportunity Feasibility Engine</div>", unsafe_allow_html=True)
-    st.info("💡 Pure Opportunity Feasibility Engine — 100% Equity Funded. Completely isolated from Corporate Debt & Corporate Cash.")
+    st.markdown("<div class='page-title'>100% Equity Development Opportunity Feasibility Engine</div>", unsafe_allow_html=True)
+    st.markdown("<div class='page-subtitle'>Pure Opportunity Feasibility Engine — Completely isolated from Corporate Debt.</div>", unsafe_allow_html=True)
 
     with st.expander("🛠️ Interactive Driver Controls & Management Assumptions", expanded=True):
         i1, i2, i3, i4 = st.columns(4)
@@ -442,28 +527,26 @@ elif page == "5. Development Model (Feasibility)":
     res = run_dev_engine(land_price, 0.05, dev_cost_sqm, sellable_area, selling_price_sqm, dev_months, sales_months, cost_of_equity, target_equity_irr)
 
     st.markdown("---")
-    st.subheader("Opportunity Feasibility Dashboard & Equity Returns")
+    st.markdown("<div class='section-title'>Opportunity Feasibility Dashboard & Equity Returns</div>", unsafe_allow_html=True)
     
-    tag_class = "pass-tag" if res['decision'] == "PASS" else ("watch-tag" if res['decision'] == "WATCH" else "fail-tag")
+    tag_class = "status-pass" if res['decision'] == "PASS" else ("status-watch" if res['decision'] == "WATCH" else "status-fail")
     st.markdown(f"**Decision Indicator Status:** <span class='{tag_class}'>{res['decision']}</span>", unsafe_allow_html=True)
     st.write("")
 
     m1, m2, m3, m4, m5 = st.columns(5)
-    m1.metric("Equity IRR", f"{res['equity_irr']:.2%}")
-    m2.metric("Equity NPV", f"SAR {res['equity_npv']:,.0f}")
-    m3.metric("Equity MOIC", f"{res['equity_moic']:.2f}x")
-    m4.metric("Payback Period", f"{res['payback_m']:.1f} Mths")
-    m5.metric("Peak Equity Requirement", f"SAR {res['peak_equity']:,.0f}")
+    with m1: render_kpi("Equity IRR", fmt_pct(res['equity_irr']), "Compounded Effective", "positive")
+    with m2: render_kpi("Equity NPV", fmt_currency_m(res['equity_npv']), f"Discounted at {fmt_pct(cost_of_equity)} Ke", "positive")
+    with m3: render_kpi("Equity MOIC", fmt_multiple(res['equity_moic']), "Multiple on Equity", "positive")
+    with m4: render_kpi("Payback Period", f"{res['payback_m']:.1f} Mths", "From Project Start", "positive")
+    with m5: render_kpi("Peak Equity Req.", fmt_currency_m(res['peak_equity']), "Max Outflow", "warning")
 
-    st.markdown("---")
-    st.subheader("Independent Breakeven & Target Revenue Solvers")
+    st.markdown("<div class='section-title'>Independent Breakeven & Target Revenue Solvers</div>", unsafe_allow_html=True)
     s1, s2, s3 = st.columns(3)
-    s1.metric("1. Accounting Breakeven", f"SAR {res['accounting_be']:,.0f}", f"Req Price: SAR {res['total_cost']/sellable_area:,.0f}/Sqm")
-    s2.metric("2. NPV = 0 Revenue (at Ke=14%)", f"SAR {res['npv_zero_rev']:,.0f}", f"Req Price: SAR {res['req_price_npv_zero']:,.0f}/Sqm")
-    s3.metric("3. Target IRR Revenue (at Target=18%)", f"SAR {res['target_irr_rev']:,.0f}", f"Req Price: SAR {res['req_price_target_irr']:,.0f}/Sqm")
+    with s1: render_kpi("1. Accounting Breakeven", fmt_currency_m(res['accounting_be']), f"Req Price: {fmt_currency(res['total_cost']/sellable_area)}/Sqm", "warning")
+    with s2: render_kpi("2. NPV = 0 Revenue (at Ke=14%)", fmt_currency_m(res['npv_zero_rev']), f"Req Price: {fmt_currency(res['req_price_npv_zero'])}/Sqm", "positive")
+    with s3: render_kpi("3. Target IRR Revenue (at Target=18%)", fmt_currency_m(res['target_irr_rev']), f"Req Price: {fmt_currency(res['req_price_target_irr'])}/Sqm", "positive")
 
-    st.markdown("---")
-    st.subheader("Sensitivity Analysis (Selling Price vs Development Cost)")
+    st.markdown("<div class='section-title'>Sensitivity Analysis (Selling Price vs Development Cost)</div>", unsafe_allow_html=True)
     price_range = [selling_price_sqm * factor for factor in [0.85, 1.00, 1.15]]
     cost_range = [dev_cost_sqm * factor for factor in [0.85, 1.00, 1.15]]
     
@@ -472,18 +555,18 @@ elif page == "5. Development Model (Feasibility)":
         row = []
         for c in cost_range:
             r = run_dev_engine(land_price, 0.05, c, sellable_area, p, dev_months, sales_months, cost_of_equity, target_equity_irr)
-            row.append(f"IRR: {r['equity_irr']:.1%} | NPV: {r['equity_npv']/1e6:.1f}M")
+            row.append(f"IRR: {fmt_pct(r['equity_irr'])} | NPV: {fmt_currency_m(r['equity_npv'])}")
         matrix_data.append(row)
         
-    df_sens = pd.DataFrame(matrix_data, index=[f"Price: {p:,.0f}/Sqm" for p in price_range], columns=[f"Dev Cost: {c:,.0f}/Sqm" for c in cost_range])
+    df_sens = pd.DataFrame(matrix_data, index=[f"Price: {fmt_currency(p)}/Sqm" for p in price_range], columns=[f"Dev Cost: {fmt_currency(c)}/Sqm" for c in cost_range])
     st.dataframe(df_sens, use_container_width=True)
 
 # ==============================================================================
 # PAGE 6: RENTAL / SUB-LEASE MODEL (FEASIBILITY) — 100% EQUITY FUNDED
 # ==============================================================================
 elif page == "6. Rental / Sub-Lease Model (Feasibility)":
-    st.markdown("<div class='main-header'>100% Equity Rental / Sub-Lease Feasibility Engine</div>", unsafe_allow_html=True)
-    st.info("💡 Pure Opportunity Feasibility Engine — Head Lease -> Sub-Lease. Completely isolated from Corporate Debt.")
+    st.markdown("<div class='page-title'>100% Equity Rental / Sub-Lease Feasibility Engine</div>", unsafe_allow_html=True)
+    st.markdown("<div class='page-subtitle'>Pure Opportunity Feasibility Engine — Head Lease -> Sub-Lease. Completely isolated from Corporate Debt.</div>", unsafe_allow_html=True)
 
     with st.expander("🛠️ Interactive Driver Controls & Management Assumptions", expanded=True):
         r1, r2, r3, r4 = st.columns(4)
@@ -506,35 +589,39 @@ elif page == "6. Rental / Sub-Lease Model (Feasibility)":
     res_r = run_rental_engine(head_lease_rent, lease_term_yrs, rent_escalation, 3, grace_period_m, total_units, sub_rent_unit, target_occ, opex_ratio, fitout_capex, cost_of_equity, target_equity_irr)
 
     st.markdown("---")
-    st.subheader("Opportunity Feasibility Dashboard & Equity Returns")
+    st.markdown("<div class='section-title'>Opportunity Feasibility Dashboard & Equity Returns</div>", unsafe_allow_html=True)
     
-    tag_class = "pass-tag" if res_r['decision'] == "PASS" else ("watch-tag" if res_r['decision'] == "WATCH" else "fail-tag")
+    tag_class = "status-pass" if res_r['decision'] == "PASS" else ("status-watch" if res_r['decision'] == "WATCH" else "status-fail")
     st.markdown(f"**Decision Indicator Status:** <span class='{tag_class}'>{res_r['decision']}</span>", unsafe_allow_html=True)
     st.write("")
 
     m1, m2, m3, m4, m5 = st.columns(5)
-    m1.metric("Equity IRR", f"{res_r['equity_irr']:.2%}" if not np.isnan(res_r['equity_irr']) else "N/A")
-    m2.metric("Equity NPV", f"SAR {res_r['equity_npv']:,.0f}")
-    m3.metric("Equity MOIC", f"{res_r['equity_moic']:.2f}x")
-    m4.metric("Payback Period", f"{res_r['payback_yrs']:.1f} Yrs" if not np.isnan(res_r['payback_yrs']) else "N/A")
-    m5.metric("Fit-out CapEx Equity", f"SAR {res_r['fitout_capex']:,.0f}")
+    with m1: render_kpi("Equity IRR", fmt_pct(res_r['equity_irr']), "Project Return", "positive")
+    with m2: render_kpi("Equity NPV", fmt_currency_m(res_r['equity_npv']), f"Discounted at {fmt_pct(cost_of_equity)} Ke", "positive")
+    with m3: render_kpi("Equity MOIC", fmt_multiple(res_r['equity_moic']), "Equity Multiple", "positive")
+    with m4: render_kpi("Payback Period", f"{res_r['payback_yrs']:.1f} Yrs" if not np.isnan(res_r['payback_yrs']) else "N/A", "From Start", "positive")
+    with m5: render_kpi("Fit-out CapEx Equity", fmt_currency_m(res_r['fitout_capex']), "Equity Outlay", "warning")
 
-    st.markdown("---")
-    st.subheader("Breakeven & Occupancy Analysis")
+    st.markdown("<div class='section-title'>Breakeven & Occupancy Threshold Analysis</div>", unsafe_allow_html=True)
     b1, b2 = st.columns(2)
-    b1.metric("Stabilized Break-even Occupancy %", f"{res_r['be_occupancy']:.2%}", "To achieve NOI = 0")
-    b2.metric("Occupancy for Target 15% IRR", f"{res_r['occ_for_target_irr']:.2%}" if not np.isnan(res_r['occ_for_target_irr']) else "N/A", "To achieve Target Return")
+    with b1: render_kpi("Stabilized Break-even Occupancy %", fmt_pct(res_r['be_occupancy']), "To achieve NOI = 0", "warning")
+    with b2: render_kpi("Occupancy for Target 15% IRR", fmt_pct(res_r['occ_for_target_irr']) if not np.isnan(res_r['occ_for_target_irr']) else "N/A", "To achieve Target Return", "positive")
 
-    st.subheader("10-Year Equity Pro Forma P&L Statement")
-    st.dataframe(res_r['annual_pnl'], use_container_width=True)
+    st.markdown("<div class='section-title'>10-Year Equity Pro Forma P&L Statement</div>", unsafe_allow_html=True)
+    df_pnl_disp = res_r['annual_pnl'].copy()
+    for col in ['Sub_Revenue', 'Head_Rent', 'OPEX', 'NOI']:
+        df_pnl_disp[col] = df_pnl_disp[col].apply(lambda x: fmt_currency(x))
+    df_pnl_disp['NOI_Margin'] = df_pnl_disp['NOI_Margin'].apply(lambda x: fmt_pct(x))
+    st.dataframe(df_pnl_disp.reset_index(drop=True), use_container_width=True)
 
 # ==============================================================================
 # PAGE 7: DECISION CENTER & AUDIT
 # ==============================================================================
 elif page == "7. Decision Center & Audit":
-    st.markdown("<div class='main-header'>Decision Center & Corporate Audit Engine</div>", unsafe_allow_html=True)
+    st.markdown("<div class='page-title'>Decision Center & Corporate Audit Engine</div>", unsafe_allow_html=True)
+    st.markdown("<div class='page-subtitle'>Centralized risk monitoring, data quality reconciliation, and corporate alerts.</div>", unsafe_allow_html=True)
     
-    st.subheader("Source Data Quality & Reconciliation Audit")
+    st.markdown("<div class='section-title'>Source Data Quality & Reconciliation Audit</div>", unsafe_allow_html=True)
     audit_data = [
         {"Target": "Master File Named Tables", "Status": "🟢 Passed", "Details": "All 6 named tables dynamically parsed from Loans_&_Installments"},
         {"Target": "Cash Flow Ingest", "Status": "🟢 Passed", "Details": "24-month rolling corporate forecast loaded with zero missing dates"},
@@ -543,7 +630,7 @@ elif page == "7. Decision Center & Audit":
     ]
     st.dataframe(pd.DataFrame(audit_data), use_container_width=True)
 
-    st.subheader("Executive Action Items & Corporate Risk Alerts")
+    st.markdown("<div class='section-title'>Executive Action Items & Corporate Risk Alerts</div>", unsafe_allow_html=True)
     st.error("🔴 CRITICAL DEBT RISK: Denar Sukuk 4.4M installment overdue (SAR 4.46M remaining due).")
     st.warning("🟡 RENTAL PERFORMANCE WATCH: Malqa Rent & Narjis Rent operating with negative NOI margins (-61.0% and -179.4%).")
     st.success("🟢 COLLECTION EFFICIENCY: Rental collection rate achieved 84.71% (SAR 720K collected vs SAR 850K due).")
