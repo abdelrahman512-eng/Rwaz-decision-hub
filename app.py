@@ -29,7 +29,7 @@ st.markdown(\"\"\"
     
     /* Core Layout & Premium Light Gray Background */
     .stApp { background-color: #F1F5F9; color: #0F172A; font-family: 'Segoe UI', -apple-system, sans-serif; }
-    .main .block-container { padding-top: 0.2rem !important; padding-bottom: 0.2rem !important; padding-left: 0.4rem !important; padding-right: 0.4rem !important; max-width: 100% !important; }
+    .main .block-container { padding-top: 0rem !important; padding-bottom: 0.1rem !important; padding-left: 0.1rem !important; padding-right: 0.1rem !important; max-width: 100% !important; }
     
     /* Zero Unnecessary Space / Tight Spacing Rules */
     .stMarkdown, div[data-testid="stMarkdownContainer"] { margin-bottom: 0px !important; }
@@ -41,7 +41,7 @@ st.markdown(\"\"\"
     .section-title { font-size: 13px; font-weight: 800; color: #0284C7; margin-top: 4px; margin-bottom: 4px; text-align: right; }
     
     /* Sidebar RWAZ VIEW Brand Header */
-    .sidebar-brand { font-size: 22px; font-weight: 900; color: #38BDF8; letter-spacing: 0.5px; text-align: right; margin-bottom: 2px; display: flex; align-items: center; justify-content: flex-end; gap: 8px; }
+    .sidebar-brand { font-size: 22px; font-weight: 900; color: #38BDF8; letter-spacing: 0.5px; text-align: right; margin-bottom: 2px; display: flex; align-items: center; justify-content: flex-end; gap: 2px; }
     .sidebar-brand-icon { font-size: 26px; }
     
     /* Filter Controls Styling & Ultra High Contrast Dropdown Text */
@@ -59,7 +59,7 @@ st.markdown(\"\"\"
     
     /* Executive KPI Cards System (Light Cards with High Contrast) */
     .kpi-container { background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 6px; padding: 6px 10px; text-align: right; box-shadow: 0 2px 5px rgba(0,0,0,0.04); }
-    .kpi-title { font-size: 10px; color: #64748B; font-weight: 700; text-transform: uppercase; }
+    .kpi-title { font-size: 12px; color: #64748B; font-weight: 700; text-transform: uppercase; }
     .kpi-value { font-size: 17px; color: #0F172A; font-weight: 800; margin-top: 2px; margin-bottom: 2px; font-variant-numeric: tabular-nums; }
     .kpi-sub { font-size: 10px; font-weight: 600; }
     .kpi-sub-positive { color: #16A34A; }
@@ -72,8 +72,32 @@ st.markdown(\"\"\"
     .status-fail { background-color: #FEE2E2; color: #B91C1C; border: 1px solid #DC2626; font-weight: 800; padding: 3px 10px; border-radius: 4px; display: inline-block; font-size: 12px; }
 
     /* Navigation Sidebar Style */
-    [data-testid="stSidebar"] { background-color: #020617; border-right: 1px solid #1E293B; }
-    [data-testid="stSidebar"] .stRadio > label { font-size: 12px; font-weight: 600; color: #F8FAFC; text-align: right; }
+    [data-testid="stSidebar"] { background-color: #595959; border-right: 1px solid #1E293B; }
+    [data-testid="stSidebar"] .stRadio > label { font-size: 12px; font-weight: 600; color: #2D1290; text-align: right; }
+
+    [data-testid="stSidebar"] div[role="radiogroup"] label {
+    padding: 8px 12px !important;
+    border-radius: 6px !important;
+    margin-bottom: 4px !important;
+    width: 100% !important;
+    transition: background-color 0.2s ease !important;
+}
+
+/* 2. تغيير لون العنصر الذي تم الضغط عليه وتحديده (Active Selected Option) */
+[data-testid="stSidebar"] div[role="radiogroup"] label:has(input:checked),
+[data-testid="stSidebar"] div[role="radiogroup"] label[aria-checked="true"],
+[data-testid="stSidebar"] div[role="radiogroup"] label[data-checked="true"] {
+    background-color: #F7CCD6 !important; /* لون خلفية الخيار المحدد عند الكليك */
+    border: 1px solid #38BDF8 !important;   /* إطار متوهج مميز */
+}
+
+/* 3. جعل خط الكلمة المختارة باللون الأبيض العريض */
+[data-testid="stSidebar"] div[role="radiogroup"] label:has(input:checked) span,
+[data-testid="stSidebar"] div[role="radiogroup"] label[aria-checked="true"] span,
+[data-testid="stSidebar"] div[role="radiogroup"] label[data-checked="true"] span {
+    color: #FFFFFF !important;
+    font-weight: 800 !important;
+}
     
     /* Expanded Full-Width Term Card for Page 6 Guidance */
     .term-card { background-color: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 6px; padding: 14px 16px; margin-bottom: 8px; text-align: right; box-shadow: 0 2px 4px rgba(0,0,0,0.03); }
