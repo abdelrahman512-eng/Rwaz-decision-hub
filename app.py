@@ -27,7 +27,7 @@ st.markdown("""
     header {visibility: hidden;}
     
     /* Core Layout Styles */
-    .stApp { background-color: #A8C6F6; color: #C7DFDF; font-family: 'Gill Sans MT', -apple-system, sans-serif; }
+    .stApp { background-color: #477979; color: #C7DFDF; font-family: 'Gill Sans MT', -apple-system, sans-serif; }
     .main .block-container { padding-top: 0.1rem; padding-bottom: 0.2rem; padding-left: 0.4rem; padding-right: 0.4rem; max-width: 100%; }
     
     /* Typography Hierarchy */
