@@ -27,8 +27,8 @@ st.markdown("""
     header {visibility: hidden;}
     
     /* Core Layout Styles */
-    .stApp { background-color: #D57257; color: #F8FAFC; font-family: 'Gill Sans MT', -apple-system, sans-serif; }
-    .main .block-container { padding-top: 0.2rem; padding-bottom: 0.2rem; padding-left: 0.3rem; padding-right: 0.3rem; max-width: 99%; }
+    .stApp { background-color: #A8C6F6; color: #C7DFDF; font-family: 'Gill Sans MT', -apple-system, sans-serif; }
+    .main .block-container { padding-top: 0.1rem; padding-bottom: 0.2rem; padding-left: 0.4rem; padding-right: 0.4rem; max-width: 100%; }
     
     /* Typography Hierarchy */
     .page-title { font-size: 22px; font-weight: 800; color: #F8FAFC; letter-spacing: -0.5px; margin-bottom: 2px; text-align: right; }
