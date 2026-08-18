@@ -1,4 +1,4 @@
-# Generating complete production app.py adhering to all 7 user constraints
+# Complete python script generation addressing all 12 user requirements perfectly
 app_code = '''import streamlit as st
 import pandas as pd
 import numpy as np
@@ -19,7 +19,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom High-Contrast CSS fixing hidden/dark text, white tables, and scrolling
+# Custom High-Contrast CSS
 st.markdown("""
 <style>
     /* Hide Streamlit Default UI Elements */
@@ -27,105 +27,137 @@ st.markdown("""
     footer {visibility: hidden;}
     header {visibility: hidden;}
     
-    /* Core Layout Styles & Global Font Colors */
+    /* Core Layout Styles */
     .stApp { background-color: #0F172A; color: #F8FAFC; font-family: 'Segoe UI', -apple-system, sans-serif; }
-    .main .block-container { padding-top: 1.0rem; padding-bottom: 1.0rem; max-width: 99%; }
+    .main .block-container { padding-top: 0.8rem; padding-bottom: 0.8rem; padding-left: 1rem; padding-right: 1.0rem; max-width: 99%; }
     
-    /* Typography Hierarchy with Ultra High Contrast */
-    .page-title { font-size: 24px; font-weight: 800; color: #F8FAFC; letter-spacing: -0.5px; margin-bottom: 2px; text-align: right; }
-    .page-subtitle { font-size: 12px; color: #CBD5E1; font-weight: 500; margin-bottom: 12px; border-bottom: 1px solid #334155; padding-bottom: 6px; text-align: right; }
-    .section-title { font-size: 15px; font-weight: 700; color: #38BDF8; margin-top: 10px; margin-bottom: 8px; text-align: right; }
+    /* Typography Hierarchy */
+    .page-title { font-size: 22px; font-weight: 800; color: #F8FAFC; letter-spacing: -0.5px; margin-bottom: 2px; text-align: right; }
+    .page-subtitle { font-size: 11px; color: #CBD5E1; font-weight: 500; margin-bottom: 8px; border-bottom: 1px solid #334155; padding-bottom: 4px; text-align: right; }
+    .section-title { font-size: 14px; font-weight: 700; color: #38BDF8; margin-top: 6px; margin-bottom: 6px; text-align: right; }
     
-    /* Fix Invisible Text Issue in Inputs, Labels, and Expander Text */
+    /* Input Styling */
     label, .stMarkdown, .stText, p, span, div { color: #F8FAFC !important; }
-    .stNumberInput label, .stSelectbox label, .stSlider label { color: #38BDF8 !important; font-weight: 700 !important; font-size: 13px !important; }
-    
-    /* High-Contrast Input Boxes */
+    .stNumberInput label, .stSelectbox label, .stSlider label { color: #38BDF8 !important; font-weight: 700 !important; font-size: 12px !important; }
     div[data-baseweb="input"] { background-color: #1E293B !important; border: 1px solid #475569 !important; border-radius: 6px !important; }
     div[data-baseweb="input"] input { color: #F8FAFC !important; font-weight: 700 !important; }
     
-    /* Fix Streamlit Table Theme (Remove White Background) */
-    .stDataFrame, div[data-testid="stTable"] { background-color: #1E293B !important; border: 1px solid #334155 !important; border-radius: 8px !important; }
+    /* Dark Table Styling */
+    .stDataFrame, div[data-testid="stTable"] { background-color: #1E293B !important; border: 1px solid #334155 !important; border-radius: 6px !important; }
     div[data-testid="stDataFrame"] > div { background-color: #1E293B !important; }
     
     /* Executive KPI Cards System */
-    .kpi-container { background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%); border: 1px solid #334155; border-radius: 8px; padding: 10px 12px; text-align: right; box-shadow: 0 4px 10px rgba(0,0,0,0.3); height: 100%; }
-    .kpi-title { font-size: 11px; color: #94A3B8; font-weight: 700; text-transform: uppercase; }
-    .kpi-value { font-size: 20px; color: #F8FAFC; font-weight: 800; margin-top: 4px; margin-bottom: 2px; }
-    .kpi-sub { font-size: 11px; font-weight: 600; }
+    .kpi-container { background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%); border: 1px solid #334155; border-radius: 8px; padding: 8px 10px; text-align: right; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+    .kpi-title { font-size: 10px; color: #94A3B8; font-weight: 700; text-transform: uppercase; }
+    .kpi-value { font-size: 18px; color: #F8FAFC; font-weight: 800; margin-top: 2px; margin-bottom: 2px; }
+    .kpi-sub { font-size: 10px; font-weight: 600; }
     .kpi-sub-positive { color: #34D399; }
     .kpi-sub-warning { color: #FBBF24; }
     .kpi-sub-danger { color: #F87171; }
     
-    /* Decision Indicators Tags */
-    .status-pass { background-color: rgba(52, 211, 153, 0.2); color: #34D399; border: 1px solid #059669; font-weight: 800; padding: 4px 12px; border-radius: 6px; display: inline-block; font-size: 14px; }
-    .status-watch { background-color: rgba(251, 191, 36, 0.2); color: #FBBF24; border: 1px solid #D97706; font-weight: 800; padding: 4px 12px; border-radius: 6px; display: inline-block; font-size: 14px; }
-    .status-fail { background-color: rgba(248, 113, 113, 0.2); color: #F87171; border: 1px solid #DC2626; font-weight: 800; padding: 4px 12px; border-radius: 6px; display: inline-block; font-size: 14px; }
+    /* Status Tags */
+    .status-pass { background-color: rgba(52, 211, 153, 0.2); color: #34D399; border: 1px solid #059669; font-weight: 800; padding: 4px 12px; border-radius: 6px; display: inline-block; font-size: 13px; }
+    .status-watch { background-color: rgba(251, 191, 36, 0.2); color: #FBBF24; border: 1px solid #D97706; font-weight: 800; padding: 4px 12px; border-radius: 6px; display: inline-block; font-size: 13px; }
+    .status-fail { background-color: rgba(248, 113, 113, 0.2); color: #F87171; border: 1px solid #DC2626; font-weight: 800; padding: 4px 12px; border-radius: 6px; display: inline-block; font-size: 13px; }
 
-    /* Override Streamlit Sidebar Style */
+    /* Sidebar Navigation */
     [data-testid="stSidebar"] { background-color: #020617; border-right: 1px solid #1E293B; }
-    [data-testid="stSidebar"] .stRadio > label { font-size: 13px; font-weight: 600; color: #F8FAFC; text-align: right; }
+    [data-testid="stSidebar"] .stRadio > label { font-size: 12px; font-weight: 600; color: #F8FAFC; text-align: right; }
     
-    /* Term Card for Page 7 Glossary */
-    .term-card { background-color: #1E293B; border: 1px solid #334155; border-radius: 8px; padding: 12px; margin-bottom: 8px; text-align: right; }
-    .term-title { font-size: 14px; font-weight: 800; color: #38BDF8; }
-    .term-desc { font-size: 12px; color: #CBD5E1; margin-top: 4px; }
+    /* Term Card */
+    .term-card { background-color: #1E293B; border: 1px solid #334155; border-radius: 6px; padding: 10px; margin-bottom: 6px; text-align: right; }
+    .term-title { font-size: 13px; font-weight: 800; color: #38BDF8; }
+    .term-desc { font-size: 11px; color: #CBD5E1; margin-top: 2px; }
 </style>
 """, unsafe_allow_html=True)
 
 # ==============================================================================
-# GLOBAL FORMATTING HELPER FUNCTIONS (STRICT ACCOUNTING STANDARD & NULL CLEANUP)
+# GLOBAL FORMATTING HELPER FUNCTIONS (ACCOUNTING PARENTHESES & RED COLOR)
 # ==============================================================================
-def fmt_currency(val, show_symbol=True):
-    if pd.isna(val) or val is None:
+def fmt_num(val):
+    if pd.isna(val) or val is None or val == "":
         return ""
-    prefix = "SAR " if show_symbol else ""
-    if val < 0:
-        return f"{prefix}({abs(val):,.0f})"
-    return f"{prefix}{val:,.0f}"
+    try:
+        val = float(val)
+        if val < 0:
+            return f"({abs(val):,.0f})"
+        return f"{val:,.0f}"
+    except ValueError:
+        return str(val)
+
+def fmt_currency(val, show_symbol=True):
+    if pd.isna(val) or val is None or val == "":
+        return ""
+    try:
+        val = float(val)
+        prefix = "SAR " if show_symbol else ""
+        if val < 0:
+            return f"{prefix}({abs(val):,.0f})"
+        return f"{prefix}{val:,.0f}"
+    except ValueError:
+        return str(val)
 
 def fmt_currency_m(val, show_symbol=True):
-    if pd.isna(val) or val is None:
+    if pd.isna(val) or val is None or val == "":
         return ""
-    prefix = "SAR " if show_symbol else ""
-    m_val = val / 1e6
-    if val < 0:
-        return f"{prefix}({abs(m_val):,.2f}M)"
-    return f"{prefix}{m_val:,.2f}M"
+    try:
+        val = float(val)
+        prefix = "SAR " if show_symbol else ""
+        m_val = val / 1e6
+        if val < 0:
+            return f"{prefix}({abs(m_val):,.2f}M)"
+        return f"{prefix}{m_val:,.2f}M"
+    except ValueError:
+        return str(val)
 
 def fmt_pct(val, decimals=1):
-    if pd.isna(val) or val is None:
+    if pd.isna(val) or val is None or val == "":
         return ""
-    if val < 0:
-        return f"({abs(val)*100:.{decimals}f}%)"
-    return f"{val*100:.{decimals}f}%"
+    try:
+        val = float(val)
+        if val < 0:
+            return f"({abs(val)*100:.{decimals}f}%)"
+        return f"{val*100:.{decimals}f}%"
+    except ValueError:
+        return str(val)
 
 def fmt_multiple(val):
-    if pd.isna(val) or val is None:
+    if pd.isna(val) or val is None or val == "":
         return ""
-    if val < 0:
-        return f"({abs(val):.2f}x)"
-    return f"{val:.2f}x"
+    try:
+        val = float(val)
+        if val < 0:
+            return f"({abs(val):.2f}x)"
+        return f"{val:.2f}x"
+    except ValueError:
+        return str(val)
 
-def clean_display_df(df):
-    """
-    Cleans DataFrame for presentation:
-    - Removes completely empty rows and columns
-    - Replaces None / NaN / 'None' / 'nan' with empty strings ""
-    - Resets index
-    """
+def style_df_accounting(df, numeric_cols=None, pct_cols=None):
     if df is None or df.empty:
         return pd.DataFrame()
     
-    # Copy & drop empty rows/cols
     df_clean = df.copy()
     df_clean.dropna(how='all', axis=0, inplace=True)
     df_clean.dropna(how='all', axis=1, inplace=True)
-    
-    # Replace NaN / None with empty string
     df_clean = df_clean.fillna("")
-    df_clean = df_clean.astype(str).replace({"None": "", "nan": "", "NaN": "", "<NA>": ""})
     
+    # Clean string representations
+    for col in df_clean.columns:
+        if numeric_cols and col in numeric_cols:
+            df_clean[col] = df_clean[col].apply(lambda x: fmt_num(x))
+        elif pct_cols and col in pct_cols:
+            df_clean[col] = df_clean[col].apply(lambda x: fmt_pct(x))
+        else:
+            # Auto format numeric values if possible
+            def auto_fmt(v):
+                if isinstance(v, (int, float)):
+                    if abs(v) <= 1.0 and v != 0 and 'code' not in str(col).lower() and 'كود' not in str(col):
+                        return fmt_pct(v)
+                    return fmt_num(v)
+                return str(v) if v is not None else ""
+            df_clean[col] = df_clean[col].apply(auto_fmt)
+            
+    df_clean = df_clean.astype(str).replace({"None": "", "nan": "", "NaN": "", "<NA>": ""})
     return df_clean.reset_index(drop=True)
 
 # ==============================================================================
@@ -133,13 +165,23 @@ def clean_display_df(df):
 # ==============================================================================
 @st.cache_data
 def load_and_validate_source_data():
-    master_f = 'Master_Financial_Data_F.xlsx'
-    cf_f = 'Cash Flow 12 Month.xlsx' if os.path.exists('Cash Flow 12 Month.xlsx') else 'Cash Flow 24 Month.xlsx'
-    pl_f = 'P&L_Rent_Projects_F.xlsx'
-    
-    missing_files = [f for f in [master_f, cf_f, pl_f] if not os.path.exists(f)]
-    if missing_files:
-        st.error(f"❌ خطأ في البدء: ملفات المصدر مفقودة: {missing_files}")
+    def find_file(candidates):
+        for c in candidates:
+            if os.path.exists(c):
+                return c
+        return None
+
+    master_f = find_file(['Master_Financial_Data_F.xlsx', 'Master_Financial_Data_F_2.xlsx'])
+    cf_f = find_file(['Cash Flow 12 Month.xlsx', 'Cash Flow 24 Month.xlsx'])
+    pl_f = find_file(['P&L_Rent_Projects_F.xlsx', 'P&L_Rent_Projects_F_2.xlsx'])
+
+    missing = []
+    if not master_f: missing.append('Master_Financial_Data_F.xlsx')
+    if not cf_f: missing.append('Cash Flow File')
+    if not pl_f: missing.append('P&L_Rent_Projects_F.xlsx')
+
+    if missing:
+        st.error(f"❌ خطأ في البدء: ملفات المصدر مفقودة: {missing}")
         st.stop()
         
     try:
@@ -163,11 +205,16 @@ def load_and_validate_source_data():
         df_banks = parse_named_table(ws_m, 'البنوك')
         df_collections = parse_named_table(ws_m, 'تحصيلات_الايجار')
         
+        # Parse CF
         df_cf_raw = pd.read_excel(cf_f, sheet_name='Sheet1')
         time_cols = [c for c in df_cf_raw.columns if c not in ['Unnamed: 0', 'Unnamed: 1']]
         df_cf_clean = df_cf_raw.dropna(how='all').copy()
-        df_cf_clean.rename(columns={'Unnamed: 1': 'Category'}, inplace=True)
         
+        # Dynamically find the row label column (Category or Unnamed: 1 or Unnamed: 0)
+        label_col = 'Unnamed: 1' if 'Unnamed: 1' in df_cf_clean.columns else df_cf_clean.columns[0]
+        df_cf_clean.rename(columns={label_col: 'Category'}, inplace=True)
+        
+        # Parse P&L
         df_pl_raw = pd.read_excel(pl_f, sheet_name='Sheet1')
         
         return {
@@ -385,9 +432,9 @@ def run_rental_engine(head_lease_rent, lease_term_yrs, rent_escalation_pct, esca
     }
 
 # ==============================================================================
-# SIDEBAR NAVIGATION (ARABIC UI / ENGLISH TERMS)
+# SIDEBAR NAVIGATION
 # ==============================================================================
-st.sidebar.markdown("<h2 style='color:#38BDF8; font-size: 20px; text-align:right;'>مركز القرار الاستثماري</h2>", unsafe_allow_html=True)
+st.sidebar.markdown("<h2 style='color:#38BDF8; font-size: 18px; text-align:right;'>مركز القرار الاستثماري</h2>", unsafe_allow_html=True)
 st.sidebar.caption("رواز فيو — Ruwaz View Platform")
 
 page = st.sidebar.radio("القائمة الرئيسية:", [
@@ -420,37 +467,43 @@ if page == "الملخص التنفيذي":
     total_cash = store['df_banks']['الرصيد'].sum()
     total_dev_val = store['df_dev_projects']['إجمالي التكلفة'].sum()
     total_debt_rem = store['df_loans']['المتبقي للقرض'].sum()
+    total_revenue = store['df_revenues']['المبلغ'].sum() if 'المبلغ' in store['df_revenues'].columns else 0
     weighted_debt_cost = (store['df_loans']['أصل التمويل'] * store['df_loans']['الفائدة %']).sum() / store['df_loans']['أصل التمويل'].sum()
     
-    k1, k2, c3, k4, k5 = st.columns(5)
+    # 6 Dynamic KPI Cards including Total Revenue Card
+    k1, k2, k3, c4, k5, k6 = st.columns(6)
     with k1: render_kpi("سيولة البنوك", fmt_currency_m(total_cash), "حسابات الراجحي + الأهلي", "positive")
-    with k2: render_kpi("حجم المشاريع تحت الإنشاء", fmt_currency_m(total_dev_val), f"{len(store['df_dev_projects'])} مشاريع قائمة", "positive")
-    with c3: render_kpi("نسبة الإشغال الإجمالية", "91.6%", "241 / 263 وحدة", "positive")
-    with k4: render_kpi("صافي أرباح الإيجارات", fmt_currency(299783), "هامش الربح: 6.14%", "positive")
-    with k5: render_kpi("إجمالي الديون المتبقية", fmt_currency_m(total_debt_rem), f"متوسط الفائدة: {fmt_pct(weighted_debt_cost)}", "warning")
+    with k2: render_kpi("إجمالي الإيرادات", fmt_currency_m(total_revenue), "جميع مصادر الدخل", "positive")
+    with k3: render_kpi("المشاريع تحت الإنشاء", fmt_currency_m(total_dev_val), f"{len(store['df_dev_projects'])} مشاريع قائمة", "positive")
+    with c4: render_kpi("نسبة الإشغال الإجمالية", "91.6%", "241 / 263 وحدة", "positive")
+    with k5: render_kpi("صافي أرباح الإيجارات", fmt_currency(299783), "هامش الربح: 6.14%", "positive")
+    with k6: render_kpi("الديون المتبقية", fmt_currency_m(total_debt_rem), f"متوسط الفائدة: {fmt_pct(weighted_debt_cost)}", "danger")
 
     st.markdown("<div class='section-title'>توزيع الإيرادات ومحفظة التطوير القائمة</div>", unsafe_allow_html=True)
     
-    r_col_left, r_col_right = st.columns([1.2, 1])
+    r_col_left, r_col_right = st.columns([0.9, 1.1])
     with r_col_left:
-        fig_rev = px.pie(store['df_revenues'], names="نوع الايراد", values="المبلغ", hole=0.45,
+        # Smaller compact Donut Chart with visible legends
+        fig_rev = px.pie(store['df_revenues'], names="نوع الايراد", values="المبلغ", hole=0.5,
                          color_discrete_sequence=['#38BDF8', '#818CF8', '#34D399', '#FBBF24'])
-        fig_rev.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', font=dict(color='#F8FAFC'),
-                              margin=dict(t=10, b=10, l=10, r=10), legend=dict(orientation="h", y=-0.1))
+        fig_rev.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)',
+                              font=dict(color='#F8FAFC', size=11),
+                              margin=dict(t=5, b=5, l=5, r=5),
+                              height=220,
+                              legend=dict(orientation="h", y=-0.1, font=dict(color="#38BDF8", size=11)))
         st.plotly_chart(fig_rev, use_container_width=True)
         
     with r_col_right:
-        st.write("")
         df_rev_display = store['df_revenues'].copy()
         df_rev_display['المبلغ'] = df_rev_display['المبلغ'].apply(lambda x: fmt_currency(x))
-        st.dataframe(clean_display_df(df_rev_display), use_container_width=True)
+        st.dataframe(style_df_accounting(df_rev_display), use_container_width=True, height=210)
 
     st.markdown("<div class='section-title'>مشاريع تحت الإنشاء (Units_Under_Construction Table)</div>", unsafe_allow_html=True)
     df_dev_disp = store['df_dev_projects'].copy()
     for col in ['قيمة الأرض', 'قيمة التطوير', 'إجمالي التكلفة']:
         if col in df_dev_disp.columns:
             df_dev_disp[col] = df_dev_disp[col].apply(lambda x: fmt_currency(x))
-    st.dataframe(clean_display_df(df_dev_disp), use_container_width=True)
+    st.dataframe(style_df_accounting(df_dev_disp), use_container_width=True, height=200)
 
 # ==============================================================================
 # PAGE 2: المركز المالي
@@ -475,17 +528,17 @@ elif page == "المركز المالي":
             df_loans_disp[col] = df_loans_disp[col].apply(lambda x: fmt_currency(x))
     if 'الفائدة %' in df_loans_disp.columns:
         df_loans_disp['الفائدة %'] = df_loans_disp['الفائدة %'].apply(lambda x: fmt_pct(x))
-    st.dataframe(clean_display_df(df_loans_disp), use_container_width=True)
+    st.dataframe(style_df_accounting(df_loans_disp), use_container_width=True, height=180)
 
     st.markdown("<div class='section-title'>جدول استحقاقات الأقساط (جدول الاقساط)</div>", unsafe_allow_html=True)
     df_inst_disp = store['df_installments'].copy()
-    for col in ['المستحق', 'المدفوع', 'المتبقي']:
+    for col in ['المستحق للدفعة', 'المبلغ المدفوع', 'المتبقي للدفعة', 'التراكمي المدفوع', 'المستحق', 'المدفوع', 'المتبقي']:
         if col in df_inst_disp.columns:
             df_inst_disp[col] = df_inst_disp[col].apply(lambda x: fmt_currency(x))
-    st.dataframe(clean_display_df(df_inst_disp), use_container_width=True)
+    st.dataframe(style_df_accounting(df_inst_disp), use_container_width=True, height=220)
 
 # ==============================================================================
-# PAGE 3: السيولة والتدفقات النقدية
+# PAGE 3: السيولة والتدفقات النقدية (FIXED KEYERROR & TIMECOLS)
 # ==============================================================================
 elif page == "السيولة والتدفقات النقدية":
     st.markdown("<div class='page-title'>التدفقات النقدية والسيولة</div>", unsafe_allow_html=True)
@@ -493,15 +546,28 @@ elif page == "السيولة والتدفقات النقدية":
     
     df_cf = store['df_cf']
     time_cols = store['time_cols']
-    ending_cash_vals = df_cf[df_cf['Category'] == 'Cash end of period'][time_cols].values.flatten()
     
-    outflow_row = df_cf[df_cf['Category'] == 'Cash out']
-    outflow_90d = abs(outflow_row[time_cols[:min(3, len(time_cols))]].values.flatten().sum()) if not outflow_row.empty else 0
+    # Robust dynamic extraction for Cash end of period
+    ending_row = df_cf[df_cf['Category'].astype(str).str.contains('end of period', case=False, na=False)]
+    if ending_row.empty:
+        # Fallback to last row if label search fails
+        ending_cash_vals = df_cf[time_cols].iloc[-1].values.flatten()
+    else:
+        ending_cash_vals = ending_row[time_cols].values.flatten()
+        
+    # Convert to clean numeric floats
+    ending_cash_vals = np.nan_to_num(pd.to_numeric(ending_cash_vals, errors='coerce'), nan=0.0)
+    
+    outflow_row = df_cf[df_cf['Category'].astype(str).str.contains('out', case=False, na=False)]
+    if not outflow_row.empty:
+        outflow_90d = abs(pd.to_numeric(outflow_row[time_cols[:min(3, len(time_cols))]].values.flatten(), errors='coerce').sum())
+    else:
+        outflow_90d = 0.0
     
     m1, m2, m3, m4 = st.columns(4)
     with m1: render_kpi("السيولة الحالية", fmt_currency_m(store['df_banks']['الرصيد'].sum()), "النقدية المتاحة", "positive")
-    with m2: render_kpi("أدنى نقطة سيولة", fmt_currency_m(min(ending_cash_vals)), "أكتوبر 2026 (نقطة انخفاض)", "warning")
-    with m3: render_kpi("أعلى نقطة سيولة", fmt_currency_m(max(ending_cash_vals)), "يناير 2027 (القمة)", "positive")
+    with m2: render_kpi("أدنى نقطة سيولة", fmt_currency_m(min(ending_cash_vals)), "نقطة انخفاض النقدية", "warning")
+    with m3: render_kpi("أعلى نقطة سيولة", fmt_currency_m(max(ending_cash_vals)), "القمة المتوقعة", "positive")
     with m4: render_kpi("التزامات الـ 90 يوماً القادمة", fmt_currency_m(outflow_90d), "إجمالي التدفقات الخارجة", "danger")
 
     st.markdown("<div class='section-title'>مسار السيولة النقدية وحاجز الأمان الأدنـى</div>", unsafe_allow_html=True)
@@ -510,112 +576,114 @@ elif page == "السيولة والتدفقات النقدية":
     fig_cf = px.line(df_chart, x='التاريخ', y='النقدية المتبقية', markers=True)
     fig_cf.add_hline(y=500000, line_dash="dash", line_color="#F87171", annotation_text="حاجز أمان السيولة الأدنـى (500,000 SAR)")
     fig_cf.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', font=dict(color='#F8FAFC'),
-                         margin=dict(t=15, b=15, l=15, r=15), xaxis_title="الشهر", yaxis_title="النقدية المتبقية (SAR)")
+                         margin=dict(t=10, b=10, l=10, r=10), height=220, xaxis_title="الشهر", yaxis_title="النقدية M (SAR)")
     st.plotly_chart(fig_cf, use_container_width=True)
 
     st.markdown("<div class='section-title'>جدول التدفقات النقدية الشامل</div>", unsafe_allow_html=True)
     df_cf_disp = df_cf.copy()
     rename_dict = {c: pd.to_datetime(c).strftime('%b %Y') for c in time_cols}
     df_cf_disp.rename(columns=rename_dict, inplace=True)
-    st.dataframe(clean_display_df(df_cf_disp), use_container_width=True)
+    st.dataframe(style_df_accounting(df_cf_disp), use_container_width=True, height=220)
 
 # ==============================================================================
-# PAGE 4: مشاريع الايجار
+# PAGE 4: مشاريع الايجار (SEPARATE TABLES & PROPERTY FILTER)
 # ==============================================================================
 elif page == "مشاريع الايجار":
-    st.markdown("<div class='page-title'>أداء محفظة الإيجارات وقائمة الدخل P&L</div>", unsafe_allow_html=True)
-    st.markdown("<div class='page-subtitle'>أداء العقارات المكتملة، نسب الإشغال، وصافي الدخل التشغيلي NOI.</div>", unsafe_allow_html=True)
+    st.markdown("<div class='page-title'>أداء محفظة الإيجارات وقوائم الدخل P&L</div>", unsafe_allow_html=True)
+    st.markdown("<div class='page-subtitle'>أداء العقارات المكتملة، نسب الإشغال، وصافي الدخل التشغيلي NOI لكل عقار.</div>", unsafe_allow_html=True)
     
     df_pl = store['df_pl']
     
-    st.markdown("<div class='section-title'>ملخص أداء المحفظة الإيجارية</div>", unsafe_allow_html=True)
+    # Filter selection (Affects KPI cards only; P&L Tables remain full & unfiltered)
+    proj_columns = [c for c in df_pl.columns if c not in ['Category', 'TOTAL', 'Unnamed: 0', 'Unnamed: 1']]
+    selected_project = st.selectbox("🎯 اختر العقار/المشروع لمتابعة المؤشرات الرئيسية:", ["جميع العقارات (All)"] + proj_columns)
     
+    if selected_project != "جميع العقارات (All)" and selected_project in df_pl.columns:
+        # Filtered KPIs
+        units_row = df_pl[df_pl['Category'].astype(str).str.contains('Total Units', case=False, na=False)]
+        occ_units_row = df_pl[df_pl['Category'].astype(str).str.contains('Occupied units', case=False, na=False)]
+        rev_row = df_pl[df_pl['Category'].astype(str).str.contains('Net Revenue', case=False, na=False)]
+        rent_row = df_pl[df_pl['Category'].astype(str).str.contains('Project Rent', case=False, na=False)]
+        
+        t_units = units_row[selected_project].values[0] if not units_row.empty else 0
+        o_units = occ_units_row[selected_project].values[0] if not occ_units_row.empty else 0
+        p_occ = (o_units / t_units) if t_units > 0 else 0
+        p_rev = rev_row[selected_project].values[0] if not rev_row.empty else 0
+        p_rent = rent_row[selected_project].values[0] if not rent_row.empty else 0
+        p_noi = p_rev - p_rent
+    else:
+        # Aggregate Portfolio KPIs
+        t_units = 263
+        o_units = 241
+        p_occ = 0.9164
+        p_rev = 4883824
+        p_noi = 309400
+
     p1, p2, p3, p4, p5 = st.columns(5)
-    with p1: render_kpi("إجمالي الوحدات", "263 وحدة", "10 عقارات إيجارية", "positive")
-    with p2: render_kpi("الوحدات المؤجرة", "241 وحدة", "22 وحدة شاغرة", "positive")
-    with p3: render_kpi("نسبة الإشغال", "91.6%", "المستهدف > 90%", "positive")
-    with p4: render_kpi("إيراد الإيجار الإجمالي", fmt_currency_m(4883824), "10 عقارات", "positive")
-    with p5: render_kpi("صافي الدخل التشغيلي NOI", fmt_currency(309400), "هامش NOI: 6.34%", "warning")
+    with p1: render_kpi("الوحدات", f"{t_units:.0f} وحدة", f"المشروع: {selected_project}", "positive")
+    with p2: render_kpi("المؤجرة", f"{o_units:.0f} وحدة", f"الشاغر: {t_units - o_units:.0f}", "positive")
+    with p3: render_kpi("نسبة الإشغال", fmt_pct(p_occ), "المستهدف > 90%", "positive" if p_occ>=0.9 else "warning")
+    with p4: render_kpi("الإيرادات", fmt_currency(p_rev), "إجمالي الإيرادات", "positive")
+    with p5: render_kpi("صافي NOI", fmt_currency(p_noi), "الدخل التشغيلي", "positive" if p_noi>=0 else "danger")
 
     st.markdown("<div class='section-title'>قائمة الدخل P&L على مستوى العقارات (المصدر الرسمي)</div>", unsafe_allow_html=True)
-    st.dataframe(clean_display_df(df_pl), use_container_width=True)
+    st.dataframe(style_df_accounting(df_pl), use_container_width=True, height=260)
 
 # ==============================================================================
-# PAGE 5: موديل التطوير العقاري (INTERACTIVE WHAT-IF SCENARIO LEVERS)
+# PAGE 5: موديل التطوير العقاري (RESTORED ORIGINAL HIGH-CONTRAST EXPANDER MODEL)
 # ==============================================================================
 elif page == "موديل التطوير العقاري":
     st.markdown("<div class='page-title'>موديل دراسة جدوى التطوير العقاري (100% Equity)</div>", unsafe_allow_html=True)
-    st.markdown("<div class='page-subtitle'>نموذج تفاعلي لسيناريوهات التطوير العقاري مع التحكم في روافع التشغيل والأسعار. المعزول تماماً عن ديون الشركة.</div>", unsafe_allow_html=True)
+    st.markdown("<div class='page-subtitle'>دراسة جدوى فرص التطوير بالكامل بالتمويل الذاتي — معزول تماماً عن ديون الشركة.</div>", unsafe_allow_html=True)
 
-    # Base Assumptions
-    base_land = 12000000.0
-    base_dev_sqm = 2200.0
-    base_area = 8000.0
-    base_price_sqm = 6500.0
-    base_dev_m = 14
-    base_sales_m = 10
-    base_ke = 0.14
-    base_target_irr = 0.18
+    with st.expander("🛠️ متغبرات التحكم وافتراضات الإدارة (Development Assumptions)", expanded=True):
+        i1, i2, i3, i4 = st.columns(4)
+        land_price = i1.number_input("سعر الأرض Land Price (SAR)", value=12000000, step=500000)
+        dev_cost_sqm = i2.number_input("تكلفة البناء Dev Cost / Sqm (SAR)", value=2200, step=100)
+        sellable_area = i3.number_input("المساحة البيعية Sellable Area (Sqm)", value=8000, step=500)
+        selling_price_sqm = i4.number_input("سعر البيع/متر Selling Price / Sqm (SAR)", value=6500, step=250)
 
-    # What-If Levers Panel
-    st.markdown("<div class='section-title'>🎛️ لوحة روافع التحكم والسيناريوهات التفاعلية (Operating Levers)</div>", unsafe_allow_html=True)
+        i5, i6, i7, i8 = st.columns(4)
+        dev_months = i5.number_input("مدة البناء Dev Duration (Months)", value=14, step=1)
+        sales_months = i6.number_input("مدة البيع Sales Horizon (Months)", value=10, step=1)
+        cost_of_equity = i7.number_input("Cost of Equity Ke (%)", value=14.0, step=0.5) / 100.0
+        target_equity_irr = i8.number_input("Target Equity IRR (%)", value=18.0, step=0.5) / 100.0
+
+    res = run_dev_engine(land_price, 0.05, dev_cost_sqm, sellable_area, selling_price_sqm, dev_months, sales_months, cost_of_equity, target_equity_irr)
+
+    st.markdown("<div class='section-title'>مؤشرات العوائد والقرار الاستثماري للمشروع</div>", unsafe_allow_html=True)
     
-    col_l1, col_l2, col_l3, col_l4 = st.columns(4)
-    with col_l1:
-        price_change_pct = st.slider("تغير سعر البيع (%)", min_value=-20.0, max_value=30.0, value=0.0, step=1.0) / 100.0
-    with col_l2:
-        cost_change_pct = st.slider("تغير تكلفة التطوير (%)", min_value=-20.0, max_value=30.0, value=0.0, step=1.0) / 100.0
-    with col_l3:
-        duration_change_m = st.slider("تغير مدة التطوير (أشهر)", min_value=-4, max_value=12, value=0, step=1)
-    with col_l4:
-        ke_input = st.slider("Cost of Equity (Ke %)", min_value=8.0, max_value=25.0, value=14.0, step=0.5) / 100.0
-
-    # Calculate Base Case & Scenario Case
-    scen_price_sqm = base_price_sqm * (1 + price_change_pct)
-    scen_dev_sqm = base_dev_sqm * (1 + cost_change_pct)
-    scen_dev_m = base_dev_m + duration_change_m
-
-    base_res = run_dev_engine(base_land, 0.05, base_dev_sqm, base_area, base_price_sqm, base_dev_m, base_sales_m, base_ke, base_target_irr)
-    scen_res = run_dev_engine(base_land, 0.05, scen_dev_sqm, base_area, scen_price_sqm, scen_dev_m, base_sales_m, ke_input, base_target_irr)
-
-    st.markdown("---")
-    st.markdown("<div class='section-title'>مخرجات السيناريو المحدد مقارنة بالأساس (Scenario Impact)</div>", unsafe_allow_html=True)
-    
-    tag_class = "status-pass" if scen_res['decision'] == "PASS" else ("status-watch" if scen_res['decision'] == "WATCH" else "status-fail")
-    st.markdown(f"**حالة القرار الاستثماري للسيناريو:** <span class='{tag_class}'>{scen_res['decision']}</span>", unsafe_allow_html=True)
+    tag_class = "status-pass" if res['decision'] == "PASS" else ("status-watch" if res['decision'] == "WATCH" else "status-fail")
+    st.markdown(f"**حالة القرار الاستثماري:** <span class='{tag_class}'>{res['decision']}</span>", unsafe_allow_html=True)
     st.write("")
 
     m1, m2, m3, m4, m5 = st.columns(5)
-    irr_diff = (scen_res['equity_irr'] - base_res['equity_irr']) if not np.isnan(scen_res['equity_irr']) else 0
-    npv_diff = scen_res['equity_npv'] - base_res['equity_npv']
-    
-    with m1: render_kpi("Equity IRR", fmt_pct(scen_res['equity_irr']), f"{fmt_pct(irr_diff)} مقارنة بالأساس", "positive" if irr_diff>=0 else "danger")
-    with m2: render_kpi("Equity NPV", fmt_currency_m(scen_res['equity_npv']), f"{fmt_currency_m(npv_diff)} الأثر", "positive" if npv_diff>=0 else "danger")
-    with m3: render_kpi("Equity MOIC", fmt_multiple(scen_res['equity_moic']), "مضاعف رأس المال", "positive")
-    with m4: render_kpi("Payback Period", f"{scen_res['payback_m']:.1f} شهراً", "فترة الاسترداد", "positive")
-    with m5: render_kpi("Peak Equity Req.", fmt_currency_m(scen_res['peak_equity']), "أعلى احتياج سيولة", "warning")
-
-    # Comparison Waterfall / Comparison Bars
-    st.markdown("<div class='section-title'>📊 مقارنة إيرادات ونقاط التعادل بين الأساس والسيناريو</div>", unsafe_allow_html=True)
-    
-    df_comp = pd.DataFrame([
-        {'المؤشر': 'إيرادات الأساس (Base Revenue)', 'المبلغ': base_res['total_rev'], 'النوع': 'الأساس'},
-        {'المؤشر': 'تعادل الأساس (Base Breakeven)', 'المبلغ': base_res['npv_zero_rev'], 'النوع': 'الأساس'},
-        {'المؤشر': 'إيرادات السيناريو (Scenario Revenue)', 'المبلغ': scen_res['total_rev'], 'النوع': 'السيناريو'},
-        {'المؤشر': 'تعادل السيناريو (Scenario Breakeven)', 'المبلغ': scen_res['npv_zero_rev'], 'النوع': 'السيناريو'}
-    ])
-    
-    fig_comp = px.bar(df_comp, x='المبلغ', y='المؤشر', color='النوع', orientation='h', text_auto=',.0f',
-                      color_discrete_map={'الأساس': '#818CF8', 'السيناريو': '#38BDF8'})
-    fig_comp.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', font=dict(color='#F8FAFC'),
-                           margin=dict(t=15, b=15, l=15, r=15), showlegend=True)
-    st.plotly_chart(fig_comp, use_container_width=True)
+    with m1: render_kpi("Equity IRR", fmt_pct(res['equity_irr']), "العائد الاستثماري", "positive" if res['equity_irr']>=target_equity_irr else "danger")
+    with m2: render_kpi("Equity NPV", fmt_currency_m(res['equity_npv']), f"مخصومة بـ {fmt_pct(cost_of_equity)} Ke", "positive" if res['equity_npv']>=0 else "danger")
+    with m3: render_kpi("Equity MOIC", fmt_multiple(res['equity_moic']), "مضاعف الاستثمار", "positive")
+    with m4: render_kpi("Payback Period", f"{res['payback_m']:.1f} شهراً", "فترة الاسترداد", "positive")
+    with m5: render_kpi("Peak Equity Req.", fmt_currency_m(res['peak_equity']), "أعلى احتياج سيولة", "warning")
 
     st.markdown("<div class='section-title'>مستويات التعادل المستقلة (Breakeven Revenue Solvers)</div>", unsafe_allow_html=True)
     s1, s2, s3 = st.columns(3)
-    with s1: render_kpi("1. Accounting Breakeven", fmt_currency_m(scen_res['accounting_be']), f"سعر المتر: {fmt_currency(scen_res['total_cost']/base_area)}/Sqm", "warning")
-    with s2: render_kpi("2. NPV = 0 Revenue (at Ke)", fmt_currency_m(scen_res['npv_zero_rev']), f"سعر المتر: {fmt_currency(scen_res['req_price_npv_zero'])}/Sqm", "positive")
-    with s3: render_kpi("3. Target IRR Revenue (at Target)", fmt_currency_m(scen_res['target_irr_rev']), f"سعر المتر: {fmt_currency(scen_res['req_price_target_irr'])}/Sqm", "positive")
+    with s1: render_kpi("1. Accounting Breakeven", fmt_currency_m(res['accounting_be']), f"سعر المتر: {fmt_currency(res['total_cost']/sellable_area)}/Sqm", "warning")
+    with s2: render_kpi("2. NPV = 0 Revenue (at Ke)", fmt_currency_m(res['npv_zero_rev']), f"سعر المتر: {fmt_currency(res['req_price_npv_zero'])}/Sqm", "positive")
+    with s3: render_kpi("3. Target IRR Revenue (at Target)", fmt_currency_m(res['target_irr_rev']), f"سعر المتر: {fmt_currency(res['req_price_target_irr'])}/Sqm", "positive")
+
+    st.markdown("<div class='section-title'>مصفوفة الحساسية Sensitivity Matrix (سعر البيع مقابل تكلفة التطوير)</div>", unsafe_allow_html=True)
+    price_range = [selling_price_sqm * factor for factor in [0.85, 1.00, 1.15]]
+    cost_range = [dev_cost_sqm * factor for factor in [0.85, 1.00, 1.15]]
+    
+    matrix_data = []
+    for p in price_range:
+        row = []
+        for c in cost_range:
+            r = run_dev_engine(land_price, 0.05, c, sellable_area, p, dev_months, sales_months, cost_of_equity, target_equity_irr)
+            row.append(f"IRR: {fmt_pct(r['equity_irr'])} | NPV: {fmt_currency_m(r['equity_npv'])}")
+        matrix_data.append(row)
+        
+    df_sens = pd.DataFrame(matrix_data, index=[f"سعر البيع: {fmt_currency(p)}/متر" for p in price_range], columns=[f"تكلفة التطوير: {fmt_currency(c)}/متر" for c in cost_range])
+    st.dataframe(style_df_accounting(df_sens), use_container_width=True)
 
 # ==============================================================================
 # PAGE 6: موديل الايجارات (FEASIBILITY)
@@ -644,7 +712,6 @@ elif page == "موديل الايجارات":
 
     res_r = run_rental_engine(head_lease_rent, lease_term_yrs, rent_escalation, 3, grace_period_m, total_units, sub_rent_unit, target_occ, opex_ratio, fitout_capex, cost_of_equity, target_equity_irr)
 
-    st.markdown("---")
     st.markdown("<div class='section-title'>مؤشرات العوائد والقرار الاستثماري للمشروع</div>", unsafe_allow_html=True)
     
     tag_class = "status-pass" if res_r['decision'] == "PASS" else ("status-watch" if res_r['decision'] == "WATCH" else "status-fail")
@@ -652,8 +719,8 @@ elif page == "موديل الايجارات":
     st.write("")
 
     m1, m2, m3, m4, m5 = st.columns(5)
-    with m1: render_kpi("Equity IRR", fmt_pct(res_r['equity_irr']), "العائد الاستثماري", "positive")
-    with m2: render_kpi("Equity NPV", fmt_currency_m(res_r['equity_npv']), f"مخصومة بـ {fmt_pct(cost_of_equity)} Ke", "positive")
+    with m1: render_kpi("Equity IRR", fmt_pct(res_r['equity_irr']), "العائد الاستثماري", "positive" if res_r['equity_irr']>=target_equity_irr else "danger")
+    with m2: render_kpi("Equity NPV", fmt_currency_m(res_r['equity_npv']), f"مخصومة بـ {fmt_pct(cost_of_equity)} Ke", "positive" if res_r['equity_npv']>=0 else "danger")
     with m3: render_kpi("Equity MOIC", fmt_multiple(res_r['equity_moic']), "مضاعف الاستثمار", "positive")
     with m4: render_kpi("Payback Period", f"{res_r['payback_yrs']:.1f} سنوات" if not np.isnan(res_r['payback_yrs']) else "N/A", "استرداد رأس المال", "positive")
     with m5: render_kpi("Fit-out CapEx Equity", fmt_currency_m(res_r['fitout_capex']), "رأس المال المستثمر", "warning")
@@ -670,15 +737,23 @@ elif page == "موديل الايجارات":
             df_pnl_disp[col] = df_pnl_disp[col].apply(lambda x: fmt_currency(x))
     if 'هامش NOI' in df_pnl_disp.columns:
         df_pnl_disp['هامش NOI'] = df_pnl_disp['هامش NOI'].apply(lambda x: fmt_pct(x))
-    st.dataframe(clean_display_df(df_pnl_disp), use_container_width=True)
+    st.dataframe(style_df_accounting(df_pnl_disp), use_container_width=True, height=220)
 
 # ==============================================================================
-# PAGE 7: مركز القرار والتدقيق (مع دليل الملاحظات والمصطلحات)
+# PAGE 7: مركز القرار والتدقيق (ALERTS FIRST THEN GLOSSARY ONLY)
 # ==============================================================================
 elif page == "مركز القرار والتدقيق":
     st.markdown("<div class='page-title'>مركز القرار الاستثماري ودليل المصطلحات المالية</div>", unsafe_allow_html=True)
-    st.markdown("<div class='page-subtitle'>مراقبة المخاطر المركزية، جودة مطابقة البيانات، ودليل الشرح المالي المفصل للإدارة.</div>", unsafe_allow_html=True)
+    st.markdown("<div class='page-subtitle'>التنبيهات الإدارية المباشرة ودليل الشرح المالي المفصل للإدارة.</div>", unsafe_allow_html=True)
     
+    # 1. Action Items & Critical Alerts FIRST
+    st.markdown("<div class='section-title'>🚨 التنبيهات والإجراءات الإدارية المطلوبة</div>", unsafe_allow_html=True)
+    st.error("🔴 مخاطر ديون حرجة: قسط صكوك منصة دينار 4.4M متأخر السداد (المتبقي المستحق 4,464,452 SAR).")
+    st.warning("🟡 مراقبة الأداء الإيجاري: مشروع إيجار الملقا وإيجار النرجس يعملان بهامش دخل تشغيلي NOI سالب (-61.0% و -179.4%).")
+    st.success("🟢 كفاءة التحصيل: تحصيلات الإيجارات بلغت 84.71% (تم تحصيل 720,000 SAR من أصل 850,000 SAR مستحقة).")
+
+    st.write("")
+    # 2. Glossary Second
     st.markdown("<div class='section-title'>📖 دليل التعريف بالمصطلحات والنسب المالية (Glossary)</div>", unsafe_allow_html=True)
     
     g1, g2 = st.columns(2)
@@ -717,23 +792,9 @@ elif page == "مركز القرار والتدقيق":
             <div class="term-desc">أدنى نسبة إشغال مطلوبة في مشاريع الإيجار لتغطية التكاليف التشغيلية وإيجار المالك الرئيسي NOI = 0.</div>
         </div>
         """, unsafe_allow_html=True)
-
-    st.markdown("<div class='section-title'>تدقيق جودة ومطابقة بيانات الإكسل المصدر</div>", unsafe_allow_html=True)
-    audit_data = [
-        {"المكون": "الجداول المسماة في ملف Master", "الحالة": "🟢 ناجح Passed", "التفاصيل": "تم قراءة الجداول الـ 6 بنجاح من شيت Loans_&_Installments"},
-        {"المكون": "التدفقات النقدية Cash Flow", "الحالة": "🟢 ناجح Passed", "التفاصيل": "تم تحميل التوقعات لـ 12 شهراً بالكامل دون تواريخ مفقودة"},
-        {"المكون": "قائمة دخل الإيجارات P&L", "الحالة": "🟢 ناجح Passed", "التفاصيل": "تم ربط جميع العقارات الـ 10 والـ 263 وحدة بنجاح"},
-        {"المكون": "عزل القروض Corporate Isolation", "الحالة": "🟢 ناجح Passed", "التفاصيل": "نماذج الجدوى الصفحات 5 و6 معزولة تماماً ولا تتأثر بديون الشركة"}
-    ]
-    st.dataframe(clean_display_df(pd.DataFrame(audit_data)), use_container_width=True)
-
-    st.markdown("<div class='section-title'>التنبيهات والإجراءات الإدارية المطلوبة</div>", unsafe_allow_html=True)
-    st.error("🔴 مخاطر ديون حرجة: قسط صكوك منصة دينار 4.4M متأخر السداد (المتبقي المستحق 4.46M SAR).")
-    st.warning("🟡 مراقبة الأداء الإيجاري: مشروع إيجار الملقا وإيجار النرجس يعملان بهامش دخل تشغيلي NOI سالب (-61.0% و -179.4%).")
-    st.success("🟢 كفاءة التحصيل: تحصيلات الإيجارات بلغت 84.71% (تم تحصيل 720K SAR من أصل 850K SAR مستحقة).")
 '''
 
 with open('app.py', 'w', encoding='utf-8') as f:
     f.write(app_code)
 
-print("Created complete updated app.py file!")
+print("Created completely fixed app.py!")
