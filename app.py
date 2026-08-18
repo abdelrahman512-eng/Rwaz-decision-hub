@@ -27,12 +27,12 @@ st.markdown("""
     header {visibility: hidden;}
     
     /* Core Layout Styles */
-    .stApp { background-color: #0F172A; color: #F8FAFC; font-family: 'Segoe UI', -apple-system, sans-serif; }
-    .main .block-container { padding-top: 0.8rem; padding-bottom: 0.8rem; padding-left: 1rem; padding-right: 1.0rem; max-width: 99%; }
+    .stApp { background-color: #3D5DAD; color: #F8FAFC; font-family: 'Gill Sans MT', -apple-system, sans-serif; }
+    .main .block-container { padding-top: 0.2rem; padding-bottom: 0.2rem; padding-left: 0.3rem; padding-right: 0.3rem; max-width: 99%; }
     
     /* Typography Hierarchy */
     .page-title { font-size: 22px; font-weight: 800; color: #F8FAFC; letter-spacing: -0.5px; margin-bottom: 2px; text-align: right; }
-    .page-subtitle { font-size: 11px; color: #CBD5E1; font-weight: 500; margin-bottom: 8px; border-bottom: 1px solid #334155; padding-bottom: 4px; text-align: right; }
+    .page-subtitle { font-size: 11px; color: #CBD5E1; font-weight: 600; margin-bottom: 8px; border-bottom: 1px solid #334155; padding-bottom: 4px; text-align: right; }
     .section-title { font-size: 14px; font-weight: 700; color: #38BDF8; margin-top: 8px; margin-bottom: 6px; text-align: right; }
     
     /* Sidebar Brand Header */
