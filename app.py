@@ -1,4 +1,5 @@
-import streamlit as st
+# Fix syntax string escaping in app.py generation script
+app_code = """import streamlit as st
 import pandas as pd
 import numpy as np
 import scipy.optimize as opt
@@ -9,73 +10,77 @@ import openpyxl
 import os
 
 # ==============================================================================
-# GLOBAL BRANDING & HIGH-CONTRAST EXECUTIVE THEME (Ruwaz View Theme)
+# GLOBAL BRANDING & MODERN EXECUTIVE THEME SYSTEM (RWAZ VIEW THEME)
 # ==============================================================================
 st.set_page_config(
-    page_title="Ruwaz View — Executive Investment & Financial Decision Hub",
+    page_title="RWAZ VIEW — Executive Decision Support Platform",
     page_icon="🏢",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# Custom High-Contrast CSS
-st.markdown("""
+# Premium Executive Light Theme CSS System
+st.markdown(\"\"\"
 <style>
-    /* Hide Streamlit Default UI Elements */
+    /* Hide Default Streamlit Elements */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     header {visibility: hidden;}
     
-    /* Core Layout Styles */
-    .stApp { background-color: #0F172A; color: #F8FAFC; font-family: 'Segoe UI', -apple-system, sans-serif; }
-    .main .block-container { padding-top: 0.8rem; padding-bottom: 0.8rem; padding-left: 1rem; padding-right: 1.0rem; max-width: 99%; }
+    /* Core Layout & Premium Light Gray Background */
+    .stApp { background-color: #F1F5F9; color: #0F172A; font-family: 'Segoe UI', -apple-system, sans-serif; }
+    .main .block-container { padding-top: 0.2rem !important; padding-bottom: 0.2rem !important; padding-left: 0.4rem !important; padding-right: 0.4rem !important; max-width: 100% !important; }
+    
+    /* Zero Unnecessary Space / Tight Spacing Rules */
+    .stMarkdown, div[data-testid="stMarkdownContainer"] { margin-bottom: 0px !important; }
+    div[data-testid="stVerticalBlock"] > div { gap: 0.3rem !important; }
     
     /* Typography Hierarchy */
-    .page-title { font-size: 22px; font-weight: 800; color: #F8FAFC; letter-spacing: -0.5px; margin-bottom: 2px; text-align: right; }
-    .page-subtitle { font-size: 11px; color: #CBD5E1; font-weight: 500; margin-bottom: 8px; border-bottom: 1px solid #334155; padding-bottom: 4px; text-align: right; }
-    .section-title { font-size: 14px; font-weight: 700; color: #38BDF8; margin-top: 8px; margin-bottom: 6px; text-align: right; }
+    .page-title { font-size: 20px; font-weight: 800; color: #0F172A; letter-spacing: -0.3px; margin-bottom: 1px; text-align: right; }
+    .page-subtitle { font-size: 11px; color: #475569; font-weight: 600; margin-bottom: 6px; border-bottom: 1px solid #CBD5E1; padding-bottom: 4px; text-align: right; }
+    .section-title { font-size: 13px; font-weight: 800; color: #0284C7; margin-top: 4px; margin-bottom: 4px; text-align: right; }
     
-    /* Sidebar Brand Header */
+    /* Sidebar RWAZ VIEW Brand Header */
     .sidebar-brand { font-size: 22px; font-weight: 900; color: #38BDF8; letter-spacing: 0.5px; text-align: right; margin-bottom: 2px; display: flex; align-items: center; justify-content: flex-end; gap: 8px; }
     .sidebar-brand-icon { font-size: 26px; }
     
-    /* High Contrast Input Controls */
-    label, .stMarkdown, .stText, p, span, div { color: #F8FAFC !important; }
-    .stNumberInput label, .stSelectbox label, .stSlider label { color: #38BDF8 !important; font-weight: 700 !important; font-size: 12px !important; }
-    div[data-baseweb="input"] { background-color: #1E293B !important; border: 1px solid #475569 !important; border-radius: 6px !important; }
-    div[data-baseweb="input"] input { color: #F8FAFC !important; font-weight: 700 !important; }
+    /* Filter Controls Styling & Ultra High Contrast Dropdown Text */
+    label { color: #0369A1 !important; font-weight: 800 !important; font-size: 12px !important; }
+    div[data-baseweb="input"] { background-color: #FFFFFF !important; border: 1px solid #CBD5E1 !important; border-radius: 6px !important; }
+    div[data-baseweb="input"] input { color: #0F172A !important; font-weight: 800 !important; }
     
-    /* Styled Black Filter Selectbox Text for High Contrast Readability */
-    div[data-baseweb="select"] span, div[data-baseweb="menu"] div, li[role="option"] { color: #000000 !important; font-weight: 800 !important; }
+    /* High Contrast Black Selectbox Text across all states */
+    div[data-baseweb="select"] { background-color: #FFFFFF !important; border: 1px solid #CBD5E1 !important; border-radius: 6px !important; }
+    div[data-baseweb="select"] span, div[data-baseweb="menu"] div, li[role="option"], div[role="combobox"] { color: #0F172A !important; font-weight: 800 !important; font-size: 12px !important; }
     
-    /* Full Visibility Table Display Style */
-    .stDataFrame, div[data-testid="stTable"] { background-color: #1E293B !important; border: 1px solid #334155 !important; border-radius: 6px !important; width: 100% !important; }
-    div[data-testid="stDataFrame"] > div { background-color: #1E293B !important; width: 100% !important; }
+    /* Full Page Width DataFrame & Elegant Table Visibility */
+    .stDataFrame, div[data-testid="stTable"] { background-color: #FFFFFF !important; border: 1px solid #CBD5E1 !important; border-radius: 6px !important; width: 100% !important; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+    div[data-testid="stDataFrame"] > div { background-color: #FFFFFF !important; width: 100% !important; }
     
-    /* Executive KPI Cards System */
-    .kpi-container { background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%); border: 1px solid #334155; border-radius: 8px; padding: 8px 10px; text-align: right; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-    .kpi-title { font-size: 10px; color: #94A3B8; font-weight: 700; text-transform: uppercase; }
-    .kpi-value { font-size: 18px; color: #F8FAFC; font-weight: 800; margin-top: 2px; margin-bottom: 2px; font-variant-numeric: tabular-nums; }
+    /* Executive KPI Cards System (Light Cards with High Contrast) */
+    .kpi-container { background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 6px; padding: 6px 10px; text-align: right; box-shadow: 0 2px 5px rgba(0,0,0,0.04); }
+    .kpi-title { font-size: 10px; color: #64748B; font-weight: 700; text-transform: uppercase; }
+    .kpi-value { font-size: 17px; color: #0F172A; font-weight: 800; margin-top: 2px; margin-bottom: 2px; font-variant-numeric: tabular-nums; }
     .kpi-sub { font-size: 10px; font-weight: 600; }
-    .kpi-sub-positive { color: #34D399; }
-    .kpi-sub-warning { color: #FBBF24; }
-    .kpi-sub-danger { color: #F87171; }
+    .kpi-sub-positive { color: #16A34A; }
+    .kpi-sub-warning { color: #D97706; }
+    .kpi-sub-danger { color: #DC2626; }
     
-    /* Status Indicators */
-    .status-pass { background-color: rgba(52, 211, 153, 0.2); color: #34D399; border: 1px solid #059669; font-weight: 800; padding: 4px 12px; border-radius: 6px; display: inline-block; font-size: 13px; }
-    .status-watch { background-color: rgba(251, 191, 36, 0.2); color: #FBBF24; border: 1px solid #D97706; font-weight: 800; padding: 4px 12px; border-radius: 6px; display: inline-block; font-size: 13px; }
-    .status-fail { background-color: rgba(248, 113, 113, 0.2); color: #F87171; border: 1px solid #DC2626; font-weight: 800; padding: 4px 12px; border-radius: 6px; display: inline-block; font-size: 13px; }
+    /* Status Tags */
+    .status-pass { background-color: #DCFCE7; color: #15803D; border: 1px solid #16A34A; font-weight: 800; padding: 3px 10px; border-radius: 4px; display: inline-block; font-size: 12px; }
+    .status-watch { background-color: #FEF9C3; color: #A16207; border: 1px solid #D97706; font-weight: 800; padding: 3px 10px; border-radius: 4px; display: inline-block; font-size: 12px; }
+    .status-fail { background-color: #FEE2E2; color: #B91C1C; border: 1px solid #DC2626; font-weight: 800; padding: 3px 10px; border-radius: 4px; display: inline-block; font-size: 12px; }
 
     /* Navigation Sidebar Style */
     [data-testid="stSidebar"] { background-color: #020617; border-right: 1px solid #1E293B; }
     [data-testid="stSidebar"] .stRadio > label { font-size: 12px; font-weight: 600; color: #F8FAFC; text-align: right; }
     
-    /* Term Card for Page 6 Glossary */
-    .term-card { background-color: #1E293B; border: 1px solid #334155; border-radius: 6px; padding: 12px; margin-bottom: 8px; text-align: right; }
-    .term-title { font-size: 14px; font-weight: 800; color: #38BDF8; }
-    .term-desc { font-size: 12px; color: #CBD5E1; margin-top: 4px; line-height: 1.5; }
+    /* Expanded Full-Width Term Card for Page 6 Guidance */
+    .term-card { background-color: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 6px; padding: 14px 16px; margin-bottom: 8px; text-align: right; box-shadow: 0 2px 4px rgba(0,0,0,0.03); }
+    .term-title { font-size: 15px; font-weight: 800; color: #0284C7; border-bottom: 1px solid #E2E8F0; padding-bottom: 4px; }
+    .term-desc { font-size: 12px; color: #334155; margin-top: 6px; line-height: 1.6; }
 </style>
-""", unsafe_allow_html=True)
+\"\"\", unsafe_allow_html=True)
 
 # ==============================================================================
 # CENTRALIZED ACCOUNTING FORMATTING & RED NEGATIVES STYLING
@@ -162,15 +167,15 @@ def style_df_accounting(df):
 def render_kpi(title, value, sub_text, sub_type="positive"):
     sub_class = f"kpi-sub-{sub_type}"
     is_negative = str(value).startswith("(") or str(value).startswith("SAR (")
-    val_color = "color: #F87171 !important;" if is_negative else "color: #F8FAFC !important;"
+    val_color = "color: #DC2626 !important;" if is_negative else "color: #0F172A !important;"
     
-    st.markdown(f"""
+    st.markdown(f\"\"\"
     <div class="kpi-container">
         <div class="kpi-title">{title}</div>
         <div class="kpi-value" style="{val_color}">{value}</div>
         <div class="kpi-sub {sub_class}">{sub_text}</div>
     </div>
-    """, unsafe_allow_html=True)
+    \"\"\", unsafe_allow_html=True)
 
 # ==============================================================================
 # LAYER 1: DYNAMIC EXCEL DATA INGESTION ENGINE
@@ -467,12 +472,12 @@ def run_rental_engine(head_lease_rent, lease_term_yrs, rent_escalation_pct, esca
 # ==============================================================================
 # SIDEBAR NAVIGATION (RWAZ VIEW BRAND HEADER)
 # ==============================================================================
-st.sidebar.markdown("""
+st.sidebar.markdown(\"\"\"
 <div class="sidebar-brand">
     <span class="sidebar-brand-icon">🏢</span>
     <span>RWAZ VIEW</span>
 </div>
-""", unsafe_allow_html=True)
+\"\"\", unsafe_allow_html=True)
 st.sidebar.caption("مركز القرار الاستثماري والمالي")
 
 page = st.sidebar.radio("القائمة الرئيسية:", [
@@ -572,12 +577,12 @@ if page == "الملخص التنفيذي والمركز المالي":
             df_rev_chart['Formatted_SAR'] = df_rev_chart['المبلغ_الرقدي'].apply(lambda x: fmt_currency(x))
             
             fig_rev = px.bar(df_rev_chart, x='المبلغ_الرقدي', y='نوع الايراد', orientation='h', text='Formatted_SAR',
-                             color='نوع الايراد', color_discrete_sequence=['#38BDF8', '#818CF8', '#34D399', '#FBBF24'])
-            fig_rev.update_traces(textposition='outside', textfont=dict(color='#F8FAFC', size=12, family='Segoe UI'))
+                             color='نوع الايراد', color_discrete_sequence=['#0284C7', '#6366F1', '#16A34A', '#D97706'])
+            fig_rev.update_traces(textposition='outside', textfont=dict(color='#0F172A', size=11, family='Segoe UI'))
             
             max_val = df_rev_chart['المبلغ_الرقدي'].max() if not df_rev_chart.empty else 1000000
             fig_rev.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)',
-                                  font=dict(color='#F8FAFC', size=12),
+                                  font=dict(color='#0F172A', size=11),
                                   margin=dict(t=10, b=10, l=10, r=140), height=180, showlegend=False,
                                   xaxis=dict(range=[0, max_val * 1.45], title=""), yaxis_title="")
             st.plotly_chart(fig_rev, use_container_width=True)
@@ -636,9 +641,9 @@ elif page == "السيولة والتدفقات النقدية":
     st.markdown("<div class='section-title'>مسار السيولة النقدية وحاجز الأمان الأدنـى</div>", unsafe_allow_html=True)
     df_chart = pd.DataFrame({'التاريخ': time_cols, 'النقدية المتبقية': ending_cash_vals})
     
-    fig_cf = px.area(df_chart, x='التاريخ', y='النقدية المتبقية', markers=True, color_discrete_sequence=['#38BDF8'])
-    fig_cf.add_hline(y=500000, line_dash="dash", line_color="#F87171", annotation_text="حاجز أمان السيولة الأدنـى (SAR 500,000)")
-    fig_cf.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', font=dict(color='#F8FAFC', size=11),
+    fig_cf = px.area(df_chart, x='التاريخ', y='النقدية المتبقية', markers=True, color_discrete_sequence=['#0284C7'])
+    fig_cf.add_hline(y=500000, line_dash="dash", line_color="#DC2626", annotation_text="حاجز أمان السيولة الأدنـى (SAR 500,000)")
+    fig_cf.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', font=dict(color='#0F172A', size=11),
                          margin=dict(t=10, b=10, l=10, r=10), height=220, xaxis_title="الشهر", yaxis_title="النقدية (SAR)")
     st.plotly_chart(fig_cf, use_container_width=True)
 
@@ -826,7 +831,7 @@ elif page == "ارشادات":
     # Fully Expanded Cards for Maximum Screen Utilization & Comfort
     g1, g2 = st.columns(2)
     with g1:
-        st.markdown("""
+        st.markdown(\"\"\"
         <div class="term-card">
             <div class="term-title">NPV (Net Present Value - صافي القيمة الحالية)</div>
             <div class="term-desc">القيمة الحالية للتدفقات النقدية المستقبلية للمشروع مخصومة بسعر خصم يمثل تكلفة الملكية (Cost of Equity Ke). النتيجة الإيجابية تعني أن المشروع يحقق عائداً أعلى من تكلفة الفرصة البديلة ويضيف قيمة حقيقية للشركة.</div>
@@ -839,10 +844,10 @@ elif page == "ارشادات":
             <div class="term-title">MOIC (Multiple on Invested Capital - مضاعف رأس المال)</div>
             <div class="term-desc">إجمالي التدفقات النقدية المحصلة مقسومة على إجمالي رأس المال الذاتي المستثمر. يُظهر كم مرة استرد المشروع النقدية المستثمرة (مثلاً 1.72x تعني استرداد رأس المال بالكامل + 72% أرباح صافية).</div>
         </div>
-        """, unsafe_allow_html=True)
+        \"\"\", unsafe_allow_html=True)
         
     with g2:
-        st.markdown("""
+        st.markdown(\"\"\"
         <div class="term-card">
             <div class="term-title">Payback Period (فترة استرداد رأس المال)</div>
             <div class="term-desc">المدة الزمنية بالأشهر أو السنوات المطلوبة حتى تسترد التدفقات النقدية المحصلة من المشروع أصل المبلغ المستثمر بالكامل.</div>
@@ -859,4 +864,12 @@ elif page == "ارشادات":
             <div class="term-title">Break-even Occupancy (نسبة إشغال التعادل)</div>
             <div class="term-desc">أدنى نسبة إشغال مطلوبة في مشاريع الإيجار لتغطية المصاريف التشغيلية وإيجار المالك الرئيسي بحيث يكون صافي الدخل التشغيلي NOI = 0.</div>
         </div>
-        """, unsafe_allow_html=True)
+        \"\"\", unsafe_allow_html=True)
+"""
+
+with open('app.py', 'w', encoding='utf-8') as f:
+    f.write(app_code)
+
+import ast
+ast.parse(app_code)
+print("Saved complete updated app.py successfully!")
