@@ -27,17 +27,17 @@ st.markdown("""
     header {visibility: hidden;}
     
     /* Core Layout Styles */
-    .stApp { background-color: #477979; color: #C7DFDF; font-family: 'Gill Sans MT', -apple-system, sans-serif; }
-    .main .block-container { padding-top: 0rem; padding-bottom: 0rem; padding-left: 0rem; padding-right: 0rem; max-width: 100%; }
+    .stApp { background-color: #0F172A; color: #F8FAFC; font-family: 'Segoe UI', -apple-system, sans-serif; }
+    .main .block-container { padding-top: 0.8rem; padding-bottom: 0.8rem; padding-left: 1rem; padding-right: 1.0rem; max-width: 99%; }
     
     /* Typography Hierarchy */
     .page-title { font-size: 22px; font-weight: 800; color: #F8FAFC; letter-spacing: -0.5px; margin-bottom: 2px; text-align: right; }
-    .page-subtitle { font-size: 11px; color: #CBD5E1; font-weight: 600; margin-bottom: 8px; border-bottom: 1px solid #334155; padding-bottom: 4px; text-align: right; }
+    .page-subtitle { font-size: 11px; color: #CBD5E1; font-weight: 500; margin-bottom: 8px; border-bottom: 1px solid #334155; padding-bottom: 4px; text-align: right; }
     .section-title { font-size: 14px; font-weight: 700; color: #38BDF8; margin-top: 8px; margin-bottom: 6px; text-align: right; }
     
     /* Sidebar Brand Header */
-    .sidebar-brand { font-size: 22px; font-weight: 900; color: #38BDF8; letter-spacing: 0.5px; text-align: right; margin-bottom: 2px; display: flex; align-items: center; justify-content: flex-end; gap: 1px; }
-    .sidebar-brand-icon { font-size: 20px; }
+    .sidebar-brand { font-size: 22px; font-weight: 900; color: #38BDF8; letter-spacing: 0.5px; text-align: right; margin-bottom: 2px; display: flex; align-items: center; justify-content: flex-end; gap: 8px; }
+    .sidebar-brand-icon { font-size: 26px; }
     
     /* High Contrast Input Controls */
     label, .stMarkdown, .stText, p, span, div { color: #F8FAFC !important; }
@@ -517,10 +517,8 @@ if page == "الملخص التنفيذي والمركز المالي":
     with k7: render_kpi("كفاءة التحصيل", fmt_pct(coll_rate), "نسبة التحصيل الفعلي", "positive" if coll_rate>=0.8 else "warning")
     with k8: render_kpi("صافي أرصدة الشركاء", fmt_currency(partners_net), "مجموع أرصدة الشركاء", "positive" if partners_net>=0 else "danger")
 
-    st.markdown("---")
-
     # Dynamic Management Alerts Executed at the Top/Middle Executive Area
-    st.markdown("<div class='section-title'>🚨 التنبيهات والإجراءات الإدارية المباشرة (Dynamic Management Alerts)</div>", unsafe_allow_html=True)
+    st.markdown("<div class='section-title'>🚨 التنبيهات والإجراءات الإدارية المباشرة</div>", unsafe_allow_html=True)
     
     # Check overdue installments dynamically
     df_inst = store['df_installments'].copy()
@@ -567,7 +565,6 @@ if page == "الملخص التنفيذي والمركز المالي":
         with rc2: render_kpi("المحصل الفعلي", fmt_currency(act_coll), "التحصيل الفعلي", "positive")
         
         st.markdown("<div class='section-title'>مزيج الإيرادات (Revenue Mix Bar Chart)</div>", unsafe_allow_html=True)
-        # Re-designed High Contrast Revenue Mix Chart with Extended X-Axis Margin
         df_rev_chart = store['df_revenues'].copy()
         if 'المبلغ' in df_rev_chart.columns and 'نوع الايراد' in df_rev_chart.columns:
             df_rev_chart['المبلغ_الرقدي'] = pd.to_numeric(df_rev_chart['المبلغ'], errors='coerce')
@@ -578,15 +575,14 @@ if page == "الملخص التنفيذي والمركز المالي":
                              color='نوع الايراد', color_discrete_sequence=['#38BDF8', '#818CF8', '#34D399', '#FBBF24'])
             fig_rev.update_traces(textposition='outside', textfont=dict(color='#F8FAFC', size=12, family='Segoe UI'))
             
-            # Extend x-axis range to fit long text labels like "SAR 4,070,000" completely
             max_val = df_rev_chart['المبلغ_الرقدي'].max() if not df_rev_chart.empty else 1000000
             fig_rev.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)',
                                   font=dict(color='#F8FAFC', size=12),
-                                  margin=dict(t=10, b=10, l=10, r=120), height=180, showlegend=False,
-                                  xaxis=dict(range=[0, max_val * 1.35], title=""), yaxis_title="")
+                                  margin=dict(t=10, b=10, l=10, r=140), height=180, showlegend=False,
+                                  xaxis=dict(range=[0, max_val * 1.45], title=""), yaxis_title="")
             st.plotly_chart(fig_rev, use_container_width=True)
 
-        st.markdown("<div class='section-title'>أرصدة الشركاء (Partner Accounts - 50%/50% Card Layout)</div>", unsafe_allow_html=True)
+        st.markdown("<div class='section-title'>أرصدة الشركاء (Partner Accounts)</div>", unsafe_allow_html=True)
         df_part = store['df_partners'].copy()
         if not df_part.empty and len(df_part) >= 2:
             p_cols = st.columns(len(df_part))
@@ -653,16 +649,16 @@ elif page == "السيولة والتدفقات النقدية":
 # PAGE 3: مشاريع الايجار (P&L MATCHING ORIGINAL EXCEL SHEET3 STRUCTURE)
 # ==============================================================================
 elif page == "مشاريع الايجار":
-    st.markdown("<div class='page-title'>أداء محفظة الإيجارات وقوائم الدخل P&L</div>", unsafe_allow_html=True)
+    st.markdown("<div class='page-title'>قائمة الأرباح والخسائر للعقارات</div>", unsafe_allow_html=True)
     st.markdown("<div class='page-subtitle'>أداء العقارات المكتملة، نسب الإشغال، وصافي الدخل التشغيلي NOI مطابق لهيكلة Excel المصدرية.</div>", unsafe_allow_html=True)
     
     df_pl = store['df_pl'].copy()
     
-    # Extract Real Project Names dynamically from Row 1 Header (excluding Category & TOTAL)
+    # Extract Real Project Names dynamically from Row 1 Header
     raw_headers = df_pl.iloc[1].dropna().values.tolist()
     proj_columns = [str(p).strip() for p in raw_headers if str(p).strip() not in ['Category', 'TOTAL', 'Unnamed: 0', 'Unnamed: 1', 'Unnamed: 11', 'nan'] and not str(p).startswith('Unnamed')]
     
-    # Styled Project Filter Choice
+    # High Contrast Project Filter
     selected_project = st.selectbox("🎯 اختر العقار/المشروع لمتابعة المؤشرات الرئيسية:", ["جميع العقارات (All)"] + proj_columns)
     
     # Dynamic KPI Calculations depending on Selected Filter Choice
@@ -671,7 +667,6 @@ elif page == "مشاريع الايجار":
     rev_row = df_pl[df_pl.iloc[:, 0].astype(str).str.contains('Net Revenue', case=False, na=False)]
     noi_row = df_pl[df_pl.iloc[:, 0].astype(str).str.contains('Operating Income', case=False, na=False)]
     
-    # Match column index for selected project in df_pl
     proj_col_idx = None
     if selected_project != "جميع العقارات (All)":
         for c in range(df_pl.shape[1]):
@@ -680,14 +675,12 @@ elif page == "مشاريع الايجار":
                 break
                 
     if proj_col_idx is not None:
-        # Single Property Filtered Metrics
         t_units = pd.to_numeric(units_row.iloc[0, proj_col_idx], errors='coerce') if not units_row.empty else 0
         o_units = pd.to_numeric(occ_units_row.iloc[0, proj_col_idx], errors='coerce') if not occ_units_row.empty else 0
         p_occ = o_units / t_units if t_units > 0 else 0.0
         p_rev = pd.to_numeric(rev_row.iloc[0, proj_col_idx], errors='coerce') if not rev_row.empty else 0.0
         p_noi = pd.to_numeric(noi_row.iloc[0, proj_col_idx], errors='coerce') if not noi_row.empty else 0.0
     else:
-        # Full Portfolio Aggregate Metrics (TOTAL column or sum)
         t_units = pd.to_numeric(units_row.iloc[0, 1:-1], errors='coerce').sum() if not units_row.empty else 263
         o_units = pd.to_numeric(occ_units_row.iloc[0, 1:-1], errors='coerce').sum() if not occ_units_row.empty else 241
         p_occ = o_units / t_units if t_units > 0 else 0.9164
@@ -701,9 +694,8 @@ elif page == "مشاريع الايجار":
     with p4: render_kpi("الإيرادات", fmt_currency(p_rev), "إجمالي الإيرادات", "positive")
     with p5: render_kpi("صافي NOI", fmt_currency(p_noi), "الدخل التشغيلي", "positive" if p_noi>=0 else "danger")
 
-    st.markdown("<div class='section-title'>قائمة الدخل P&L على مستوى العقارات (المصدر الرسمي - Sheet3)</div>", unsafe_allow_html=True)
+    st.markdown("<div class='section-title'>قائمة الأرباح والخسائر للعقارات (المصدر الرسمي - Sheet3)</div>", unsafe_allow_html=True)
     
-    # Match Sheet3 Exact Structure: Promote Row 1 as Column Headers
     if len(df_pl) > 1:
         headers_row = df_pl.iloc[1].fillna("").values
         df_pl_formatted = df_pl.iloc[3:].copy()
@@ -722,7 +714,7 @@ elif page == "موديل التطوير العقاري":
     st.markdown("<div class='page-title'>موديل دراسة جدوى التطوير العقاري (100% Equity)</div>", unsafe_allow_html=True)
     st.markdown("<div class='page-subtitle'>دراسة جدوى فرص التطوير بالكامل بالتمويل الذاتي — معزول تماماً عن ديون الشركة.</div>", unsafe_allow_html=True)
 
-    with st.expander("🛠️ متغبرات التحكم وافتراضات الإدارة (Development Assumptions)", expanded=True):
+    with st.expander("🛠️ افتراضات التطوير (Development Assumptions)", expanded=True):
         i1, i2, i3, i4 = st.columns(4)
         land_price = i1.number_input("سعر الأرض Land Price (SAR)", value=12000000, step=500000)
         dev_cost_sqm = i2.number_input("تكلفة البناء Dev Cost / Sqm (SAR)", value=2200, step=100)
@@ -737,7 +729,7 @@ elif page == "موديل التطوير العقاري":
 
     res = run_dev_engine(land_price, 0.05, dev_cost_sqm, sellable_area, selling_price_sqm, dev_months, sales_months, cost_of_equity, target_equity_irr)
 
-    st.markdown("<div class='section-title'>مؤشرات العوائد والقرار الاستثماري للمشروع</div>", unsafe_allow_html=True)
+    st.markdown("<div class='section-title'>مؤشرات الاستثمار</div>", unsafe_allow_html=True)
     
     tag_class = "status-pass" if res['decision'] == "PASS" else ("status-watch" if res['decision'] == "WATCH" else "status-fail")
     st.markdown(f"**حالة القرار الاستثماري:** <span class='{tag_class}'>{res['decision']}</span>", unsafe_allow_html=True)
@@ -751,13 +743,13 @@ elif page == "موديل التطوير العقاري":
     with m5: render_kpi("Payback Period", f"{res['payback_m']:.1f} شهراً", "فترة الاسترداد", "positive")
     with m6: render_kpi("Peak Equity Req.", fmt_currency(res['peak_equity']), "أعلى احتياج سيولة", "warning")
 
-    st.markdown("<div class='section-title'>مستويات التعادل المستقلة (Breakeven Revenue Solvers)</div>", unsafe_allow_html=True)
+    st.markdown("<div class='section-title'>نقاط التعادل</div>", unsafe_allow_html=True)
     s1, s2, s3 = st.columns(3)
     with s1: render_kpi("1. Accounting Breakeven", fmt_currency(res['accounting_be']), f"سعر المتر: {fmt_currency(res['total_cost']/sellable_area)}/Sqm", "warning")
     with s2: render_kpi("2. NPV = 0 Revenue (at Ke)", fmt_currency(res['npv_zero_rev']), f"سعر المتر: {fmt_currency(res['req_price_npv_zero'])}/Sqm", "positive")
     with s3: render_kpi("3. Target IRR Revenue (at Target)", fmt_currency(res['target_irr_rev']), f"سعر المتر: {fmt_currency(res['req_price_target_irr'])}/Sqm", "positive")
 
-    st.markdown("<div class='section-title'>مصفوفة الحساسية Sensitivity Matrix (سعر البيع مقابل تكلفة التطوير)</div>", unsafe_allow_html=True)
+    st.markdown("<div class='section-title'>تحليل الحساسية (سعر البيع مقابل تكلفة التطوير)</div>", unsafe_allow_html=True)
     price_range = [selling_price_sqm * factor for factor in [0.85, 1.00, 1.15]]
     cost_range = [dev_cost_sqm * factor for factor in [0.85, 1.00, 1.15]]
     
@@ -779,7 +771,7 @@ elif page == "موديل الايجارات":
     st.markdown("<div class='page-title'>موديل إعادة التأجير Sub-Lease (100% Equity)</div>", unsafe_allow_html=True)
     st.markdown("<div class='page-subtitle'>دراسة جدوى فرص الاستئجار وإعادة التأجير بالكامل بالتمويل الذاتي مع زيادة الإيجار وفترة السماح Grace Period.</div>", unsafe_allow_html=True)
 
-    with st.expander("🛠️ متغبرات التحكم وافتراضات الإدارة", expanded=True):
+    with st.expander("🛠️ افتراضات الإدارة", expanded=True):
         r1, r2, r3, r4 = st.columns(4)
         head_lease_rent = r1.number_input("إيجار المالك الرئيسي Head Lease (SAR)", value=1200000, step=100000)
         lease_term_yrs = r2.number_input("مدة العقد (سنوات)", value=10, step=1)
@@ -799,7 +791,7 @@ elif page == "موديل الايجارات":
 
     res_r = run_rental_engine(head_lease_rent, lease_term_yrs, rent_escalation, 3, grace_period_m, total_units, sub_rent_unit, target_occ, opex_ratio, fitout_capex, cost_of_equity, target_equity_irr)
 
-    st.markdown("<div class='section-title'>مؤشرات العوائد والقرار الاستثماري للمشروع</div>", unsafe_allow_html=True)
+    st.markdown("<div class='section-title'>مؤشرات الاستثمار</div>", unsafe_allow_html=True)
     
     tag_class = "status-pass" if res_r['decision'] == "PASS" else ("status-watch" if res_r['decision'] == "WATCH" else "status-fail")
     st.markdown(f"**حالة القرار الاستثماري:** <span class='{tag_class}'>{res_r['decision']}</span>", unsafe_allow_html=True)
@@ -813,12 +805,12 @@ elif page == "موديل الايجارات":
     with m5: render_kpi("Payback Period", f"{res_r['payback_yrs']:.1f} سنوات" if not np.isnan(res_r['payback_yrs']) else "N/A", "استرداد رأس المال", "positive")
     with m6: render_kpi("Fit-out CapEx Equity", fmt_currency(res_r['fitout_capex']), "رأس المال المستثمر", "warning")
 
-    st.markdown("<div class='section-title'>تحليل التعادل ونسب الإشغال الحرجة</div>", unsafe_allow_html=True)
+    st.markdown("<div class='section-title'>تحليل التعادل</div>", unsafe_allow_html=True)
     b1, b2 = st.columns(2)
     with b1: render_kpi("Stabilized Break-even Occupancy %", fmt_pct(res_r['be_occupancy']), "لتحقيق صافي دخل NOI = 0", "warning")
     with b2: render_kpi("Occupancy for Target 15% IRR", fmt_pct(res_r['occ_for_target_irr']) if not np.isnan(res_r['occ_for_target_irr']) else "N/A", "لتحقيق العائد المستهدف", "positive")
 
-    st.markdown("<div class='section-title'>قائمة الدخل التقديرية 10-Year Equity Pro Forma P&L</div>", unsafe_allow_html=True)
+    st.markdown("<div class='section-title'>القوائم المالية المتوقعة</div>", unsafe_allow_html=True)
     df_pnl_disp = res_r['annual_pnl'].copy()
     st.dataframe(style_df_accounting(df_pnl_disp), use_container_width=True)
 
@@ -831,6 +823,7 @@ elif page == "ارشادات":
     
     st.markdown("<div class='section-title'>📖 دليل التعريف بالمصطلحات والنسب المالية (Glossary)</div>", unsafe_allow_html=True)
     
+    # Fully Expanded Cards for Maximum Screen Utilization & Comfort
     g1, g2 = st.columns(2)
     with g1:
         st.markdown("""
