@@ -28,7 +28,7 @@ st.markdown("""
     
     /* Core Layout Styles */
     .stApp { background-color: #477979; color: #C7DFDF; font-family: 'Gill Sans MT', -apple-system, sans-serif; }
-    .main .block-container { padding-top: 0.1rem; padding-bottom: 0.2rem; padding-left: 0.4rem; padding-right: 0.4rem; max-width: 100%; }
+    .main .block-container { padding-top: 0rem; padding-bottom: 0rem; padding-left: 0rem; padding-right: 0rem; max-width: 100%; }
     
     /* Typography Hierarchy */
     .page-title { font-size: 22px; font-weight: 800; color: #F8FAFC; letter-spacing: -0.5px; margin-bottom: 2px; text-align: right; }
@@ -36,8 +36,8 @@ st.markdown("""
     .section-title { font-size: 14px; font-weight: 700; color: #38BDF8; margin-top: 8px; margin-bottom: 6px; text-align: right; }
     
     /* Sidebar Brand Header */
-    .sidebar-brand { font-size: 22px; font-weight: 900; color: #38BDF8; letter-spacing: 0.5px; text-align: right; margin-bottom: 2px; display: flex; align-items: center; justify-content: flex-end; gap: 8px; }
-    .sidebar-brand-icon { font-size: 26px; }
+    .sidebar-brand { font-size: 22px; font-weight: 900; color: #38BDF8; letter-spacing: 0.5px; text-align: right; margin-bottom: 2px; display: flex; align-items: center; justify-content: flex-end; gap: 1px; }
+    .sidebar-brand-icon { font-size: 20px; }
     
     /* High Contrast Input Controls */
     label, .stMarkdown, .stText, p, span, div { color: #F8FAFC !important; }
