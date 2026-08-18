@@ -1,5 +1,4 @@
-# Fix syntax string escaping in app.py generation script
-app_code = """import streamlit as st
+import streamlit as st
 import pandas as pd
 import numpy as np
 import scipy.optimize as opt
@@ -20,7 +19,7 @@ st.set_page_config(
 )
 
 # Premium Executive Light Theme CSS System
-st.markdown(\"\"\"
+st.markdown("""
 <style>
     /* Hide Default Streamlit Elements */
     #MainMenu {visibility: hidden;}
@@ -29,7 +28,7 @@ st.markdown(\"\"\"
     
     /* Core Layout & Premium Light Gray Background */
     .stApp { background-color: #F1F5F9; color: #0F172A; font-family: 'Segoe UI', -apple-system, sans-serif; }
-    .main .block-container { padding-top: 0rem !important; padding-bottom: 0.1rem !important; padding-left: 0.1rem !important; padding-right: 0.1rem !important; max-width: 100% !important; }
+    .main .block-container { padding-top: 0.2rem !important; padding-bottom: 0.2rem !important; padding-left: 0.4rem !important; padding-right: 0.4rem !important; max-width: 100% !important; }
     
     /* Zero Unnecessary Space / Tight Spacing Rules */
     .stMarkdown, div[data-testid="stMarkdownContainer"] { margin-bottom: 0px !important; }
@@ -41,7 +40,7 @@ st.markdown(\"\"\"
     .section-title { font-size: 13px; font-weight: 800; color: #0284C7; margin-top: 4px; margin-bottom: 4px; text-align: right; }
     
     /* Sidebar RWAZ VIEW Brand Header */
-    .sidebar-brand { font-size: 22px; font-weight: 900; color: #38BDF8; letter-spacing: 0.5px; text-align: right; margin-bottom: 2px; display: flex; align-items: center; justify-content: flex-end; gap: 2px; }
+    .sidebar-brand { font-size: 22px; font-weight: 900; color: #38BDF8; letter-spacing: 0.5px; text-align: right; margin-bottom: 2px; display: flex; align-items: center; justify-content: flex-end; gap: 8px; }
     .sidebar-brand-icon { font-size: 26px; }
     
     /* Filter Controls Styling & Ultra High Contrast Dropdown Text */
@@ -57,9 +56,9 @@ st.markdown(\"\"\"
     .stDataFrame, div[data-testid="stTable"] { background-color: #FFFFFF !important; border: 1px solid #CBD5E1 !important; border-radius: 6px !important; width: 100% !important; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
     div[data-testid="stDataFrame"] > div { background-color: #FFFFFF !important; width: 100% !important; }
     
-    /* Executive KPI Cards System (Light Cards with High Contrast) */
+    /* Executive KPI Cards System */
     .kpi-container { background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 6px; padding: 6px 10px; text-align: right; box-shadow: 0 2px 5px rgba(0,0,0,0.04); }
-    .kpi-title { font-size: 12px; color: #64748B; font-weight: 700; text-transform: uppercase; }
+    .kpi-title { font-size: 10px; color: #64748B; font-weight: 700; text-transform: uppercase; }
     .kpi-value { font-size: 17px; color: #0F172A; font-weight: 800; margin-top: 2px; margin-bottom: 2px; font-variant-numeric: tabular-nums; }
     .kpi-sub { font-size: 10px; font-weight: 600; }
     .kpi-sub-positive { color: #16A34A; }
@@ -71,40 +70,60 @@ st.markdown(\"\"\"
     .status-watch { background-color: #FEF9C3; color: #A16207; border: 1px solid #D97706; font-weight: 800; padding: 3px 10px; border-radius: 4px; display: inline-block; font-size: 12px; }
     .status-fail { background-color: #FEE2E2; color: #B91C1C; border: 1px solid #DC2626; font-weight: 800; padding: 3px 10px; border-radius: 4px; display: inline-block; font-size: 12px; }
 
-    /* Navigation Sidebar Style */
-    [data-testid="stSidebar"] { background-color: #595959; border-right: 1px solid #1E293B; }
-    [data-testid="stSidebar"] .stRadio > label { font-size: 12px; font-weight: 600; color: #2D1290; text-align: right; }
-
-    [data-testid="stSidebar"] div[role="radiogroup"] label {
-    padding: 8px 12px !important;
-    border-radius: 6px !important;
-    margin-bottom: 4px !important;
-    width: 100% !important;
-    transition: background-color 0.2s ease !important;
-}
-
-/* 2. تغيير لون العنصر الذي تم الضغط عليه وتحديده (Active Selected Option) */
-[data-testid="stSidebar"] div[role="radiogroup"] label:has(input:checked),
-[data-testid="stSidebar"] div[role="radiogroup"] label[aria-checked="true"],
-[data-testid="stSidebar"] div[role="radiogroup"] label[data-checked="true"] {
-    background-color: #F7CCD6 !important; /* لون خلفية الخيار المحدد عند الكليك */
-    border: 1px solid #38BDF8 !important;   /* إطار متوهج مميز */
-}
-
-/* 3. جعل خط الكلمة المختارة باللون الأبيض العريض */
-[data-testid="stSidebar"] div[role="radiogroup"] label:has(input:checked) span,
-[data-testid="stSidebar"] div[role="radiogroup"] label[aria-checked="true"] span,
-[data-testid="stSidebar"] div[role="radiogroup"] label[data-checked="true"] span {
-    color: #FFFFFF !important;
-    font-weight: 800 !important;
-}
+    /* 1. SIDEBAR DARK BLUE THEME & WHITE TEXT */
+    [data-testid="stSidebar"] { background-color: #0B132B !important; border-right: 1px solid #1C2541 !important; }
+    [data-testid="stSidebar"] .stRadio > label { font-size: 13px !important; font-weight: 700 !important; color: #FFFFFF !important; text-align: right; }
+    [data-testid="stSidebar"] .stCaption, [data-testid="stSidebar"] p, [data-testid="stSidebar"] span { color: #E2E8F0 !important; }
     
-    /* Expanded Full-Width Term Card for Page 6 Guidance */
+    /* Sidebar Radio Options Formatting */
+    [data-testid="stSidebar"] div[role="radiogroup"] label {
+        padding: 8px 12px !important;
+        border-radius: 6px !important;
+        margin-bottom: 4px !important;
+        width: 100% !important;
+        transition: all 0.2s ease !important;
+        background-color: transparent !important;
+    }
+
+    /* Hover State for Sidebar Options */
+    [data-testid="stSidebar"] div[role="radiogroup"] label:hover {
+        background-color: #1C2541 !important;
+        cursor: pointer !important;
+    }
+
+    /* SELECTED / ACTIVE SIDEBAR PAGE HIGHLIGHT (WHITE BACKGROUND + DARK TEXT) */
+    [data-testid="stSidebar"] div[role="radiogroup"] label:has(input:checked),
+    [data-testid="stSidebar"] div[role="radiogroup"] label[aria-checked="true"],
+    [data-testid="stSidebar"] div[role="radiogroup"] label[data-checked="true"] {
+        background-color: #FFFFFF !important;
+        border: 1px solid #CBD5E1 !important;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15) !important;
+    }
+
+    [data-testid="stSidebar"] div[role="radiogroup"] label:has(input:checked) span,
+    [data-testid="stSidebar"] div[role="radiogroup"] label[aria-checked="true"] span,
+    [data-testid="stSidebar"] div[role="radiogroup"] label[data-checked="true"] span {
+        color: #0B132B !important;
+        font-weight: 800 !important;
+    }
+
+    /* Combined Multi-Section Card Styles */
+    .combined-card { background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 8px; padding: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.04); margin-bottom: 8px; }
+    .combined-header { border-bottom: 1px solid #E2E8F0; padding-bottom: 6px; margin-bottom: 8px; text-align: right; }
+    .combined-title { font-size: 11px; color: #64748B; font-weight: 800; text-transform: uppercase; }
+    .combined-value { font-size: 20px; color: #0F172A; font-weight: 900; }
+    .combined-sub { font-size: 10px; color: #0284C7; font-weight: 700; }
+    
+    /* Collection Card Progress Bar */
+    .gauge-bar-bg { background-color: #E2E8F0; border-radius: 10px; height: 12px; width: 100%; overflow: hidden; margin-top: 8px; }
+    .gauge-bar-fill { background: linear-gradient(90deg, #0284C7 0%, #38BDF8 100%); height: 100%; border-radius: 10px; }
+
+    /* Expanded Term Card for Page 6 Guidance */
     .term-card { background-color: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 6px; padding: 14px 16px; margin-bottom: 8px; text-align: right; box-shadow: 0 2px 4px rgba(0,0,0,0.03); }
     .term-title { font-size: 15px; font-weight: 800; color: #0284C7; border-bottom: 1px solid #E2E8F0; padding-bottom: 4px; }
     .term-desc { font-size: 12px; color: #334155; margin-top: 6px; line-height: 1.6; }
 </style>
-\"\"\", unsafe_allow_html=True)
+""", unsafe_allow_html=True)
 
 # ==============================================================================
 # CENTRALIZED ACCOUNTING FORMATTING & RED NEGATIVES STYLING
@@ -193,13 +212,13 @@ def render_kpi(title, value, sub_text, sub_type="positive"):
     is_negative = str(value).startswith("(") or str(value).startswith("SAR (")
     val_color = "color: #DC2626 !important;" if is_negative else "color: #0F172A !important;"
     
-    st.markdown(f\"\"\"
+    st.markdown(f"""
     <div class="kpi-container">
         <div class="kpi-title">{title}</div>
         <div class="kpi-value" style="{val_color}">{value}</div>
         <div class="kpi-sub {sub_class}">{sub_text}</div>
     </div>
-    \"\"\", unsafe_allow_html=True)
+    """, unsafe_allow_html=True)
 
 # ==============================================================================
 # LAYER 1: DYNAMIC EXCEL DATA INGESTION ENGINE
@@ -496,12 +515,12 @@ def run_rental_engine(head_lease_rent, lease_term_yrs, rent_escalation_pct, esca
 # ==============================================================================
 # SIDEBAR NAVIGATION (RWAZ VIEW BRAND HEADER)
 # ==============================================================================
-st.sidebar.markdown(\"\"\"
+st.sidebar.markdown("""
 <div class="sidebar-brand">
     <span class="sidebar-brand-icon">🏢</span>
     <span>RWAZ VIEW</span>
 </div>
-\"\"\", unsafe_allow_html=True)
+""", unsafe_allow_html=True)
 st.sidebar.caption("مركز القرار الاستثماري والمالي")
 
 page = st.sidebar.radio("القائمة الرئيسية:", [
@@ -521,7 +540,11 @@ if page == "الملخص التنفيذي والمركز المالي":
     st.markdown("<div class='page-subtitle'>نظرة شاملة رفيعة المستوى على السيولة، الإيرادات، الديون، محفظة الشركاء والمشاريع تحت الإنشاء.</div>", unsafe_allow_html=True)
     
     # Dynamic Math Calculations from Source Tables (Zero Hardcoding)
-    total_cash = pd.to_numeric(store['df_banks']['الرصيد'], errors='coerce').sum() if 'الرصيد' in store['df_banks'].columns else 0.0
+    df_b = store['df_banks']
+    total_cash = pd.to_numeric(df_b['الرصيد'], errors='coerce').sum() if 'الرصيد' in df_b.columns else 0.0
+    rajhi_cash = pd.to_numeric(df_b[df_b['البنك'].astype(str).str.contains('الراجحي', na=False)]['الرصيد'], errors='coerce').sum() if 'البنك' in df_b.columns else 0.0
+    snb_cash = pd.to_numeric(df_b[df_b['البنك'].astype(str).str.contains('الأهلي', na=False)]['الرصيد'], errors='coerce').sum() if 'البنك' in df_b.columns else 0.0
+
     total_dev_val = pd.to_numeric(store['df_dev_projects']['إجمالي التكلفة'], errors='coerce').sum() if 'إجمالي التكلفة' in store['df_dev_projects'].columns else 0.0
     total_debt_orig = pd.to_numeric(store['df_loans']['أصل التمويل'], errors='coerce').sum() if 'أصل التمويل' in store['df_loans'].columns else 0.0
     total_debt_rem = pd.to_numeric(store['df_loans']['المتبقي للقرض'], errors='coerce').sum() if 'المتبقي للقرض' in store['df_loans'].columns else 0.0
@@ -533,23 +556,92 @@ if page == "الملخص التنفيذي والمركز المالي":
     
     partners_net = pd.to_numeric(store['df_partners']['الرصيد'], errors='coerce').sum() if 'الرصيد' in store['df_partners'].columns else 0.0
 
-    # Section 1 — Executive KPI Strip
-    k1, k2, k3, k4 = st.columns(4)
-    with k1: render_kpi("إجمالي الإيرادات", fmt_currency(total_revenue), "جميع مصادر الدخل", "positive")
-    with k2: render_kpi("إجمالي رصيد البنوك", fmt_currency(total_cash), "النقد المتاح", "positive")
-    with k3: render_kpi("إجمالي المتبقي للتمويلات", fmt_currency(total_debt_rem), f"أصل التمويل: {fmt_currency(total_debt_orig)}", "warning" if total_debt_rem>0 else "positive")
-    with k4: render_kpi("إجمالي تكلفة المشاريع", fmt_currency(total_dev_val), f"{len(store['df_dev_projects'])} مشاريع تحت الإنشاء", "positive")
+    # Upper Executive Row: Liquidity Card (Double Height Split) + Revenue + Debt
+    col_top1, col_top2, col_top3 = st.columns([1.1, 0.9, 1.0])
+    
+    with col_top1:
+        # Request 3: Double Height Cash Card (Upper = Total Bank Cash, Lower = 50/50 Al Rajhi & SNB)
+        st.markdown(f"""
+        <div class="combined-card">
+            <div class="combined-header">
+                <div class="combined-title">إجمالي رصيد البنوك</div>
+                <div class="combined-value">{fmt_currency(total_cash)}</div>
+                <div class="combined-sub">النقدية المتاحة بالحسابات</div>
+            </div>
+            <div style="display: flex; gap: 8px; justify-content: space-between;">
+                <div style="flex: 1; background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 6px; padding: 6px; text-align: right;">
+                    <div style="font-size: 10px; color: #64748B; font-weight: 700;">مصرف الراجحي</div>
+                    <div style="font-size: 14px; font-weight: 800; color: #0F172A;">{fmt_currency(rajhi_cash)}</div>
+                </div>
+                <div style="flex: 1; background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 6px; padding: 6px; text-align: right;">
+                    <div style="font-size: 10px; color: #64748B; font-weight: 700;">البنك الأهلي</div>
+                    <div style="font-size: 14px; font-weight: 800; color: #0F172A;">{fmt_currency(snb_cash)}</div>
+                </div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+        
+    with col_top2:
+        # Request 4: Collection Performance Card matching image 92270e.png
+        coll_pct_str = f"{coll_rate*100:.1f}%"
+        st.markdown(f"""
+        <div class="combined-card">
+            <div style="font-size: 11px; color: #0F172A; font-weight: 800; text-align: right; margin-bottom: 6px;">أداء التحصيل</div>
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px;">
+                <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+                    <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 6px; padding: 4px 8px; text-align: center;">
+                        <div style="font-size: 13px; font-weight: 800; color: #0F172A;">{fmt_currency_m(due_coll)}</div>
+                        <div style="font-size: 9px; color: #64748B; font-weight: 700;">المستحق للتحصيل</div>
+                    </div>
+                    <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 6px; padding: 4px 8px; text-align: center;">
+                        <div style="font-size: 13px; font-weight: 800; color: #0F172A;">{fmt_currency_m(act_coll)}</div>
+                        <div style="font-size: 9px; color: #64748B; font-weight: 700;">المحصل الفعلي</div>
+                    </div>
+                </div>
+                <div style="flex: 1.1; text-align: center;">
+                    <div style="font-size: 32px; font-weight: 900; color: #0F172A; line-height: 1;">{coll_pct_str}</div>
+                    <div style="font-size: 10px; color: #64748B; font-weight: 700; margin-top: 4px;">كفاءة التحصيل</div>
+                    <div class="gauge-bar-bg"><div class="gauge-bar-fill" style="width: {min(100, coll_rate*100):.1f}%;"></div></div>
+                </div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+        
+    with col_top3:
+        # Request 5: Merged Partner Accounts Card (Upper Net Balance, Lower Split 50/50 for each Partner)
+        df_part = store['df_partners'].copy()
+        p1_name, p1_bal, p2_name, p2_bal = "شريك 1", 0.0, "شريك 2", 0.0
+        if not df_part.empty:
+            if len(df_part) >= 1:
+                p1_name = df_part.iloc[0]['الشريك'] if 'الشريك' in df_part.columns else "شريك 1"
+                p1_bal = pd.to_numeric(df_part.iloc[0]['الرصيد'], errors='coerce') if 'الرصيد' in df_part.columns else 0.0
+            if len(df_part) >= 2:
+                p2_name = df_part.iloc[1]['الشريك'] if 'الشريك' in df_part.columns else "شريك 2"
+                p2_bal = pd.to_numeric(df_part.iloc[1]['الرصيد'], errors='coerce') if 'الرصيد' in df_part.columns else 0.0
 
-    k5, k6, k7, k8 = st.columns(4)
-    with k5: render_kpi("إجمالي أصل التمويلات", fmt_currency(total_debt_orig), "القروض المسجلة", "positive")
-    with k6: render_kpi("مشاريع تحت الإنشاء", f"{len(store['df_dev_projects'])}", "محفظة التطوير", "positive")
-    with k7: render_kpi("كفاءة التحصيل", fmt_pct(coll_rate), "نسبة التحصيل الفعلي", "positive" if coll_rate>=0.8 else "warning")
-    with k8: render_kpi("صافي أرصدة الشركاء", fmt_currency(partners_net), "مجموع أرصدة الشركاء", "positive" if partners_net>=0 else "danger")
+        st.markdown(f"""
+        <div class="combined-card">
+            <div class="combined-header">
+                <div class="combined-title">صافي أرصدة الشركاء</div>
+                <div class="combined-value">{fmt_currency(partners_net)}</div>
+                <div class="combined-sub">إجمالي صافي حسابات الشركاء</div>
+            </div>
+            <div style="display: flex; gap: 8px; justify-content: space-between;">
+                <div style="flex: 1; background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 6px; padding: 6px; text-align: right;">
+                    <div style="font-size: 10px; color: #64748B; font-weight: 700;">{p1_name}</div>
+                    <div style="font-size: 13px; font-weight: 800; color: #0F172A;">{fmt_currency(p1_bal)}</div>
+                </div>
+                <div style="flex: 1; background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 6px; padding: 6px; text-align: right;">
+                    <div style="font-size: 10px; color: #64748B; font-weight: 700;">{p2_name}</div>
+                    <div style="font-size: 13px; font-weight: 800; color: #0F172A;">{fmt_currency(p2_bal)}</div>
+                </div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
 
     # Dynamic Management Alerts Executed at the Top/Middle Executive Area
     st.markdown("<div class='section-title'>🚨 التنبيهات والإجراءات الإدارية المباشرة</div>", unsafe_allow_html=True)
     
-    # Check overdue installments dynamically
     df_inst = store['df_installments'].copy()
     overdue_found = False
     if 'الأيام المتبقية' in df_inst.columns and 'المتبقي للدفعة' in df_inst.columns:
@@ -569,15 +661,19 @@ if page == "الملخص التنفيذي والمركز المالي":
     if coll_rate < 0.8:
         st.warning(f"🟡 كفاءة التحصيل الحالية ({fmt_pct(coll_rate)}) أقل من المستهدف الموصى به (80.0%).")
 
-    # Section 2 & 3 — Two Column Layout for Dynamic Tables & Visuals
+    # Section 5 — Re-organized Page 1 Layout:
+    # Column Left: Debt KPIs next to Debt Table
+    # Column Right: Revenue Mix Chart next to Projects Under Construction Table
     c_left, c_right = st.columns([1.1, 0.9])
     
     with c_left:
-        st.markdown("<div class='section-title'>محفظة المشاريع تحت الإنشاء</div>", unsafe_allow_html=True)
-        df_dev_disp = store['df_dev_projects'].copy()
-        st.dataframe(style_df_accounting(df_dev_disp), use_container_width=True)
-
-        st.markdown("<div class='section-title'>التمويلات والالتزامات</div>", unsafe_allow_html=True)
+        st.markdown("<div class='section-title'>التمويلات والالتزامات الحالية</div>", unsafe_allow_html=True)
+        # Debt KPIs placed right above/next to Debt Table
+        dk1, dk2 = st.columns(2)
+        with dk1: render_kpi("أصل التمويلات", fmt_currency(total_debt_orig), "إجمالي المسجل", "positive")
+        with dk2: render_kpi("المتبقي للتمويلات", fmt_currency(total_debt_rem), "رصيد الدين الحالي", "warning" if total_debt_rem>0 else "positive")
+        
+        st.write("")
         df_loans_disp = store['df_loans'].copy()
         if 'أصل التمويل' in df_loans_disp.columns and 'المتبقي للقرض' in df_loans_disp.columns:
             rem_vals = pd.to_numeric(df_loans_disp['المتبقي للقرض'], errors='coerce').fillna(0)
@@ -588,12 +684,8 @@ if page == "الملخص التنفيذي والمركز المالي":
         st.dataframe(style_df_accounting(df_loans_disp), use_container_width=True)
 
     with c_right:
-        st.markdown("<div class='section-title'>أداء التحصيل</div>", unsafe_allow_html=True)
-        rc1, rc2 = st.columns(2)
-        with rc1: render_kpi("المستحق للتحصيل", fmt_currency(due_coll), "مستحق الشهر", "positive")
-        with rc2: render_kpi("المحصل الفعلي", fmt_currency(act_coll), "التحصيل الفعلي", "positive")
-        
-        st.markdown("<div class='section-title'>مزيج الإيرادات (Revenue Mix Bar Chart)</div>", unsafe_allow_html=True)
+        st.markdown("<div class='section-title'>محفظة المشاريع تحت الإنشاء ومزيج الإيرادات</div>", unsafe_allow_html=True)
+        # Revenue Mix Chart placed right next to Dev Projects
         df_rev_chart = store['df_revenues'].copy()
         if 'المبلغ' in df_rev_chart.columns and 'نوع الايراد' in df_rev_chart.columns:
             df_rev_chart['المبلغ_الرقدي'] = pd.to_numeric(df_rev_chart['المبلغ'], errors='coerce')
@@ -607,21 +699,17 @@ if page == "الملخص التنفيذي والمركز المالي":
             max_val = df_rev_chart['المبلغ_الرقدي'].max() if not df_rev_chart.empty else 1000000
             fig_rev.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)',
                                   font=dict(color='#0F172A', size=11),
-                                  margin=dict(t=10, b=10, l=10, r=140), height=180, showlegend=False,
+                                  margin=dict(t=10, b=10, l=10, r=140), height=170, showlegend=False,
                                   xaxis=dict(range=[0, max_val * 1.45], title=""), yaxis_title="")
             st.plotly_chart(fig_rev, use_container_width=True)
 
-        st.markdown("<div class='section-title'>أرصدة الشركاء (Partner Accounts)</div>", unsafe_allow_html=True)
-        df_part = store['df_partners'].copy()
-        if not df_part.empty and len(df_part) >= 2:
-            p_cols = st.columns(len(df_part))
-            for idx, row in df_part.iterrows():
-                p_name = row['الشريك'] if 'الشريك' in row else f"شريك {idx+1}"
-                p_bal = pd.to_numeric(row['الرصيد'], errors='coerce') if 'الرصيد' in row else 0.0
-                with p_cols[idx]:
-                    render_kpi(f"رصيد: {p_name}", fmt_currency(p_bal), "حساب الشريك", "positive" if p_bal>=0 else "danger")
-        else:
-            st.dataframe(style_df_accounting(df_part), use_container_width=True)
+        df_dev_disp = store['df_dev_projects'].copy()
+        st.dataframe(style_df_accounting(df_dev_disp), use_container_width=True)
+
+    # Request 6: Add Installments Table (جدول الاقساط) at the end of Page 1
+    st.markdown("<div class='section-title'>جدول استحقاقات الأقساط (جدول الاقساط)</div>", unsafe_allow_html=True)
+    df_inst_disp = store['df_installments'].copy()
+    st.dataframe(style_df_accounting(df_inst_disp), use_container_width=True)
 
 # ==============================================================================
 # PAGE 2: السيولة والتدفقات النقدية
@@ -855,7 +943,7 @@ elif page == "ارشادات":
     # Fully Expanded Cards for Maximum Screen Utilization & Comfort
     g1, g2 = st.columns(2)
     with g1:
-        st.markdown(\"\"\"
+        st.markdown("""
         <div class="term-card">
             <div class="term-title">NPV (Net Present Value - صافي القيمة الحالية)</div>
             <div class="term-desc">القيمة الحالية للتدفقات النقدية المستقبلية للمشروع مخصومة بسعر خصم يمثل تكلفة الملكية (Cost of Equity Ke). النتيجة الإيجابية تعني أن المشروع يحقق عائداً أعلى من تكلفة الفرصة البديلة ويضيف قيمة حقيقية للشركة.</div>
@@ -868,10 +956,10 @@ elif page == "ارشادات":
             <div class="term-title">MOIC (Multiple on Invested Capital - مضاعف رأس المال)</div>
             <div class="term-desc">إجمالي التدفقات النقدية المحصلة مقسومة على إجمالي رأس المال الذاتي المستثمر. يُظهر كم مرة استرد المشروع النقدية المستثمرة (مثلاً 1.72x تعني استرداد رأس المال بالكامل + 72% أرباح صافية).</div>
         </div>
-        \"\"\", unsafe_allow_html=True)
+        """, unsafe_allow_html=True)
         
     with g2:
-        st.markdown(\"\"\"
+        st.markdown("""
         <div class="term-card">
             <div class="term-title">Payback Period (فترة استرداد رأس المال)</div>
             <div class="term-desc">المدة الزمنية بالأشهر أو السنوات المطلوبة حتى تسترد التدفقات النقدية المحصلة من المشروع أصل المبلغ المستثمر بالكامل.</div>
@@ -888,12 +976,4 @@ elif page == "ارشادات":
             <div class="term-title">Break-even Occupancy (نسبة إشغال التعادل)</div>
             <div class="term-desc">أدنى نسبة إشغال مطلوبة في مشاريع الإيجار لتغطية المصاريف التشغيلية وإيجار المالك الرئيسي بحيث يكون صافي الدخل التشغيلي NOI = 0.</div>
         </div>
-        \"\"\", unsafe_allow_html=True)
-"""
-
-with open('app.py', 'w', encoding='utf-8') as f:
-    f.write(app_code)
-
-import ast
-ast.parse(app_code)
-print("Saved complete updated app.py successfully!")
+        """, unsafe_allow_html=True)
