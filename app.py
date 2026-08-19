@@ -18,7 +18,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Premium Executive Light Theme CSS System
+# Premium Executive Light Theme CSS System with Active Radio Option Highlight
 st.markdown("""
 <style>
     /* Hide Default Streamlit Elements */
@@ -35,7 +35,7 @@ st.markdown("""
     div[data-testid="stVerticalBlock"] > div { gap: 0.3rem !important; }
     
     /* Typography Hierarchy */
-    .page-title { font-size: 20px; font-weight: 800; color: #0F172A; letter-spacing: -0.3px; margin-bottom: 1px; text-align: right; }
+    .page-title { font-size: 20px; font-weight: 800; color: #FFFFFF !important; letter-spacing: -0.3px; margin-bottom: 1px; text-align: right; background: #0F172A; padding: 6px 12px; border-radius: 6px; }
     .page-subtitle { font-size: 11px; color: #475569; font-weight: 600; margin-bottom: 6px; border-bottom: 1px solid #CBD5E1; padding-bottom: 4px; text-align: right; }
     .section-title { font-size: 13px; font-weight: 800; color: #0284C7; margin-top: 4px; margin-bottom: 4px; text-align: right; }
     
@@ -56,9 +56,9 @@ st.markdown("""
     .stDataFrame, div[data-testid="stTable"] { background-color: #FFFFFF !important; border: 1px solid #CBD5E1 !important; border-radius: 6px !important; width: 100% !important; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
     div[data-testid="stDataFrame"] > div { background-color: #FFFFFF !important; width: 100% !important; }
     
-    /* Executive KPI Cards System */
-    .kpi-container { background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 6px; padding: 6px 10px; text-align: right; box-shadow: 0 2px 5px rgba(0,0,0,0.04); }
-    .kpi-title { font-size: 10px; color: #64748B; font-weight: 700; text-transform: uppercase; }
+    /* Executive KPI Cards System (Light Cards with High Contrast) */
+    .kpi-container { background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 6px; padding: 6px 10px; text-align: right; box-shadow: 0 2px 5px rgba(0,0,0,0.04); height: 100%; }
+    .kpi-title { font-size: 11px; color: #64748B; font-weight: 700; text-transform: uppercase; }
     .kpi-value { font-size: 17px; color: #0F172A; font-weight: 800; margin-top: 2px; margin-bottom: 2px; font-variant-numeric: tabular-nums; }
     .kpi-sub { font-size: 10px; font-weight: 600; }
     .kpi-sub-positive { color: #16A34A; }
@@ -811,6 +811,24 @@ elif page == "مشاريع الايجار":
     with p4: render_kpi("الإيرادات", fmt_currency(p_rev), "إجمالي الإيرادات", "positive")
     with p5: render_kpi("صافي NOI", fmt_currency(p_noi), "الدخل التشغيلي", "positive" if p_noi>=0 else "danger")
 
+    # Section: NOI Property Performance Ranking Cards (Dynamic)
+    st.markdown("<div class='section-title'>🏆 ترتيب أداء العقارات (Rental Property Performance Ranking)</div>", unsafe_allow_html=True)
+    if not noi_row.empty and len(proj_columns) > 0:
+        noi_vals = []
+        for p in proj_columns:
+            for c in range(df_pl.shape[1]):
+                if str(df_pl.iloc[1, c]).strip() == p:
+                    val = pd.to_numeric(noi_row.iloc[0, c], errors='coerce')
+                    noi_vals.append({'Project': p, 'NOI': val if not np.isnan(val) else 0.0})
+                    break
+        df_noi_rank = pd.DataFrame(noi_vals).sort_values(by='NOI', ascending=False)
+        if not df_noi_rank.empty:
+            best_p = df_noi_rank.iloc[0]
+            worst_p = df_noi_rank.iloc[-1]
+            rk1, rk2 = st.columns(2)
+            with rk1: render_kpi("أعلى العقارات أداءً (Best NOI)", f"{best_p['Project']}", f"صافي NOI: {fmt_currency(best_p['NOI'])}", "positive")
+            with rk2: render_kpi("أقل العقارات أداءً (Worst NOI)", f"{worst_p['Project']}", f"صافي NOI: {fmt_currency(worst_p['NOI'])}", "danger" if worst_p['NOI']<0 else "warning")
+
     st.markdown("<div class='section-title'>قائمة الأرباح والخسائر للعقارات (المصدر الرسمي - Sheet3)</div>", unsafe_allow_html=True)
     
     if len(df_pl) > 1:
@@ -943,7 +961,7 @@ elif page == "ارشادات":
     # Fully Expanded Cards for Maximum Screen Utilization & Comfort
     g1, g2 = st.columns(2)
     with g1:
-        st.markdown("""
+        st.markdown(\"\"\"
         <div class="term-card">
             <div class="term-title">NPV (Net Present Value - صافي القيمة الحالية)</div>
             <div class="term-desc">القيمة الحالية للتدفقات النقدية المستقبلية للمشروع مخصومة بسعر خصم يمثل تكلفة الملكية (Cost of Equity Ke). النتيجة الإيجابية تعني أن المشروع يحقق عائداً أعلى من تكلفة الفرصة البديلة ويضيف قيمة حقيقية للشركة.</div>
@@ -956,10 +974,10 @@ elif page == "ارشادات":
             <div class="term-title">MOIC (Multiple on Invested Capital - مضاعف رأس المال)</div>
             <div class="term-desc">إجمالي التدفقات النقدية المحصلة مقسومة على إجمالي رأس المال الذاتي المستثمر. يُظهر كم مرة استرد المشروع النقدية المستثمرة (مثلاً 1.72x تعني استرداد رأس المال بالكامل + 72% أرباح صافية).</div>
         </div>
-        """, unsafe_allow_html=True)
+        \"\"\", unsafe_allow_html=True)
         
     with g2:
-        st.markdown("""
+        st.markdown(\"\"\"
         <div class="term-card">
             <div class="term-title">Payback Period (فترة استرداد رأس المال)</div>
             <div class="term-desc">المدة الزمنية بالأشهر أو السنوات المطلوبة حتى تسترد التدفقات النقدية المحصلة من المشروع أصل المبلغ المستثمر بالكامل.</div>
@@ -976,4 +994,4 @@ elif page == "ارشادات":
             <div class="term-title">Break-even Occupancy (نسبة إشغال التعادل)</div>
             <div class="term-desc">أدنى نسبة إشغال مطلوبة في مشاريع الإيجار لتغطية المصاريف التشغيلية وإيجار المالك الرئيسي بحيث يكون صافي الدخل التشغيلي NOI = 0.</div>
         </div>
-        """, unsafe_allow_html=True)
+        \"\"\", unsafe_allow_html=True)
