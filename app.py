@@ -18,7 +18,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Premium Executive Light Theme CSS System with Active Radio Option Highlight
+# Premium Executive Light Theme CSS System
 st.markdown("""
 <style>
     /* Hide Default Streamlit Elements */
@@ -56,9 +56,9 @@ st.markdown("""
     .stDataFrame, div[data-testid="stTable"] { background-color: #FFFFFF !important; border: 1px solid #CBD5E1 !important; border-radius: 6px !important; width: 100% !important; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
     div[data-testid="stDataFrame"] > div { background-color: #FFFFFF !important; width: 100% !important; }
     
-    /* Executive KPI Cards System (Light Cards with High Contrast) */
-    .kpi-container { background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 6px; padding: 6px 10px; text-align: right; box-shadow: 0 2px 5px rgba(0,0,0,0.04); height: 100%; }
-    .kpi-title { font-size: 11px; color: #64748B; font-weight: 700; text-transform: uppercase; }
+    /* Executive KPI Cards System */
+    .kpi-container { background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 6px; padding: 6px 10px; text-align: right; box-shadow: 0 2px 5px rgba(0,0,0,0.04); }
+    .kpi-title { font-size: 10px; color: #64748B; font-weight: 700; text-transform: uppercase; }
     .kpi-value { font-size: 17px; color: #0F172A; font-weight: 800; margin-top: 2px; margin-bottom: 2px; font-variant-numeric: tabular-nums; }
     .kpi-sub { font-size: 10px; font-weight: 600; }
     .kpi-sub-positive { color: #16A34A; }
@@ -961,7 +961,7 @@ elif page == "ارشادات":
     # Fully Expanded Cards for Maximum Screen Utilization & Comfort
     g1, g2 = st.columns(2)
     with g1:
-        st.markdown(\"\"\"
+        st.markdown("""
         <div class="term-card">
             <div class="term-title">NPV (Net Present Value - صافي القيمة الحالية)</div>
             <div class="term-desc">القيمة الحالية للتدفقات النقدية المستقبلية للمشروع مخصومة بسعر خصم يمثل تكلفة الملكية (Cost of Equity Ke). النتيجة الإيجابية تعني أن المشروع يحقق عائداً أعلى من تكلفة الفرصة البديلة ويضيف قيمة حقيقية للشركة.</div>
@@ -974,10 +974,10 @@ elif page == "ارشادات":
             <div class="term-title">MOIC (Multiple on Invested Capital - مضاعف رأس المال)</div>
             <div class="term-desc">إجمالي التدفقات النقدية المحصلة مقسومة على إجمالي رأس المال الذاتي المستثمر. يُظهر كم مرة استرد المشروع النقدية المستثمرة (مثلاً 1.72x تعني استرداد رأس المال بالكامل + 72% أرباح صافية).</div>
         </div>
-        \"\"\", unsafe_allow_html=True)
+        """, unsafe_allow_html=True)
         
     with g2:
-        st.markdown(\"\"\"
+        st.markdown("""
         <div class="term-card">
             <div class="term-title">Payback Period (فترة استرداد رأس المال)</div>
             <div class="term-desc">المدة الزمنية بالأشهر أو السنوات المطلوبة حتى تسترد التدفقات النقدية المحصلة من المشروع أصل المبلغ المستثمر بالكامل.</div>
@@ -994,4 +994,4 @@ elif page == "ارشادات":
             <div class="term-title">Break-even Occupancy (نسبة إشغال التعادل)</div>
             <div class="term-desc">أدنى نسبة إشغال مطلوبة في مشاريع الإيجار لتغطية المصاريف التشغيلية وإيجار المالك الرئيسي بحيث يكون صافي الدخل التشغيلي NOI = 0.</div>
         </div>
-        \"\"\", unsafe_allow_html=True)
+        """, unsafe_allow_html=True)
