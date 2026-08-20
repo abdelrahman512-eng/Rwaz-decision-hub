@@ -28,11 +28,11 @@ st.markdown("""
     
     /* Core Layout & Premium Light Gray Background */
     .stApp { background-color: #F1F5F9; color: #0F172A; font-family: 'Segoe UI', -apple-system, sans-serif; }
-    .main .block-container { padding-top: 0.2rem !important; padding-bottom: 0.2rem !important; padding-left: 0.4rem !important; padding-right: 0.4rem !important; max-width: 100% !important; }
+    .main .block-container { padding-top: 0.1rem !important; padding-bottom: 0.1rem !important; padding-left: 0.2rem !important; padding-right: 0.2rem !important; max-width: 100% !important; }
     
-    /* Zero Unnecessary Space / Tight Spacing Rules */
+    /* Zero Unnecessary Space Rules */
     .stMarkdown, div[data-testid="stMarkdownContainer"] { margin-bottom: 0px !important; }
-    div[data-testid="stVerticalBlock"] > div { gap: 0.3rem !important; }
+    div[data-testid="stVerticalBlock"] > div { gap: 0.2rem !important; }
     
     /* Typography Hierarchy */
     .page-title { font-size: 20px; font-weight: 800; color: #FFFFFF !important; letter-spacing: -0.3px; margin-bottom: 1px; text-align: right; background: #0F172A; padding: 6px 12px; border-radius: 6px; }
@@ -48,16 +48,17 @@ st.markdown("""
     div[data-baseweb="input"] { background-color: #FFFFFF !important; border: 1px solid #CBD5E1 !important; border-radius: 6px !important; }
     div[data-baseweb="input"] input { color: #0F172A !important; font-weight: 800 !important; }
     
-    /* High Contrast Black Selectbox Text across all states */
+    /* High Contrast Black Selectbox Text */
     div[data-baseweb="select"] { background-color: #FFFFFF !important; border: 1px solid #CBD5E1 !important; border-radius: 6px !important; }
     div[data-baseweb="select"] span, div[data-baseweb="menu"] div, li[role="option"], div[role="combobox"] { color: #0F172A !important; font-weight: 800 !important; font-size: 12px !important; }
     
-    /* Full Page Width DataFrame & Elegant Table Visibility */
+    /* Full Page Width DataFrame & Zero Scroll Rules */
     .stDataFrame, div[data-testid="stTable"] { background-color: #FFFFFF !important; border: 1px solid #CBD5E1 !important; border-radius: 6px !important; width: 100% !important; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
     div[data-testid="stDataFrame"] > div { background-color: #FFFFFF !important; width: 100% !important; }
+    div[data-testid="stDataFrame"] td, div[data-testid="stDataFrame"] th { padding: 3px 6px !important; font-size: 11px !important; font-weight: 700 !important; white-space: normal !important; }
     
     /* Executive KPI Cards System */
-    .kpi-container { background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 6px; padding: 6px 10px; text-align: right; box-shadow: 0 2px 5px rgba(0,0,0,0.04); }
+    .kpi-container { background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 6px; padding: 6px 10px; text-align: right; box-shadow: 0 2px 5px rgba(0,0,0,0.04); height: 100%; }
     .kpi-title { font-size: 10px; color: #64748B; font-weight: 700; text-transform: uppercase; }
     .kpi-value { font-size: 17px; color: #0F172A; font-weight: 800; margin-top: 2px; margin-bottom: 2px; font-variant-numeric: tabular-nums; }
     .kpi-sub { font-size: 10px; font-weight: 600; }
@@ -118,7 +119,7 @@ st.markdown("""
     .gauge-bar-bg { background-color: #E2E8F0; border-radius: 10px; height: 12px; width: 100%; overflow: hidden; margin-top: 8px; }
     .gauge-bar-fill { background: linear-gradient(90deg, #0284C7 0%, #38BDF8 100%); height: 100%; border-radius: 10px; }
 
-    /* Expanded Term Card for Page 6 Guidance */
+    /* Term Card for Page 7 Guidance */
     .term-card { background-color: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 6px; padding: 14px 16px; margin-bottom: 8px; text-align: right; box-shadow: 0 2px 4px rgba(0,0,0,0.03); }
     .term-title { font-size: 15px; font-weight: 800; color: #0284C7; border-bottom: 1px solid #E2E8F0; padding-bottom: 4px; }
     .term-desc { font-size: 12px; color: #334155; margin-top: 6px; line-height: 1.6; }
@@ -206,6 +207,69 @@ def style_df_accounting(df):
             
     df_clean = df_clean.astype(str).replace({"None": "", "nan": "", "NaN": "", "<NA>": ""})
     return df_clean.reset_index(drop=True)
+
+def render_styled_dataframe(df):
+    """
+    Render DataFrames with:
+    - Executive Row Highlighting for Cash Flow & P&L
+    - Red Negatives for numbers with parentheses
+    - Dynamic Height to eliminate vertical scroll
+    """
+    if df is None or df.empty:
+        return
+        
+    df_fmt = style_df_accounting(df)
+    
+    def highlight_executive_rows_and_negatives(row):
+        styles = [''] * len(row)
+        cat_str = str(row.iloc[0]).lower()
+        
+        # Determine Row Level Executive Background Highlight
+        bg_color = ''
+        font_weight = 'font-weight: 700;'
+        text_color = '#0F172A;'
+        
+        if 'cash beginnin' in cat_str or 'units' in cat_str or 'occupancy' in cat_str:
+            bg_color = 'background-color: #F8FAFC;'
+            text_color = '#475569;'
+        elif 'cash in' in cat_str or 'net revenue' in cat_str or 'revenue' in cat_str:
+            bg_color = 'background-color: #E0F2FE;'
+            text_color = '#0369A1;'
+            font_weight = 'font-weight: 800;'
+        elif 'cash out' in cat_str or 'total opex' in cat_str:
+            bg_color = 'background-color: #FEE2E2;'
+            text_color = '#B91C1C;'
+            font_weight = 'font-weight: 800;'
+        elif 'operating income' in cat_str or 'noi' in cat_str:
+            bg_color = 'background-color: #DCFCE7;'
+            text_color = '#15803D;'
+            font_weight = 'font-weight: 800;'
+        elif 'net profit' in cat_str or 'end of period' in cat_str:
+            bg_color = 'background-color: #0F172A;'
+            text_color = '#FFFFFF;'
+            font_weight = 'font-weight: 900;'
+            
+        for i, val in enumerate(row):
+            val_str = str(val)
+            # Red Negative Numbers
+            if '(' in val_str or val_str.startswith('-'):
+                if bg_color == 'background-color: #0F172A;':
+                    styles[i] = f'{bg_color} color: #F87171; {font_weight}'
+                else:
+                    styles[i] = f'{bg_color} color: #DC2626; {font_weight}'
+            else:
+                styles[i] = f'{bg_color} color: {text_color} {font_weight}'
+                
+        return styles
+
+    try:
+        styler = df_fmt.style.apply(highlight_executive_rows_and_negatives, axis=1)
+        # Calculate dynamic height (38px per row + 38px header) to prevent vertical scroll
+        calc_height = min(max(150, (len(df_fmt) + 1) * 38), 1200)
+        st.dataframe(styler, use_container_width=True, height=calc_height)
+    except Exception:
+        calc_height = min(max(150, (len(df_fmt) + 1) * 38), 1200)
+        st.dataframe(df_fmt, use_container_width=True, height=calc_height)
 
 def render_kpi(title, value, sub_text, sub_type="positive"):
     sub_class = f"kpi-sub-{sub_type}"
@@ -525,6 +589,7 @@ st.sidebar.caption("مركز القرار الاستثماري والمالي")
 
 page = st.sidebar.radio("القائمة الرئيسية:", [
     "الملخص التنفيذي والمركز المالي",
+    "جدول التمويلات والاقساط",
     "السيولة والتدفقات النقدية",
     "مشاريع الايجار",
     "موديل التطوير العقاري",
@@ -533,13 +598,13 @@ page = st.sidebar.radio("القائمة الرئيسية:", [
 ])
 
 # ==============================================================================
-# PAGE 1: الملخص التنفيذي والمركز المالي (MERGED EXECUTIVE DASHBOARD)
+# PAGE 1: الملخص التنفيذي والمركز المالي (EXECUTIVE DASHBOARD PAGE 1)
 # ==============================================================================
 if page == "الملخص التنفيذي والمركز المالي":
     st.markdown("<div class='page-title'>رواز | لوحة الإدارة التنفيذية والمركز المالي</div>", unsafe_allow_html=True)
     st.markdown("<div class='page-subtitle'>نظرة شاملة رفيعة المستوى على السيولة، الإيرادات، الديون، محفظة الشركاء والمشاريع تحت الإنشاء.</div>", unsafe_allow_html=True)
     
-    # Dynamic Math Calculations from Source Tables (Zero Hardcoding)
+    # Dynamic Math Calculations from Source Tables
     df_b = store['df_banks']
     total_cash = pd.to_numeric(df_b['الرصيد'], errors='coerce').sum() if 'الرصيد' in df_b.columns else 0.0
     rajhi_cash = pd.to_numeric(df_b[df_b['البنك'].astype(str).str.contains('الراجحي', na=False)]['الرصيد'], errors='coerce').sum() if 'البنك' in df_b.columns else 0.0
@@ -556,11 +621,11 @@ if page == "الملخص التنفيذي والمركز المالي":
     
     partners_net = pd.to_numeric(store['df_partners']['الرصيد'], errors='coerce').sum() if 'الرصيد' in store['df_partners'].columns else 0.0
 
-    # Upper Executive Row: Liquidity Card (Double Height Split) + Revenue + Debt
+    # Upper Executive Row: Cash Card + Collection Card + Merged Partner Card
     col_top1, col_top2, col_top3 = st.columns([1.1, 0.9, 1.0])
     
     with col_top1:
-        # Request 3: Double Height Cash Card (Upper = Total Bank Cash, Lower = 50/50 Al Rajhi & SNB)
+        # Request 3: Double Height Cash Card
         st.markdown(f"""
         <div class="combined-card">
             <div class="combined-header">
@@ -582,7 +647,7 @@ if page == "الملخص التنفيذي والمركز المالي":
         """, unsafe_allow_html=True)
         
     with col_top2:
-        # Request 4: Collection Performance Card matching image 92270e.png
+        # Request 4: Collection Card formatted with 185,000 style
         coll_pct_str = f"{coll_rate*100:.1f}%"
         st.markdown(f"""
         <div class="combined-card">
@@ -590,11 +655,11 @@ if page == "الملخص التنفيذي والمركز المالي":
             <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px;">
                 <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
                     <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 6px; padding: 4px 8px; text-align: center;">
-                        <div style="font-size: 13px; font-weight: 800; color: #0F172A;">{fmt_currency_m(due_coll)}</div>
+                        <div style="font-size: 13px; font-weight: 800; color: #0F172A;">{fmt_currency(due_coll)}</div>
                         <div style="font-size: 9px; color: #64748B; font-weight: 700;">المستحق للتحصيل</div>
                     </div>
                     <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 6px; padding: 4px 8px; text-align: center;">
-                        <div style="font-size: 13px; font-weight: 800; color: #0F172A;">{fmt_currency_m(act_coll)}</div>
+                        <div style="font-size: 13px; font-weight: 800; color: #0F172A;">{fmt_currency(act_coll)}</div>
                         <div style="font-size: 9px; color: #64748B; font-weight: 700;">المحصل الفعلي</div>
                     </div>
                 </div>
@@ -608,7 +673,7 @@ if page == "الملخص التنفيذي والمركز المالي":
         """, unsafe_allow_html=True)
         
     with col_top3:
-        # Request 5: Merged Partner Accounts Card (Upper Net Balance, Lower Split 50/50 for each Partner)
+        # Request 5: Merged Partner Accounts Card
         df_part = store['df_partners'].copy()
         p1_name, p1_bal, p2_name, p2_bal = "شريك 1", 0.0, "شريك 2", 0.0
         if not df_part.empty:
@@ -639,7 +704,7 @@ if page == "الملخص التنفيذي والمركز المالي":
         </div>
         """, unsafe_allow_html=True)
 
-    # Dynamic Management Alerts Executed at the Top/Middle Executive Area
+    # Dynamic Management Alerts Executed
     st.markdown("<div class='section-title'>🚨 التنبيهات والإجراءات الإدارية المباشرة</div>", unsafe_allow_html=True)
     
     df_inst = store['df_installments'].copy()
@@ -655,37 +720,30 @@ if page == "الملخص التنفيذي والمركز المالي":
                 b_val = o_row['المتبقي للدفعة']
                 st.error(f"🔴 تنبيه تمويلي حرج: {b_desc} متأخر السداد (المتبقي المستحق {fmt_currency(b_val)}).")
     
+    # Request: Dynamic alert for properties with Negative Net Profit Margin (%) read dynamically from P&L
+    df_pl_alert = store['df_pl'].copy()
+    margin_row_df = df_pl_alert[df_pl_alert.iloc[:, 0].astype(str).str.contains('Net Profit Margin', case=False, na=False)]
+    if not margin_row_df.empty:
+        raw_headers_alert = df_pl_alert.iloc[1].dropna().values.tolist()
+        for col_i in range(1, df_pl_alert.shape[1] - 1):
+            proj_n = str(df_pl_alert.iloc[1, col_i]).strip()
+            if proj_n not in ['Category', 'TOTAL', 'Unnamed: 0', 'Unnamed: 1', 'Unnamed: 11', 'nan'] and not proj_n.startswith('Unnamed'):
+                m_val = pd.to_numeric(margin_row_df.iloc[0, col_i], errors='coerce')
+                if not np.isnan(m_val) and m_val < 0:
+                    st.warning(f"🟡 تنبيه أداء عقاري: مشروع {proj_n} يحقق صافي هامش ربح سالب ({fmt_pct(m_val)}).")
+
     if not overdue_found:
         st.success("🟢 جميع أقساط التسهيلات والتمويلات مسددة في مواعيدها ومستقرة.")
-        
-    if coll_rate < 0.8:
-        st.warning(f"🟡 كفاءة التحصيل الحالية ({fmt_pct(coll_rate)}) أقل من المستهدف الموصى به (80.0%).")
 
-    # Section 5 — Re-organized Page 1 Layout:
-    # Column Left: Debt KPIs next to Debt Table
-    # Column Right: Revenue Mix Chart next to Projects Under Construction Table
-    c_left, c_right = st.columns([1.1, 0.9])
+    # Page 1 Visuals & Construction Table
+    st.markdown("<div class='section-title'>محفظة المشاريع تحت الإنشاء ومزيج الإيرادات</div>", unsafe_allow_html=True)
+    c1_page1, c2_page1 = st.columns([1.1, 0.9])
     
-    with c_left:
-        st.markdown("<div class='section-title'>التمويلات والالتزامات الحالية</div>", unsafe_allow_html=True)
-        # Debt KPIs placed right above/next to Debt Table
-        dk1, dk2 = st.columns(2)
-        with dk1: render_kpi("أصل التمويلات", fmt_currency(total_debt_orig), "إجمالي المسجل", "positive")
-        with dk2: render_kpi("المتبقي للتمويلات", fmt_currency(total_debt_rem), "رصيد الدين الحالي", "warning" if total_debt_rem>0 else "positive")
-        
-        st.write("")
-        df_loans_disp = store['df_loans'].copy()
-        if 'أصل التمويل' in df_loans_disp.columns and 'المتبقي للقرض' in df_loans_disp.columns:
-            rem_vals = pd.to_numeric(df_loans_disp['المتبقي للقرض'], errors='coerce').fillna(0)
-            orig_vals = pd.to_numeric(df_loans_disp['أصل التمويل'], errors='coerce').fillna(1)
-            df_loans_disp['نسبة السداد'] = ((orig_vals - rem_vals) / orig_vals).apply(lambda x: fmt_pct(x))
-            df_loans_disp['الحالة'] = rem_vals.apply(lambda x: "تم السداد بالكامل" if x<=0 else "جاري السداد")
-            
-        st.dataframe(style_df_accounting(df_loans_disp), use_container_width=True)
+    with c1_page1:
+        df_dev_disp = store['df_dev_projects'].copy()
+        render_styled_dataframe(df_dev_disp)
 
-    with c_right:
-        st.markdown("<div class='section-title'>محفظة المشاريع تحت الإنشاء ومزيج الإيرادات</div>", unsafe_allow_html=True)
-        # Revenue Mix Chart placed right next to Dev Projects
+    with c2_page1:
         df_rev_chart = store['df_revenues'].copy()
         if 'المبلغ' in df_rev_chart.columns and 'نوع الايراد' in df_rev_chart.columns:
             df_rev_chart['المبلغ_الرقدي'] = pd.to_numeric(df_rev_chart['المبلغ'], errors='coerce')
@@ -699,20 +757,40 @@ if page == "الملخص التنفيذي والمركز المالي":
             max_val = df_rev_chart['المبلغ_الرقدي'].max() if not df_rev_chart.empty else 1000000
             fig_rev.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)',
                                   font=dict(color='#0F172A', size=11),
-                                  margin=dict(t=10, b=10, l=10, r=140), height=170, showlegend=False,
+                                  margin=dict(t=10, b=10, l=10, r=140), height=180, showlegend=False,
                                   xaxis=dict(range=[0, max_val * 1.45], title=""), yaxis_title="")
             st.plotly_chart(fig_rev, use_container_width=True)
 
-        df_dev_disp = store['df_dev_projects'].copy()
-        st.dataframe(style_df_accounting(df_dev_disp), use_container_width=True)
+# ==============================================================================
+# PAGE 2: جدول التمويلات والاقساط (SEPARATED PAGE 2 FOR DEBT & INSTALLMENTS)
+# ==============================================================================
+elif page == "جدول التمويلات والاقساط":
+    st.markdown("<div class='page-title'>التمويلات والالتزامات وجدول الأقساط</div>", unsafe_allow_html=True)
+    st.markdown("<div class='page-subtitle'>متابعة أرصدة التمويلات، نسبة السداد، وجدول الاستحقاقات والمدفوعات.</div>", unsafe_allow_html=True)
+    
+    total_debt_orig = pd.to_numeric(store['df_loans']['أصل التمويل'], errors='coerce').sum() if 'أصل التمويل' in store['df_loans'].columns else 0.0
+    total_debt_rem = pd.to_numeric(store['df_loans']['المتبقي للقرض'], errors='coerce').sum() if 'المتبقي للقرض' in store['df_loans'].columns else 0.0
+    
+    dk1, dk2 = st.columns(2)
+    with dk1: render_kpi("أصل التمويلات", fmt_currency(total_debt_orig), "إجمالي أصول الديون المسجلة", "positive")
+    with dk2: render_kpi("المتبقي للتمويلات", fmt_currency(total_debt_rem), "رصيد الدين المتبقي حالياً", "warning" if total_debt_rem>0 else "positive")
+    
+    st.markdown("<div class='section-title'>جدول القروض والتسهيلات الحالية</div>", unsafe_allow_html=True)
+    df_loans_disp = store['df_loans'].copy()
+    if 'أصل التمويل' in df_loans_disp.columns and 'المتبقي للقرض' in df_loans_disp.columns:
+        rem_vals = pd.to_numeric(df_loans_disp['المتبقي للقرض'], errors='coerce').fillna(0)
+        orig_vals = pd.to_numeric(df_loans_disp['أصل التمويل'], errors='coerce').fillna(1)
+        df_loans_disp['نسبة السداد'] = ((orig_vals - rem_vals) / orig_vals).apply(lambda x: fmt_pct(x))
+        df_loans_disp['الحالة'] = rem_vals.apply(lambda x: "تم السداد بالكامل" if x<=0 else "جاري السداد")
+        
+    render_styled_dataframe(df_loans_disp)
 
-    # Request 6: Add Installments Table (جدول الاقساط) at the end of Page 1
-    st.markdown("<div class='section-title'>جدول استحقاقات الأقساط (جدول الاقساط)</div>", unsafe_allow_html=True)
+    st.markdown("<div class='section-title'>جدول استحقاقات الأقساط والتراكمي المدفوع (جدول الاقساط)</div>", unsafe_allow_html=True)
     df_inst_disp = store['df_installments'].copy()
-    st.dataframe(style_df_accounting(df_inst_disp), use_container_width=True)
+    render_styled_dataframe(df_inst_disp)
 
 # ==============================================================================
-# PAGE 2: السيولة والتدفقات النقدية
+# PAGE 3: السيولة والتدفقات النقدية
 # ==============================================================================
 elif page == "السيولة والتدفقات النقدية":
     st.markdown("<div class='page-title'>التدفقات النقدية والسيولة</div>", unsafe_allow_html=True)
@@ -760,10 +838,10 @@ elif page == "السيولة والتدفقات النقدية":
     st.plotly_chart(fig_cf, use_container_width=True)
 
     st.markdown("<div class='section-title'>جدول التدفقات النقدية الشامل</div>", unsafe_allow_html=True)
-    st.dataframe(style_df_accounting(df_cf), use_container_width=True)
+    render_styled_dataframe(df_cf)
 
 # ==============================================================================
-# PAGE 3: مشاريع الايجار (P&L MATCHING ORIGINAL EXCEL SHEET3 STRUCTURE)
+# PAGE 4: مشاريع الايجار (P&L MATCHING ORIGINAL EXCEL SHEET3 STRUCTURE)
 # ==============================================================================
 elif page == "مشاريع الايجار":
     st.markdown("<div class='page-title'>قائمة الأرباح والخسائر للعقارات</div>", unsafe_allow_html=True)
@@ -783,6 +861,8 @@ elif page == "مشاريع الايجار":
     occ_units_row = df_pl[df_pl.iloc[:, 0].astype(str).str.contains('Occupied units', case=False, na=False)]
     rev_row = df_pl[df_pl.iloc[:, 0].astype(str).str.contains('Net Revenue', case=False, na=False)]
     noi_row = df_pl[df_pl.iloc[:, 0].astype(str).str.contains('Operating Income', case=False, na=False)]
+    net_profit_row = df_pl[df_pl.iloc[:, 0].astype(str).str.contains('Net Profit', case=False, na=False)]
+    margin_row_card = df_pl[df_pl.iloc[:, 0].astype(str).str.contains('Net Profit Margin', case=False, na=False)]
     
     proj_col_idx = None
     if selected_project != "جميع العقارات (All)":
@@ -811,23 +891,23 @@ elif page == "مشاريع الايجار":
     with p4: render_kpi("الإيرادات", fmt_currency(p_rev), "إجمالي الإيرادات", "positive")
     with p5: render_kpi("صافي NOI", fmt_currency(p_noi), "الدخل التشغيلي", "positive" if p_noi>=0 else "danger")
 
-    # Section: NOI Property Performance Ranking Cards (Dynamic)
-    st.markdown("<div class='section-title'>🏆 ترتيب أداء العقارات (Rental Property Performance Ranking)</div>", unsafe_allow_html=True)
-    if not noi_row.empty and len(proj_columns) > 0:
-        noi_vals = []
+    # Section: Property Performance Ranking Cards displaying Net Profit Margin (%)
+    st.markdown("<div class='section-title'>🏆 ترتيب أداء العقارات بحسب نسبة صافي الربح (Net Profit Margin %)</div>", unsafe_allow_html=True)
+    if not margin_row_card.empty and len(proj_columns) > 0:
+        margin_vals = []
         for p in proj_columns:
             for c in range(df_pl.shape[1]):
                 if str(df_pl.iloc[1, c]).strip() == p:
-                    val = pd.to_numeric(noi_row.iloc[0, c], errors='coerce')
-                    noi_vals.append({'Project': p, 'NOI': val if not np.isnan(val) else 0.0})
+                    val = pd.to_numeric(margin_row_card.iloc[0, c], errors='coerce')
+                    margin_vals.append({'Project': p, 'Margin': val if not np.isnan(val) else 0.0})
                     break
-        df_noi_rank = pd.DataFrame(noi_vals).sort_values(by='NOI', ascending=False)
-        if not df_noi_rank.empty:
-            best_p = df_noi_rank.iloc[0]
-            worst_p = df_noi_rank.iloc[-1]
+        df_margin_rank = pd.DataFrame(margin_vals).sort_values(by='Margin', ascending=False)
+        if not df_margin_rank.empty:
+            best_p = df_margin_rank.iloc[0]
+            worst_p = df_margin_rank.iloc[-1]
             rk1, rk2 = st.columns(2)
-            with rk1: render_kpi("أعلى العقارات أداءً (Best NOI)", f"{best_p['Project']}", f"صافي NOI: {fmt_currency(best_p['NOI'])}", "positive")
-            with rk2: render_kpi("أقل العقارات أداءً (Worst NOI)", f"{worst_p['Project']}", f"صافي NOI: {fmt_currency(worst_p['NOI'])}", "danger" if worst_p['NOI']<0 else "warning")
+            with rk1: render_kpi("أعلى العقارات أداءً (Best Net Profit Margin)", f"{best_p['Project']}", f"نسبة صافي الربح: {fmt_pct(best_p['Margin'])}", "positive")
+            with rk2: render_kpi("أقل العقارات أداءً (Worst Net Profit Margin)", f"{worst_p['Project']}", f"نسبة صافي الربح: {fmt_pct(worst_p['Margin'])}", "danger" if worst_p['Margin']<0 else "warning")
 
     st.markdown("<div class='section-title'>قائمة الأرباح والخسائر للعقارات (المصدر الرسمي - Sheet3)</div>", unsafe_allow_html=True)
     
@@ -838,12 +918,12 @@ elif page == "مشاريع الايجار":
         first_col_name = df_pl_formatted.columns[0]
         if first_col_name == "" or str(first_col_name).startswith("Unnamed"):
             df_pl_formatted.rename(columns={first_col_name: 'Category'}, inplace=True)
-        st.dataframe(style_df_accounting(df_pl_formatted), use_container_width=True)
+        render_styled_dataframe(df_pl_formatted)
     else:
-        st.dataframe(style_df_accounting(df_pl), use_container_width=True)
+        render_styled_dataframe(df_pl)
 
 # ==============================================================================
-# PAGE 4: موديل التطوير العقاري (100% EQUITY)
+# PAGE 5: موديل التطوير العقاري (100% EQUITY)
 # ==============================================================================
 elif page == "موديل التطوير العقاري":
     st.markdown("<div class='page-title'>موديل دراسة جدوى التطوير العقاري (100% Equity)</div>", unsafe_allow_html=True)
@@ -897,10 +977,10 @@ elif page == "موديل التطوير العقاري":
         matrix_data.append(row)
         
     df_sens = pd.DataFrame(matrix_data, index=[f"سعر البيع: {fmt_currency(p)}/متر" for p in price_range], columns=[f"تكلفة التطوير: {fmt_currency(c)}/متر" for c in cost_range])
-    st.dataframe(style_df_accounting(df_sens), use_container_width=True)
+    render_styled_dataframe(df_sens)
 
 # ==============================================================================
-# PAGE 5: موديل الايجارات (HEAD LEASE ESCALATION)
+# PAGE 6: موديل الايجارات (HEAD LEASE ESCALATION)
 # ==============================================================================
 elif page == "موديل الايجارات":
     st.markdown("<div class='page-title'>موديل إعادة التأجير Sub-Lease (100% Equity)</div>", unsafe_allow_html=True)
@@ -947,10 +1027,10 @@ elif page == "موديل الايجارات":
 
     st.markdown("<div class='section-title'>القوائم المالية المتوقعة</div>", unsafe_allow_html=True)
     df_pnl_disp = res_r['annual_pnl'].copy()
-    st.dataframe(style_df_accounting(df_pnl_disp), use_container_width=True)
+    render_styled_dataframe(df_pnl_disp)
 
 # ==============================================================================
-# PAGE 6: ارشادات ودليل المصطلحات المالي
+# PAGE 7: ارشادات ودليل المصطلحات المالي
 # ==============================================================================
 elif page == "ارشادات":
     st.markdown("<div class='page-title'>إرشادات المنصة ودليل المصطلحات المالية</div>", unsafe_allow_html=True)
