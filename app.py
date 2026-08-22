@@ -9,7 +9,6 @@ import openpyxl
 import os
 from datetime import datetime
 from zoneinfo import ZoneInfo
-from plotly.subplots import make_subplots
 
 # ==============================================================================
 # GLOBAL BRANDING & MODERN EXECUTIVE THEME SYSTEM (RWAZ VIEW THEME)
@@ -209,12 +208,12 @@ st.markdown("""
     }
     .rwaz-html-table th {
         background:#3F2D1E !important; color:#FFF !important; font-weight:900 !important;
-        text-align:center !important; padding:6px 4px !important; line-height:1.25 !important; height:32px !important;
+        text-align:center !important; padding:2px 3px !important; line-height:1.15 !important; height:27px !important;
         border-right:1px solid #6E5238 !important; border-bottom:1px solid #6E5238 !important;
         white-space:normal !important; overflow-wrap:anywhere; unicode-bidi:plaintext;
     }
     .rwaz-html-table td {
-        padding:5px 4px !important; line-height:1.25 !important; height:30px !important; text-align:center !important;
+        padding:1px 3px !important; line-height:1.15 !important; height:25px !important; text-align:center !important;
         border-right:1px solid #ECE7E1 !important; border-bottom:1px solid #ECE7E1 !important;
         white-space:normal !important; overflow-wrap:anywhere; unicode-bidi:plaintext;
     }
@@ -252,6 +251,33 @@ st.markdown("""
         padding:6px 9px; margin-top:4px; direction:rtl; text-align:right;
         color:#684929; font-size:10px; font-weight:800;
     }
+
+    /* Approved Executive Revenue Mix card */
+    .revenue-mix-card {
+        background:#FFF; border:1px solid var(--rwaz-border); border-radius:10px;
+        padding:8px 10px; box-shadow:0 2px 8px rgba(63,45,30,.045); direction:rtl;
+    }
+    .revenue-mix-title { font-size:12px; font-weight:900; color:var(--rwaz-dark); text-align:right; margin-bottom:1px; }
+    .revenue-mix-subtitle { font-size:8.8px; font-weight:650; color:#8A8178; text-align:right; margin-bottom:6px; }
+    .revenue-mix-kpis { display:grid; grid-template-columns:repeat(3,1fr); gap:5px; margin-bottom:7px; }
+    .revenue-mix-kpi { text-align:center; border-left:1px solid #EEE7DF; padding:2px 4px; min-width:0; }
+    .revenue-mix-kpi:last-child { border-left:0; }
+    .revenue-mix-kpi-label { color:#756A60; font-size:8.2px; font-weight:750; white-space:nowrap; }
+    .revenue-mix-kpi-value { color:#3F2D1E; font-size:14px; font-weight:950; margin-top:1px; white-space:nowrap; }
+    .revenue-mix-kpi-value.main-source { color:#1F7A55; }
+    .revenue-mix-stack { display:flex; direction:rtl; width:100%; height:20px; overflow:hidden; border-radius:6px; background:#F1ECE6; border:1px solid #E6DDD4; margin:3px 0 5px; }
+    .revenue-mix-stack-seg { height:100%; display:flex; align-items:center; justify-content:center; color:#FFF; font-size:8px; font-weight:900; min-width:2px; overflow:hidden; white-space:nowrap; }
+    .revenue-mix-legend { display:flex; flex-wrap:wrap; gap:4px 9px; justify-content:flex-start; margin-bottom:5px; }
+    .revenue-mix-legend-item { display:flex; align-items:center; gap:4px; color:#5E554D; font-size:7.8px; font-weight:700; }
+    .revenue-mix-dot { width:7px; height:7px; border-radius:2px; flex:0 0 7px; }
+    .revenue-mix-detail-head { display:grid; grid-template-columns:1.25fr 2.2fr .9fr .65fr; gap:5px; color:#7A7066; font-size:7.8px; font-weight:800; padding:2px 2px 3px; border-bottom:1px solid #EEE7DF; }
+    .revenue-mix-row { display:grid; grid-template-columns:1.25fr 2.2fr .9fr .65fr; gap:5px; align-items:center; min-height:23px; border-bottom:1px solid #F1ECE7; font-size:8.3px; }
+    .revenue-mix-row:last-child { border-bottom:0; }
+    .revenue-mix-name { font-weight:850; color:#3F2D1E; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .revenue-mix-bar-bg { height:7px; border-radius:5px; background:#F0EBE5; overflow:hidden; direction:rtl; }
+    .revenue-mix-bar { height:100%; border-radius:5px; min-width:2px; }
+    .revenue-mix-amount { direction:ltr; unicode-bidi:isolate; text-align:center; font-weight:800; color:#3F2D1E; white-space:nowrap; }
+    .revenue-mix-share { direction:ltr; unicode-bidi:isolate; text-align:center; font-weight:900; white-space:nowrap; }
 
     /* Guidance cards */
     .term-card {
@@ -419,7 +445,7 @@ def style_df_accounting(df):
     df_clean = df_clean.astype(str).replace({"None": "", "nan": "", "NaN": "", "<NA>": ""})
     return df_clean.reset_index(drop=True)
 
-def render_styled_dataframe(df, max_height=None):
+def render_styled_dataframe(df, max_height=None, table_kind=None):
     """Executive HTML table renderer with zero internal vertical scrolling.
     It preserves the original DataFrame values and only changes presentation.
     Font size adapts gently to wide tables to keep the full table on the page.
@@ -429,8 +455,8 @@ def render_styled_dataframe(df, max_height=None):
 
     df_fmt = style_df_accounting(df)
     col_count = max(1, len(df_fmt.columns))
-    body_font = 10.0 if col_count <= 10 else (9.2 if col_count <= 14 else 8.5)
-    head_font = 10.2 if col_count <= 10 else (9.3 if col_count <= 14 else 8.6)
+    body_font = 9.0 if col_count <= 10 else (8.8 if col_count <= 14 else 8.5)
+    head_font = 9.8 if col_count <= 10 else (9.3 if col_count <= 14 else 8.9)
 
     def highlight_executive_rows_and_negatives(row):
         styles = [''] * len(row)
@@ -439,7 +465,13 @@ def render_styled_dataframe(df, max_height=None):
         font_weight = 'font-weight:700;'
         text_color = '#1F2937;'
 
-        if 'cash beginnin' in cat_str or 'units' in cat_str or 'occupancy' in cat_str:
+        pnl_base_rows = {'total units', 'occupied units', 'occupancy rate', 'improvements assets'}
+        if table_kind == 'pnl' and cat_str.strip() in pnl_base_rows:
+            # The four operating-base rows immediately before Net Revenue form one visual block.
+            bg_color = 'background-color:#E2D6CA;'
+            text_color = '#3F2D1E;'
+            font_weight = 'font-weight:850;'
+        elif 'cash beginnin' in cat_str or 'units' in cat_str or 'occupancy' in cat_str:
             bg_color = 'background-color:#FAF8F5;'
             text_color = '#625B54;'
         elif 'cash in' in cat_str or 'net revenue' in cat_str or 'revenue' in cat_str:
@@ -561,6 +593,75 @@ def apply_rwaz_plot_layout(fig, height=240, showlegend=False):
         showlegend=showlegend, hoverlabel=dict(font_size=11)
     )
     return fig
+
+
+def render_revenue_mix_card(df_revenues):
+    """Approved RWAZ Revenue Mix visualization. Presentation only; source data is not mutated."""
+    if df_revenues is None or df_revenues.empty or 'المبلغ' not in df_revenues.columns or 'نوع الايراد' not in df_revenues.columns:
+        return
+    work = df_revenues[['نوع الايراد', 'المبلغ']].copy()
+    work['amount'] = pd.to_numeric(work['المبلغ'], errors='coerce').fillna(0.0)
+    work = work.groupby('نوع الايراد', as_index=False)['amount'].sum().sort_values('amount', ascending=False).reset_index(drop=True)
+    total = float(work['amount'].sum())
+    if total <= 0:
+        return
+    work['share'] = work['amount'] / total
+    palette = {
+        'الإيجارات': RWAZ_GREEN,
+        'التطوير العقاري': RWAZ_PRIMARY,
+        'المقاولات': RWAZ_ACCENT,
+        'إيرادات أخري': '#D9D0C5',
+        'إيرادات أخرى': '#D9D0C5'
+    }
+    work['color'] = [palette.get(str(v).strip(), RWAZ_MID) for v in work['نوع الايراد']]
+    top = work.iloc[0]
+    max_amount = max(float(work['amount'].max()), 1.0)
+
+    stack_parts = []
+    legend_parts = []
+    detail_rows = []
+    for _, r in work.iterrows():
+        name = str(r['نوع الايراد'])
+        amount = float(r['amount'])
+        share = float(r['share'])
+        color = str(r['color'])
+        width_pct = max(share * 100, 0.18)
+        stack_label = fmt_share(share) if share >= 0.035 else ''
+        stack_text_color = '#3F2D1E' if color.upper() in {'#D9D0C5', '#C5A477'} else '#FFFFFF'
+        stack_parts.append(
+            f"<div class='revenue-mix-stack-seg' style='width:{width_pct:.4f}%;background:{color};color:{stack_text_color};'>{stack_label}</div>"
+        )
+        legend_parts.append(
+            f"<div class='revenue-mix-legend-item'><span class='revenue-mix-dot' style='background:{color};'></span><span>{name}</span></div>"
+        )
+        rel_width = max(0.8, amount / max_amount * 100)
+        share_color = RWAZ_GREEN if name == str(top['نوع الايراد']) else color
+        detail_rows.append(
+            f"<div class='revenue-mix-row'>"
+            f"<div class='revenue-mix-name'>{name}</div>"
+            f"<div class='revenue-mix-bar-bg'><div class='revenue-mix-bar' style='width:{rel_width:.3f}%;background:{color};'></div></div>"
+            f"<div class='revenue-mix-amount'>{fmt_currency_compact(amount)}</div>"
+            f"<div class='revenue-mix-share' style='color:{share_color};'>{fmt_share(share)}</div>"
+            f"</div>"
+        )
+
+    card = f"""
+    <div class='revenue-mix-card'>
+      <div class='revenue-mix-title'>مزيج الإيرادات</div>
+      <div class='revenue-mix-subtitle'>توزيع الإيرادات حسب المصدر</div>
+      <div class='revenue-mix-kpis'>
+        <div class='revenue-mix-kpi'><div class='revenue-mix-kpi-label'>إجمالي الإيرادات</div><div class='revenue-mix-kpi-value ltr-num'>{fmt_currency_compact(total)}</div></div>
+        <div class='revenue-mix-kpi'><div class='revenue-mix-kpi-label'>المصدر الرئيسي</div><div class='revenue-mix-kpi-value main-source'>{top['نوع الايراد']}</div></div>
+        <div class='revenue-mix-kpi'><div class='revenue-mix-kpi-label'>نسبة المصدر الرئيسي</div><div class='revenue-mix-kpi-value main-source ltr-num'>{fmt_share(top['share'])}</div></div>
+      </div>
+      <div class='revenue-mix-stack'>{''.join(stack_parts)}</div>
+      <div class='revenue-mix-legend'>{''.join(legend_parts)}</div>
+      <div class='revenue-mix-detail-head'><div>المصدر</div><div></div><div>القيمة</div><div>النسبة</div></div>
+      {''.join(detail_rows)}
+      <div class='revenue-insight'>المصدر الرئيسي للإيرادات هو <b>{top['نوع الايراد']}</b> ويمثل <span class='ltr-num'>{fmt_share(top['share'])}</span> من إجمالي الإيرادات.</div>
+    </div>
+    """
+    st.markdown(card, unsafe_allow_html=True)
 
 # ==============================================================================
 # LAYER 1: DYNAMIC EXCEL DATA INGESTION ENGINE
@@ -1008,57 +1109,11 @@ if page == "الملخص التنفيذي والمركز المالي":
                     render_compact_alert(kind, msg)
 
     st.markdown("<div class='section-title'>المشاريع تحت الإنشاء ومزيج الإيرادات</div>", unsafe_allow_html=True)
-    c1_page1, c2_page1 = st.columns([1.12, .88])
+    c1_page1, c2_page1 = st.columns([1.0, 1.0])
     with c1_page1:
         render_styled_dataframe(store['df_dev_projects'].copy(), max_height=245)
     with c2_page1:
-        df_rev_chart = store['df_revenues'].copy()
-        if 'المبلغ' in df_rev_chart.columns and 'نوع الايراد' in df_rev_chart.columns and not df_rev_chart.empty:
-            df_rev_chart['المبلغ_الرقمي'] = pd.to_numeric(df_rev_chart['المبلغ'], errors='coerce').fillna(0)
-            df_rev_chart = df_rev_chart.sort_values('المبلغ_الرقمي', ascending=False).reset_index(drop=True)
-            total_mix = float(df_rev_chart['المبلغ_الرقمي'].sum())
-            df_rev_chart['النسبة'] = df_rev_chart['المبلغ_الرقمي'] / total_mix if total_mix > 0 else 0.0
-            color_map = {
-                'الإيجارات': RWAZ_GREEN,
-                'التطوير العقاري': RWAZ_PRIMARY,
-                'المقاولات': RWAZ_ACCENT,
-                'إيرادات أخري': '#9A8979',
-                'إيرادات أخرى': '#9A8979'
-            }
-            rev_colors = [color_map.get(str(x).strip(), RWAZ_MID) for x in df_rev_chart['نوع الايراد']]
-            fig_rev = make_subplots(
-                rows=1, cols=2, specs=[[{'type':'domain'}, {'type':'xy'}]],
-                column_widths=[0.36, 0.64], horizontal_spacing=0.10
-            )
-            fig_rev.add_trace(go.Pie(
-                labels=df_rev_chart['نوع الايراد'], values=df_rev_chart['المبلغ_الرقمي'], hole=.64,
-                marker=dict(colors=rev_colors, line=dict(color='#FFFFFF', width=2)),
-                textinfo='none', hovertemplate='%{label}<br>SAR %{value:,.0f}<br>%{percent}<extra></extra>',
-                sort=False
-            ), row=1, col=1)
-            bar_text = [f"{fmt_currency_compact(v)} | {fmt_share(s)}" for v, s in zip(df_rev_chart['المبلغ_الرقمي'], df_rev_chart['النسبة'])]
-            fig_rev.add_trace(go.Bar(
-                x=df_rev_chart['المبلغ_الرقمي'], y=df_rev_chart['نوع الايراد'], orientation='h',
-                marker_color=rev_colors, text=bar_text, textposition='outside', cliponaxis=False,
-                hovertemplate='%{y}<br>SAR %{x:,.0f}<extra></extra>'
-            ), row=1, col=2)
-            fig_rev.add_annotation(
-                x=0.18, y=0.50, xref='paper', yref='paper', showarrow=False,
-                text=f"<b>{fmt_currency_compact(total_mix)}</b><br><span style='font-size:9px'>إجمالي الإيرادات</span>",
-                font=dict(size=12, color=RWAZ_DARK), align='center'
-            )
-            apply_rwaz_plot_layout(fig_rev, height=245, showlegend=False)
-            max_rev = max(float(df_rev_chart['المبلغ_الرقمي'].max()), 1.0)
-            fig_rev.update_xaxes(visible=False, range=[0, max_rev*1.52], row=1, col=2)
-            fig_rev.update_yaxes(title='', tickfont=dict(size=9.5), autorange='reversed', row=1, col=2)
-            fig_rev.update_layout(margin=dict(t=8,b=8,l=10,r=95), bargap=.35)
-            st.plotly_chart(fig_rev, use_container_width=True, config={'displayModeBar': False})
-            if total_mix > 0:
-                top_rev = df_rev_chart.iloc[0]
-                st.markdown(
-                    f"<div class='revenue-insight'>المصدر الرئيسي للإيرادات: <b>{top_rev['نوع الايراد']}</b> — {fmt_share(top_rev['النسبة'])} من إجمالي الإيرادات.</div>",
-                    unsafe_allow_html=True
-                )
+        render_revenue_mix_card(store['df_revenues'].copy())
 
 # ==============================================================================
 # PAGE 2: FINANCING & INSTALLMENTS
@@ -1143,28 +1198,83 @@ elif page == "السيولة والتدفقات النقدية":
 
     tab_cf_over, tab_cf_detail = st.tabs(["نظرة السيولة", "جدول التدفقات التفصيلي"])
     with tab_cf_over:
-        st.markdown("<div class='section-title'>مسار السيولة وحاجز الأمان</div>", unsafe_allow_html=True)
-        df_chart = pd.DataFrame({'التاريخ': time_cols, 'النقدية المتبقية': ending_cash_vals})
-        fig_cf = go.Figure()
-        fig_cf.add_trace(go.Scatter(x=df_chart['التاريخ'], y=df_chart['النقدية المتبقية'], mode='lines+markers', fill='tozeroy', line=dict(color=RWAZ_PRIMARY, width=2.5), marker=dict(size=5), hovertemplate='%{x}<br>SAR %{y:,.0f}<extra></extra>'))
-        fig_cf.add_hline(y=500000, line_dash='dash', line_color=RWAZ_RED, annotation_text='حد الأمان SAR 500,000')
-        apply_rwaz_plot_layout(fig_cf, height=245)
-        fig_cf.update_layout(xaxis_title="", yaxis_title="SAR", margin=dict(t=20,b=25,l=15,r=20))
-        st.plotly_chart(fig_cf, use_container_width=True, config={'displayModeBar': False})
-
         cash_in_row = df_cf[df_cf['Category'].astype(str).str.contains('cash in', case=False, na=False)]
         cash_out_row = df_cf[df_cf['Category'].astype(str).str.contains('cash out', case=False, na=False)]
-        if not cash_in_row.empty or not cash_out_row.empty:
-            cash_in_vals = np.nan_to_num(pd.to_numeric(cash_in_row[time_cols].values.flatten()[:len(time_cols)], errors='coerce'), nan=0.0) if not cash_in_row.empty else np.zeros(len(time_cols))
-            cash_out_vals = np.nan_to_num(pd.to_numeric(cash_out_row[time_cols].values.flatten()[:len(time_cols)], errors='coerce'), nan=0.0) if not cash_out_row.empty else np.zeros(len(time_cols))
-            cash_out_vals = np.abs(cash_out_vals)
+        cash_in_vals = np.nan_to_num(pd.to_numeric(cash_in_row[time_cols].values.flatten()[:len(time_cols)], errors='coerce'), nan=0.0) if not cash_in_row.empty else np.zeros(len(time_cols))
+        cash_out_vals = np.nan_to_num(pd.to_numeric(cash_out_row[time_cols].values.flatten()[:len(time_cols)], errors='coerce'), nan=0.0) if not cash_out_row.empty else np.zeros(len(time_cols))
+        cash_out_vals = np.abs(cash_out_vals)
+        net_cash_vals = cash_in_vals - cash_out_vals
+        total_cash_in = float(np.sum(cash_in_vals))
+        total_cash_out = float(np.sum(cash_out_vals))
+        total_net_cash = float(np.sum(net_cash_vals))
+
+        chart_left, chart_right = st.columns(2)
+
+        with chart_left:
+            st.markdown("<div class='section-title'>Cash In مقابل Cash Out وصافي التدفق</div>", unsafe_allow_html=True)
             fig_io = go.Figure()
-            fig_io.add_trace(go.Bar(name='Cash In', x=time_cols, y=cash_in_vals, marker_color=RWAZ_GREEN, hovertemplate='%{x}<br>SAR %{y:,.0f}<extra></extra>'))
-            fig_io.add_trace(go.Bar(name='Cash Out', x=time_cols, y=cash_out_vals, marker_color=RWAZ_ACCENT, hovertemplate='%{x}<br>SAR %{y:,.0f}<extra></extra>'))
-            apply_rwaz_plot_layout(fig_io, height=225, showlegend=True)
-            fig_io.update_layout(barmode='group', legend=dict(orientation='h', y=1.12, x=.5, xanchor='center'), xaxis_title="", yaxis_title="SAR")
-            st.markdown("<div class='section-title'>Cash In مقابل Cash Out</div>", unsafe_allow_html=True)
+            fig_io.add_trace(go.Bar(name='Cash In', x=time_cols, y=cash_in_vals, marker_color=RWAZ_GREEN,
+                                    hovertemplate='%{x}<br>Cash In: SAR %{y:,.0f}<extra></extra>'))
+            fig_io.add_trace(go.Bar(name='Cash Out', x=time_cols, y=cash_out_vals, marker_color=RWAZ_ACCENT,
+                                    hovertemplate='%{x}<br>Cash Out: SAR %{y:,.0f}<extra></extra>'))
+            net_labels = [f"({abs(v)/1e6:.1f}M)" if v < 0 else f"{v/1e6:.1f}M" for v in net_cash_vals]
+            net_marker_colors = [RWAZ_RED if v < 0 else RWAZ_DARK for v in net_cash_vals]
+            fig_io.add_trace(go.Scatter(
+                name='Net Cash Flow', x=time_cols, y=net_cash_vals, mode='lines+markers+text',
+                line=dict(color=RWAZ_DARK, width=2.2), marker=dict(size=5.5, color=net_marker_colors),
+                text=net_labels, textposition='top center', textfont=dict(size=8.5, color=RWAZ_DARK),
+                hovertemplate='%{x}<br>Net Cash Flow: SAR %{y:,.0f}<extra></extra>'
+            ))
+            fig_io.add_hline(y=0, line_color='#B9B1A9', line_width=1)
+            apply_rwaz_plot_layout(fig_io, height=260, showlegend=True)
+            fig_io.update_layout(
+                barmode='group', legend=dict(orientation='h', y=1.11, x=.5, xanchor='center', font=dict(size=9)),
+                xaxis=dict(title='', tickfont=dict(size=8.5), showgrid=False),
+                yaxis=dict(title='SAR', tickformat='~s', gridcolor='#EEE9E3', zeroline=False),
+                margin=dict(t=30,b=24,l=25,r=15), bargap=.28
+            )
             st.plotly_chart(fig_io, use_container_width=True, config={'displayModeBar': False})
+            st.markdown(
+                f"<div style='display:grid;grid-template-columns:repeat(3,1fr);gap:5px;'>"
+                f"<div class='mini-cell'><div style='font-size:8px;color:#7A7066;'>إجمالي Cash In</div><div class='ltr-num' style='font-size:9.5px;font-weight:900;color:#1F7A55;'>{fmt_currency_compact(total_cash_in)}</div></div>"
+                f"<div class='mini-cell'><div style='font-size:8px;color:#7A7066;'>إجمالي Cash Out</div><div class='ltr-num' style='font-size:9.5px;font-weight:900;color:#8D622F;'>{fmt_currency_compact(total_cash_out)}</div></div>"
+                f"<div class='mini-cell'><div style='font-size:8px;color:#7A7066;'>صافي التدفق</div><div class='ltr-num' style='font-size:9.5px;font-weight:900;{value_color_style(total_net_cash)}'>{fmt_currency_compact(total_net_cash)}</div></div>"
+                f"</div>", unsafe_allow_html=True
+            )
+
+        with chart_right:
+            st.markdown("<div class='section-title'>مسار السيولة وحاجز الأمان</div>", unsafe_allow_html=True)
+            df_chart = pd.DataFrame({'التاريخ': time_cols, 'النقدية المتبقية': ending_cash_vals})
+            point_colors = [RWAZ_RED if v < 0 else RWAZ_PRIMARY for v in ending_cash_vals]
+            fig_cf = go.Figure()
+            fig_cf.add_trace(go.Scatter(
+                x=df_chart['التاريخ'], y=df_chart['النقدية المتبقية'], mode='lines+markers', fill='tozeroy',
+                fillcolor='rgba(104,73,41,0.13)', line=dict(color=RWAZ_PRIMARY, width=2.4),
+                marker=dict(size=6, color=point_colors, line=dict(color='#FFFFFF', width=.7)),
+                hovertemplate='%{x}<br>SAR %{y:,.0f}<extra></extra>', name='الرصيد المتوقع'
+            ))
+            fig_cf.add_hline(y=500000, line_dash='dash', line_color=RWAZ_RED, line_width=1.5,
+                             annotation_text='حد الأمان SAR 500,000', annotation_position='top right')
+            if len(ending_cash_vals):
+                fig_cf.add_annotation(x=min_cash_month, y=min_cash_val, text=fmt_currency_compact(min_cash_val),
+                                      showarrow=True, arrowhead=0, ay=28, font=dict(size=9.5, color=RWAZ_RED if min_cash_val < 0 else RWAZ_DARK), bgcolor='rgba(255,255,255,.88)')
+                fig_cf.add_annotation(x=max_cash_month, y=max_cash_val, text=fmt_currency_compact(max_cash_val),
+                                      showarrow=True, arrowhead=0, ay=-28, font=dict(size=9.5, color=RWAZ_GREEN), bgcolor='rgba(255,255,255,.88)')
+            apply_rwaz_plot_layout(fig_cf, height=260, showlegend=False)
+            fig_cf.update_layout(
+                xaxis=dict(title='', tickfont=dict(size=8.5), showgrid=False),
+                yaxis=dict(title='SAR', tickformat='~s', gridcolor='#EEE9E3', zeroline=False),
+                margin=dict(t=30,b=24,l=25,r=15)
+            )
+            st.plotly_chart(fig_cf, use_container_width=True, config={'displayModeBar': False})
+            st.markdown(
+                f"<div style='display:grid;grid-template-columns:repeat(3,1fr);gap:5px;'>"
+                f"<div class='mini-cell'><div style='font-size:8px;color:#7A7066;'>الرصيد الحالي</div><div class='ltr-num' style='font-size:9.5px;font-weight:900;{value_color_style(current_cash)}'>{fmt_currency_compact(current_cash)}</div></div>"
+                f"<div class='mini-cell'><div style='font-size:8px;color:#7A7066;'>أعلى رصيد</div><div class='ltr-num' style='font-size:9.5px;font-weight:900;color:#1F7A55;'>{fmt_currency_compact(max_cash_val)} · {max_cash_month}</div></div>"
+                f"<div class='mini-cell'><div style='font-size:8px;color:#7A7066;'>أدنى رصيد</div><div class='ltr-num' style='font-size:9.5px;font-weight:900;{value_color_style(min_cash_val)}'>{fmt_currency_compact(min_cash_val)} · {min_cash_month}</div></div>"
+                f"</div>", unsafe_allow_html=True
+            )
+
     with tab_cf_detail:
         render_styled_dataframe(df_cf, max_height=650)
 
@@ -1234,16 +1344,20 @@ elif page == "مشاريع الايجار":
                     x=occ_df['OccPct'], y=occ_df['Project'], orientation='h',
                     marker_color=occ_colors, text=[f"{v:.1f}%" for v in occ_df['OccPct']],
                     textposition='outside', cliponaxis=False, width=.20,
+                    textfont=dict(size=12.5, color='#3F2D1E', family='Arial Black, Tahoma, Segoe UI'),
                     hovertemplate='%{y}<br>الإشغال %{x:.1f}%<extra></extra>', showlegend=False
                 ))
                 fig_occ.add_vline(x=90, line_dash='dash', line_color=RWAZ_PRIMARY, line_width=1.5,
                                   annotation_text='المستهدف 90%', annotation_position='top')
                 apply_rwaz_plot_layout(fig_occ, height=occ_h)
                 fig_occ.update_layout(
-                    barmode='overlay', xaxis=dict(range=[0,108], showgrid=False, title='', ticksuffix='%'),
-                    yaxis=dict(title='', autorange='reversed', tickfont=dict(size=9.5)),
-                    margin=dict(t=28,b=18,l=20,r=48), bargap=.48
+                    barmode='overlay',
+                    xaxis=dict(range=[0,115], showgrid=False, title='', ticksuffix='%', tickfont=dict(size=10.5)),
+                    yaxis=dict(title='', autorange='reversed', tickfont=dict(size=10.5)),
+                    margin=dict(t=30,b=18,l=20,r=72), bargap=.48,
+                    uniformtext_minsize=12, uniformtext_mode='show'
                 )
+                fig_occ.update_annotations(font=dict(size=11.5, color=RWAZ_PRIMARY, family='Tahoma, Segoe UI'))
                 st.markdown("<div class='section-title'>نسبة الإشغال حسب العقار</div>", unsafe_allow_html=True)
                 st.plotly_chart(fig_occ, use_container_width=True, config={'displayModeBar': False})
 
@@ -1299,9 +1413,9 @@ elif page == "مشاريع الايجار":
             first_col_name = df_pl_formatted.columns[0]
             if first_col_name == "" or str(first_col_name).startswith("Unnamed"):
                 df_pl_formatted.rename(columns={first_col_name: 'Category'}, inplace=True)
-            render_styled_dataframe(df_pl_formatted, max_height=650)
+            render_styled_dataframe(df_pl_formatted, max_height=650, table_kind='pnl')
         else:
-            render_styled_dataframe(df_pl, max_height=650)
+            render_styled_dataframe(df_pl, max_height=650, table_kind='pnl')
 
 # ==============================================================================
 # PAGE 5: DEVELOPMENT MODEL — financial engine preserved
