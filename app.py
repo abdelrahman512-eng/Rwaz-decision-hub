@@ -56,11 +56,11 @@ st.markdown("""
     [data-testid="stMainBlockContainer"],
     [data-testid="stAppViewBlockContainer"] {
         /* Current top value was 0; use a small explicit executive breathing space. */
-        padding-top: .30rem !important;
+        padding-top: .50rem !important;
         padding-bottom: .1rem !important;
         /* .09rem × 1.60 = .144rem */
-        padding-left: .3rem !important;
-        padding-right: .3rem !important;
+        padding-left: .5rem !important;
+        padding-right: .5rem !important;
         margin-top: 0 !important;
         max-width: 100% !important;
     }
