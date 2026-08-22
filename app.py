@@ -56,11 +56,11 @@ st.markdown("""
     [data-testid="stMainBlockContainer"],
     [data-testid="stAppViewBlockContainer"] {
         /* Current top value was 0; use a small explicit executive breathing space. */
-        padding-top: .80rem !important;
-        padding-bottom: .1rem !important;
+        padding-top: .10rem !important;
+        padding-bottom: .06rem !important;
         /* .09rem × 1.60 = .144rem */
-        padding-left: .8rem !important;
-        padding-right: .8rem !important;
+        padding-left: .144rem !important;
+        padding-right: .144rem !important;
         margin-top: 0 !important;
         max-width: 100% !important;
     }
@@ -594,46 +594,36 @@ def render_styled_dataframe(df, max_height=None, table_kind=None):
         font_weight = 'font-weight:700;'
         text_color = '#1F2937;'
 
- pnl_base_rows = {
-            'total units',
-            'occupied units',
-            'occupancy rate',
-            'improvements assets'
-        }
-
+        pnl_base_rows = {'total units', 'occupied units', 'occupancy rate', 'improvements assets'}
         if table_kind == 'pnl' and cat_str.strip() in pnl_base_rows:
+            # The four operating-base rows immediately before Net Revenue form one visual block.
             bg_color = 'background-color:#E2D6CA;'
             text_color = '#3F2D1E;'
             font_weight = 'font-weight:850;'
-
         elif 'cash beginnin' in cat_str or 'units' in cat_str or 'occupancy' in cat_str:
             bg_color = 'background-color:#FAF8F5;'
             text_color = '#625B54;'
-
         elif cat_str.strip() == 'net revenue':
             bg_color = 'background-color:#DCE7EA;'
             text_color = '#274C59;'
             font_weight = 'font-weight:900;'
-
         elif 'cash in' in cat_str or 'revenue' in cat_str:
             bg_color = 'background-color:#F3ECE5;'
             text_color = '#684929;'
             font_weight = 'font-weight:800;'
-
         elif 'cash out' in cat_str or 'total opex' in cat_str:
             bg_color = 'background-color:#FDECEA;'
             text_color = '#A83232;'
             font_weight = 'font-weight:800;'
-
         elif 'operating income' in cat_str or 'noi' in cat_str:
             bg_color = 'background-color:#EAF6F0;'
             text_color = '#166A49;'
             font_weight = 'font-weight:800;'
-
         elif 'net profit' in cat_str or 'end of period' in cat_str:
             bg_color = 'background-color:#3F2D1E;'
             text_color = '#FFFFFF;'
             font_weight = 'font-weight:900;'
+
         for i, val in enumerate(row):
             val_str = str(val)
             if '(' in val_str or val_str.startswith('-'):
