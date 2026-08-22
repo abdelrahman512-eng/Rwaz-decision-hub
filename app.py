@@ -1307,10 +1307,10 @@ if page == "الملخص التنفيذي والمركز المالي":
         if not neg_margin.empty:
             worst = neg_margin.iloc[0]
             alerts.append((2, 'warning', f"{len(neg_margin)} عقار/مشروع يحقق صافي هامش ربح سالب؛ الأدنى {worst['Project']} عند {fmt_pct(worst['Margin'])}."))
-        low_occ = prop_metrics_alert[pd.to_numeric(prop_metrics_alert['Occupancy'], errors='coerce') < 0.90].sort_values('Occupancy')
+        low_occ = prop_metrics_alert[pd.to_numeric(prop_metrics_alert['Occupancy'], errors='coerce') < 0.97].sort_values('Occupancy')
         if not low_occ.empty:
             worst_o = low_occ.iloc[0]
-            alerts.append((2, 'warning', f"{len(low_occ)} عقار/مشروع أقل من مستهدف الإشغال 90%؛ الأدنى {worst_o['Project']} عند {fmt_pct(worst_o['Occupancy'])}."))
+            alerts.append((2, 'warning', f"{len(low_occ)} عقار/مشروع أقل من مستهدف الإشغال 97%؛ الأدنى {worst_o['Project']} عند {fmt_pct(worst_o['Occupancy'])}."))
 
     st.markdown("<div class='section-title'>التنبيهات والإجراءات الإدارية المباشرة</div>", unsafe_allow_html=True)
     alerts = sorted(alerts, key=lambda x: x[0])
@@ -1533,7 +1533,7 @@ elif page == "مشاريع الايجار":
     p1, p2, p3, p4, p5, p6 = st.columns(6)
     with p1: render_kpi("الوحدات", f"{t_units:.0f}", "إجمالي الوحدات", "positive")
     with p2: render_kpi("المؤجرة", f"{o_units:.0f}", f"الشاغر {max(0,t_units-o_units):.0f}", "positive")
-    with p3: render_kpi("الإشغال", fmt_pct(p_occ), "المستهدف 90%", "positive" if p_occ >= .9 else "warning")
+    with p3: render_kpi("الإشغال", fmt_pct(p_occ), "المستهدف 97%", "positive" if p_occ >= .97 else "warning")
     with p4: render_kpi("الإيرادات", fmt_currency(p_rev), "صافي الإيرادات", "positive")
     with p5: render_kpi("صافي NOI", fmt_currency(p_noi), "الدخل التشغيلي", "positive" if p_noi >= 0 else "danger")
     with p6: render_kpi("مشاريع بخسارة", f"{loss_count}", "صافي هامش ربح سالب", "danger" if loss_count else "positive")
@@ -1557,7 +1557,7 @@ elif page == "مشاريع الايجار":
                 occ_df = chart_pm[['Project','Occupancy']].copy()
                 occ_df['OccPct'] = pd.to_numeric(occ_df['Occupancy'], errors='coerce').fillna(0) * 100
                 occ_df = occ_df.sort_values('OccPct', ascending=True).reset_index(drop=True)
-                occ_colors = [RWAZ_RED if v < 70 else (RWAZ_AMBER if v < 90 else RWAZ_GREEN) for v in occ_df['OccPct']]
+                occ_colors = [RWAZ_RED if v < 80 else (RWAZ_AMBER if v < 97 else RWAZ_GREEN) for v in occ_df['OccPct']]
                 occ_h = max(300, 72 + 27*len(occ_df))
                 fig_occ = go.Figure()
                 fig_occ.add_trace(go.Bar(
@@ -1571,8 +1571,8 @@ elif page == "مشاريع الايجار":
                     textfont=dict(size=12.5, color='#3F2D1E', family='Arial Black, Tahoma, Segoe UI'),
                     hovertemplate='%{y}<br>الإشغال %{x:.1f}%<extra></extra>', showlegend=False
                 ))
-                fig_occ.add_vline(x=90, line_dash='dash', line_color=RWAZ_PRIMARY, line_width=1.5,
-                                  annotation_text='المستهدف 90%', annotation_position='top')
+                fig_occ.add_vline(x=97, line_dash='dash', line_color=RWAZ_PRIMARY, line_width=1.5,
+                                  annotation_text='المستهدف 97%', annotation_position='top')
                 apply_rwaz_plot_layout(fig_occ, height=occ_h)
                 fig_occ.update_layout(
                     barmode='overlay',
