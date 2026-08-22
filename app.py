@@ -603,10 +603,15 @@ def render_styled_dataframe(df, max_height=None, table_kind=None):
         elif 'cash beginnin' in cat_str or 'units' in cat_str or 'occupancy' in cat_str:
             bg_color = 'background-color:#FAF8F5;'
             text_color = '#625B54;'
-        elif 'cash in' in cat_str or 'net revenue' in cat_str or 'revenue' in cat_str:
-            bg_color = 'background-color:#F3ECE5;'
-            text_color = '#684929;'
-            font_weight = 'font-weight:800;'
+       elif cat_str.strip() == 'net revenue':
+    bg_color = 'background-color:#DCE7EA;'
+    text_color = '#274C59;'
+    font_weight = 'font-weight:900;'
+
+elif 'cash in' in cat_str or 'revenue' in cat_str:
+    bg_color = 'background-color:#F3ECE5;'
+    text_color = '#684929;'
+    font_weight = 'font-weight:800;'
         elif 'cash out' in cat_str or 'total opex' in cat_str:
             bg_color = 'background-color:#FDECEA;'
             text_color = '#A83232;'
