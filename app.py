@@ -7,6 +7,9 @@ import plotly.express as px
 import plotly.graph_objects as go
 import openpyxl
 import os
+from datetime import datetime
+from zoneinfo import ZoneInfo
+from plotly.subplots import make_subplots
 
 # ==============================================================================
 # GLOBAL BRANDING & MODERN EXECUTIVE THEME SYSTEM (RWAZ VIEW THEME)
@@ -45,14 +48,17 @@ st.markdown("""
         color: var(--rwaz-text);
         font-family: Tahoma, "Segoe UI", Arial, sans-serif;
     }
+    [data-testid="stHeader"] { display:none !important; height:0 !important; min-height:0 !important; }
+    [data-testid="stToolbar"] { display:none !important; }
+    [data-testid="stAppViewContainer"] > .main { padding-top:0 !important; }
     .main .block-container {
-        padding-top: .35rem !important;
-        padding-bottom: .55rem !important;
-        padding-left: 1.15rem !important;
-        padding-right: 1.15rem !important;
+        padding-top: .05rem !important;
+        padding-bottom: .35rem !important;
+        padding-left: .70rem !important;
+        padding-right: .70rem !important;
         max-width: 100% !important;
     }
-    div[data-testid="stVerticalBlock"] { gap: .36rem !important; }
+    div[data-testid="stVerticalBlock"] { gap: .24rem !important; }
     .stMarkdown, div[data-testid="stMarkdownContainer"] { margin-bottom: 0 !important; }
 
     /* Arabic-first direction without reversing numeric fields */
@@ -67,13 +73,13 @@ st.markdown("""
     .page-title {
         font-size: 19px; font-weight: 800; color: #FFF !important;
         background: linear-gradient(90deg, var(--rwaz-dark), var(--rwaz-primary));
-        padding: 8px 14px; border-radius: 9px; letter-spacing: -.2px;
+        padding: 7px 13px; border-radius: 9px; letter-spacing: -.2px;
         box-shadow: 0 3px 10px rgba(63,45,30,.10);
     }
     .page-subtitle {
         font-size: 10.5px; color: var(--rwaz-muted); font-weight: 600;
-        padding: 5px 2px 7px; border-bottom: 1px solid var(--rwaz-border);
-        margin-bottom: 5px;
+        padding: 3px 2px 5px; border-bottom: 1px solid var(--rwaz-border);
+        margin-bottom: 3px;
     }
     .section-title {
         font-size: 12.5px; font-weight: 800; color: var(--rwaz-primary);
@@ -190,17 +196,62 @@ st.markdown("""
     [data-testid="stExpander"] { background:#FBF9F7; border:1px solid var(--rwaz-border) !important; border-radius:9px !important; }
     [data-testid="stExpander"] summary { font-weight:800; color:var(--rwaz-text); font-size:11.5px; }
 
-    /* Dataframes: compact shell; Pandas Styler sets header colors */
-    .stDataFrame, div[data-testid="stTable"] {
-        background:#FFF !important; border:1px solid var(--rwaz-border) !important;
-        border-radius:9px !important; width:100% !important; overflow:hidden;
-        box-shadow:0 2px 7px rgba(63,45,30,.035);
+    /* Tables: full-height HTML rendering — no internal vertical scroll */
+    .rwaz-table-wrap {
+        width:100%; overflow:visible; background:#FFF;
+        border:1px solid var(--rwaz-border); border-radius:9px;
+        box-shadow:0 2px 7px rgba(63,45,30,.035); margin:2px 0 5px;
     }
-    div[data-testid="stDataFrame"] { font-size:10px !important; }
+    .rwaz-html-table {
+        width:100% !important; table-layout:fixed; border-collapse:separate !important;
+        border-spacing:0 !important; margin:0 !important; background:#FFF;
+        font-variant-numeric:tabular-nums;
+    }
+    .rwaz-html-table th {
+        background:#3F2D1E !important; color:#FFF !important; font-weight:900 !important;
+        text-align:center !important; padding:6px 4px !important; line-height:1.25 !important; height:32px !important;
+        border-right:1px solid #6E5238 !important; border-bottom:1px solid #6E5238 !important;
+        white-space:normal !important; overflow-wrap:anywhere; unicode-bidi:plaintext;
+    }
+    .rwaz-html-table td {
+        padding:5px 4px !important; line-height:1.25 !important; height:30px !important; text-align:center !important;
+        border-right:1px solid #ECE7E1 !important; border-bottom:1px solid #ECE7E1 !important;
+        white-space:normal !important; overflow-wrap:anywhere; unicode-bidi:plaintext;
+    }
+    .rwaz-html-table tr:last-child td { border-bottom:0 !important; }
+    .rwaz-table-wrap table tr:first-child th:first-child { border-top-left-radius:8px; }
+    .rwaz-table-wrap table tr:first-child th:last-child { border-top-right-radius:8px; }
 
-    /* Alerts */
-    [data-testid="stAlert"] { border-radius:8px !important; padding:7px 10px !important; }
-    [data-testid="stAlert"] p { font-size:10.5px !important; line-height:1.5 !important; }
+    /* Compact executive alerts */
+    .exec-alert {
+        direction:rtl; text-align:right; display:flex; align-items:center; gap:8px;
+        min-height:38px; padding:7px 10px; margin:4px 0; border-radius:8px;
+        font-size:10.5px; font-weight:750; line-height:1.45; border:1px solid transparent;
+        box-sizing:border-box;
+    }
+    .exec-alert .alert-dot { width:8px; height:8px; border-radius:50%; flex:0 0 8px; }
+    .exec-alert-danger { background:#FCE8E6; color:#9F231F; border-color:#F4C9C5; }
+    .exec-alert-danger .alert-dot { background:#C53030; }
+    .exec-alert-warning { background:#FFF6DE; color:#805315; border-color:#F0DFB0; }
+    .exec-alert-warning .alert-dot { background:#B7791F; }
+    .exec-alert-success { background:#EAF6F0; color:#155F43; border-color:#C7E7D8; }
+    .exec-alert-success .alert-dot { background:#1F7A55; }
+    [data-testid="stAlert"] { border-radius:8px !important; padding:6px 9px !important; min-height:0 !important; }
+    [data-testid="stAlert"] > div { padding:0 !important; min-height:0 !important; }
+    [data-testid="stAlert"] p { font-size:10.5px !important; line-height:1.4 !important; font-weight:700 !important; margin:0 !important; }
+
+    /* Plotly charts as executive cards */
+    div[data-testid="stPlotlyChart"] {
+        background:#FFF; border:1px solid var(--rwaz-border); border-radius:10px;
+        box-shadow:0 2px 8px rgba(63,45,30,.04); padding:3px 5px 1px;
+    }
+
+    .negative-value { color:#C53030 !important; }
+    .revenue-insight {
+        background:#FBF6EF; border:1px solid #E8D8C5; border-radius:8px;
+        padding:6px 9px; margin-top:4px; direction:rtl; text-align:right;
+        color:#684929; font-size:10px; font-weight:800;
+    }
 
     /* Guidance cards */
     .term-card {
@@ -283,6 +334,70 @@ def fmt_multiple(val):
     except ValueError:
         return str(val)
 
+def fmt_currency_compact(val, decimals=2):
+    """Compact executive currency labels for charts while preserving accounting negatives."""
+    if pd.isna(val) or val is None or val == "":
+        return ""
+    try:
+        val = float(val)
+        abs_val = abs(val)
+        if abs_val >= 1_000_000:
+            num = f"{abs_val/1_000_000:.{decimals}f}M"
+        elif abs_val >= 1_000:
+            num = f"{abs_val/1_000:.1f}K"
+        else:
+            num = f"{abs_val:,.0f}"
+        return f"SAR ({num})" if val < 0 else f"SAR {num}"
+    except (TypeError, ValueError):
+        return str(val)
+
+
+def fmt_share(value):
+    try:
+        value = float(value)
+        if value > 0 and value < 0.001:
+            return "<0.1%"
+        return f"{value*100:.1f}%"
+    except (TypeError, ValueError):
+        return ""
+
+
+def value_color_style(value):
+    """Display-only color for standalone numeric values; negatives are always red."""
+    try:
+        return "color:#C53030 !important;" if float(value) < 0 else "color:#1F2937 !important;"
+    except (TypeError, ValueError):
+        return "color:#1F2937 !important;"
+
+
+def recalculate_installment_days(df):
+    """Recalculate days remaining using Saudi local date and due date.
+    Paid installments display blank days. Source Excel data is never mutated.
+    """
+    if df is None or df.empty:
+        return df.copy() if df is not None else pd.DataFrame()
+    out = df.copy()
+    due_col = 'تاريخ الاستحقاق' if 'تاريخ الاستحقاق' in out.columns else None
+    if due_col is None or 'الأيام المتبقية' not in out.columns:
+        return out
+    today_riyadh = pd.Timestamp(datetime.now(ZoneInfo('Asia/Riyadh')).date())
+    due_dates = pd.to_datetime(out[due_col], errors='coerce').dt.normalize()
+    if 'المتبقي للدفعة' in out.columns:
+        remaining = pd.to_numeric(out['المتبقي للدفعة'], errors='coerce').fillna(0)
+    else:
+        remaining = pd.Series(1, index=out.index, dtype=float)
+    days = (due_dates - today_riyadh).dt.days
+    out['الأيام المتبقية'] = days.where((remaining > 0) & due_dates.notna(), np.nan)
+    return out
+
+
+def render_compact_alert(kind, message):
+    cls = 'exec-alert-danger' if kind == 'error' else ('exec-alert-warning' if kind == 'warning' else 'exec-alert-success')
+    st.markdown(
+        f"<div class='exec-alert {cls}'><span class='alert-dot'></span><span>{message}</span></div>",
+        unsafe_allow_html=True
+    )
+
 def style_df_accounting(df):
     if df is None or df.empty:
         return pd.DataFrame()
@@ -304,68 +419,79 @@ def style_df_accounting(df):
     df_clean = df_clean.astype(str).replace({"None": "", "nan": "", "NaN": "", "<NA>": ""})
     return df_clean.reset_index(drop=True)
 
-def render_styled_dataframe(df, max_height=650):
-    """Compact executive dataframe renderer. Display-only; source values are not changed."""
+def render_styled_dataframe(df, max_height=None):
+    """Executive HTML table renderer with zero internal vertical scrolling.
+    It preserves the original DataFrame values and only changes presentation.
+    Font size adapts gently to wide tables to keep the full table on the page.
+    """
     if df is None or df.empty:
         return
 
     df_fmt = style_df_accounting(df)
+    col_count = max(1, len(df_fmt.columns))
+    body_font = 10.0 if col_count <= 10 else (9.2 if col_count <= 14 else 8.5)
+    head_font = 10.2 if col_count <= 10 else (9.3 if col_count <= 14 else 8.6)
 
     def highlight_executive_rows_and_negatives(row):
         styles = [''] * len(row)
         cat_str = str(row.iloc[0]).lower()
         bg_color = ''
-        font_weight = 'font-weight: 700;'
+        font_weight = 'font-weight:700;'
         text_color = '#1F2937;'
 
         if 'cash beginnin' in cat_str or 'units' in cat_str or 'occupancy' in cat_str:
-            bg_color = 'background-color: #FAF8F5;'
+            bg_color = 'background-color:#FAF8F5;'
             text_color = '#625B54;'
         elif 'cash in' in cat_str or 'net revenue' in cat_str or 'revenue' in cat_str:
-            bg_color = 'background-color: #F3ECE5;'
+            bg_color = 'background-color:#F3ECE5;'
             text_color = '#684929;'
-            font_weight = 'font-weight: 800;'
+            font_weight = 'font-weight:800;'
         elif 'cash out' in cat_str or 'total opex' in cat_str:
-            bg_color = 'background-color: #FDECEA;'
+            bg_color = 'background-color:#FDECEA;'
             text_color = '#A83232;'
-            font_weight = 'font-weight: 800;'
+            font_weight = 'font-weight:800;'
         elif 'operating income' in cat_str or 'noi' in cat_str:
-            bg_color = 'background-color: #EAF6F0;'
+            bg_color = 'background-color:#EAF6F0;'
             text_color = '#166A49;'
-            font_weight = 'font-weight: 800;'
+            font_weight = 'font-weight:800;'
         elif 'net profit' in cat_str or 'end of period' in cat_str:
-            bg_color = 'background-color: #3F2D1E;'
+            bg_color = 'background-color:#3F2D1E;'
             text_color = '#FFFFFF;'
-            font_weight = 'font-weight: 900;'
+            font_weight = 'font-weight:900;'
 
         for i, val in enumerate(row):
             val_str = str(val)
             if '(' in val_str or val_str.startswith('-'):
-                neg_color = '#F0A09A' if bg_color == 'background-color: #3F2D1E;' else '#C53030'
-                styles[i] = f'{bg_color} color: {neg_color}; {font_weight} text-align: center;'
+                neg_color = '#F6B1AA' if bg_color == 'background-color:#3F2D1E;' else '#C53030'
+                styles[i] = f'{bg_color} color:{neg_color}; {font_weight}'
             else:
-                styles[i] = f'{bg_color} color: {text_color}; {font_weight} text-align: center;'
+                styles[i] = f'{bg_color} color:{text_color}; {font_weight}'
         return styles
 
     try:
         styler = df_fmt.style.apply(highlight_executive_rows_and_negatives, axis=1)
+        styler = styler.set_table_attributes('class="rwaz-html-table"')
+        try:
+            styler = styler.hide(axis='index')
+        except Exception:
+            pass
         styler = styler.set_table_styles([
             {'selector': 'th', 'props': [
-                ('background-color', '#684929'), ('color', '#FFFFFF'),
-                ('font-weight', '800'), ('font-size', '10px'),
-                ('text-align', 'center'), ('padding', '3px 4px')
+                ('background-color', '#3F2D1E'), ('color', '#FFFFFF'),
+                ('font-weight', '900'), ('font-size', f'{head_font}px'),
+                ('text-align', 'center'), ('padding', '6px 4px')
             ]},
             {'selector': 'td', 'props': [
-                ('font-size', '10px'), ('padding', '2px 4px'),
+                ('font-size', f'{body_font}px'), ('padding', '5px 4px'),
                 ('font-variant-numeric', 'tabular-nums')
             ]}
-        ])
-        calc_height = min(max(115, (len(df_fmt) + 1) * 31), max_height)
-        st.dataframe(styler, use_container_width=True, height=calc_height, hide_index=True)
+        ], overwrite=False)
+        html = styler.to_html()
+        st.markdown(f"<div class='rwaz-table-wrap'>{html}</div>", unsafe_allow_html=True)
     except Exception:
-        calc_height = min(max(115, (len(df_fmt) + 1) * 31), max_height)
-        st.dataframe(df_fmt, use_container_width=True, height=calc_height, hide_index=True)
-
+        # Plain HTML fallback still avoids an internal Streamlit grid scrollbar.
+        html = df_fmt.to_html(index=False, escape=True, classes='rwaz-html-table', border=0)
+        st.markdown(f"<div class='rwaz-table-wrap'>{html}</div>", unsafe_allow_html=True)
 
 def render_kpi(title, value, sub_text, sub_type="positive"):
     sub_class = f"kpi-sub-{sub_type}"
@@ -782,12 +908,12 @@ if page == "الملخص التنفيذي والمركز المالي":
         <div class="combined-card">
             <div class="combined-header">
                 <div class="combined-title">إجمالي رصيد البنوك</div>
-                <div class="combined-value ltr-num">{fmt_currency(total_cash)}</div>
+                <div class="combined-value ltr-num" style="{value_color_style(total_cash)}">{fmt_currency(total_cash)}</div>
                 <div class="combined-sub">النقدية المتاحة بالحسابات</div>
             </div>
             <div style="display:flex;gap:7px;">
-                <div class="mini-cell" style="flex:1;"><div style="font-size:9px;color:#7A7066;font-weight:700;">مصرف الراجحي</div><div class="ltr-num" style="font-size:12px;font-weight:900;">{fmt_currency(rajhi_cash)}</div></div>
-                <div class="mini-cell" style="flex:1;"><div style="font-size:9px;color:#7A7066;font-weight:700;">البنك الأهلي</div><div class="ltr-num" style="font-size:12px;font-weight:900;">{fmt_currency(snb_cash)}</div></div>
+                <div class="mini-cell" style="flex:1;"><div style="font-size:9px;color:#7A7066;font-weight:700;">مصرف الراجحي</div><div class="ltr-num" style="font-size:12px;font-weight:900;{value_color_style(rajhi_cash)}">{fmt_currency(rajhi_cash)}</div></div>
+                <div class="mini-cell" style="flex:1;"><div style="font-size:9px;color:#7A7066;font-weight:700;">البنك الأهلي</div><div class="ltr-num" style="font-size:12px;font-weight:900;{value_color_style(snb_cash)}">{fmt_currency(snb_cash)}</div></div>
             </div>
         </div>""", unsafe_allow_html=True)
 
@@ -798,8 +924,8 @@ if page == "الملخص التنفيذي والمركز المالي":
             <div style="font-size:10px;color:#684929;font-weight:900;text-align:right;margin-bottom:5px;">أداء التحصيل</div>
             <div style="display:flex;align-items:center;gap:8px;">
                 <div style="flex:1;display:flex;flex-direction:column;gap:5px;">
-                    <div class="mini-cell" style="text-align:center;"><div class="ltr-num" style="font-size:11px;font-weight:900;">{fmt_currency(due_coll)}</div><div style="font-size:8.5px;color:#7A7066;">المستحق</div></div>
-                    <div class="mini-cell" style="text-align:center;"><div class="ltr-num" style="font-size:11px;font-weight:900;">{fmt_currency(act_coll)}</div><div style="font-size:8.5px;color:#7A7066;">المحصل</div></div>
+                    <div class="mini-cell" style="text-align:center;"><div class="ltr-num" style="font-size:11px;font-weight:900;{value_color_style(due_coll)}">{fmt_currency(due_coll)}</div><div style="font-size:8.5px;color:#7A7066;">المستحق</div></div>
+                    <div class="mini-cell" style="text-align:center;"><div class="ltr-num" style="font-size:11px;font-weight:900;{value_color_style(act_coll)}">{fmt_currency(act_coll)}</div><div style="font-size:8.5px;color:#7A7066;">المحصل</div></div>
                 </div>
                 <div style="flex:1.05;text-align:center;"><div class="ltr-num" style="font-size:27px;font-weight:900;line-height:1;">{coll_pct_str}</div><div style="font-size:9px;color:#7A7066;font-weight:700;margin-top:4px;">كفاءة التحصيل</div><div class="gauge-bar-bg"><div class="gauge-bar-fill" style="width:{min(100,max(0,coll_rate*100)):.1f}%;"></div></div></div>
             </div>
@@ -817,16 +943,16 @@ if page == "الملخص التنفيذي والمركز المالي":
                 p2_bal = pd.to_numeric(df_part.iloc[1]['الرصيد'], errors='coerce') if 'الرصيد' in df_part.columns else 0.0
         st.markdown(f"""
         <div class="combined-card">
-            <div class="combined-header"><div class="combined-title">صافي أرصدة الشركاء</div><div class="combined-value ltr-num">{fmt_currency(partners_net)}</div><div class="combined-sub">إجمالي صافي حسابات الشركاء</div></div>
+            <div class="combined-header"><div class="combined-title">صافي أرصدة الشركاء</div><div class="combined-value ltr-num" style="{value_color_style(partners_net)}">{fmt_currency(partners_net)}</div><div class="combined-sub">إجمالي صافي حسابات الشركاء</div></div>
             <div style="display:flex;gap:7px;">
-                <div class="mini-cell" style="flex:1;"><div style="font-size:9px;color:#7A7066;font-weight:700;">{p1_name}</div><div class="ltr-num" style="font-size:12px;font-weight:900;">{fmt_currency(p1_bal)}</div></div>
-                <div class="mini-cell" style="flex:1;"><div style="font-size:9px;color:#7A7066;font-weight:700;">{p2_name}</div><div class="ltr-num" style="font-size:12px;font-weight:900;">{fmt_currency(p2_bal)}</div></div>
+                <div class="mini-cell" style="flex:1;"><div style="font-size:9px;color:#7A7066;font-weight:700;">{p1_name}</div><div class="ltr-num" style="font-size:12px;font-weight:900;{value_color_style(p1_bal)}">{fmt_currency(p1_bal)}</div></div>
+                <div class="mini-cell" style="flex:1;"><div style="font-size:9px;color:#7A7066;font-weight:700;">{p2_name}</div><div class="ltr-num" style="font-size:12px;font-weight:900;{value_color_style(p2_bal)}">{fmt_currency(p2_bal)}</div></div>
             </div>
         </div>""", unsafe_allow_html=True)
 
     # Executive alerts — concise, combined and prioritized
     alerts = []
-    df_inst = store['df_installments'].copy()
+    df_inst = recalculate_installment_days(store['df_installments'])
     if 'الأيام المتبقية' in df_inst.columns and 'المتبقي للدفعة' in df_inst.columns:
         days = pd.to_numeric(df_inst['الأيام المتبقية'], errors='coerce')
         rem = pd.to_numeric(df_inst['المتبقي للدفعة'], errors='coerce').fillna(0)
@@ -872,14 +998,14 @@ if page == "الملخص التنفيذي والمركز المالي":
     st.markdown("<div class='section-title'>التنبيهات والإجراءات الإدارية المباشرة</div>", unsafe_allow_html=True)
     alerts = sorted(alerts, key=lambda x: x[0])
     if not alerts:
-        st.success("لا توجد تنبيهات حرجة وفق مؤشرات الصفحة الحالية.")
+        render_compact_alert('success', "لا توجد تنبيهات حرجة وفق مؤشرات الصفحة الحالية.")
     else:
         for _, kind, msg in alerts[:5]:
-            getattr(st, kind)(msg)
+            render_compact_alert(kind, msg)
         if len(alerts) > 5:
             with st.expander(f"عرض جميع التنبيهات ({len(alerts)})", expanded=False):
                 for _, kind, msg in alerts[5:]:
-                    getattr(st, kind)(msg)
+                    render_compact_alert(kind, msg)
 
     st.markdown("<div class='section-title'>المشاريع تحت الإنشاء ومزيج الإيرادات</div>", unsafe_allow_html=True)
     c1_page1, c2_page1 = st.columns([1.12, .88])
@@ -889,17 +1015,50 @@ if page == "الملخص التنفيذي والمركز المالي":
         df_rev_chart = store['df_revenues'].copy()
         if 'المبلغ' in df_rev_chart.columns and 'نوع الايراد' in df_rev_chart.columns and not df_rev_chart.empty:
             df_rev_chart['المبلغ_الرقمي'] = pd.to_numeric(df_rev_chart['المبلغ'], errors='coerce').fillna(0)
-            total_mix = df_rev_chart['المبلغ_الرقمي'].sum()
-            fig_rev = go.Figure(go.Pie(
-                labels=df_rev_chart['نوع الايراد'], values=df_rev_chart['المبلغ_الرقمي'], hole=.58,
-                marker=dict(colors=RWAZ_PALETTE[:len(df_rev_chart)], line=dict(color='#FFFFFF', width=2)),
-                textinfo='label+percent', textposition='outside',
-                hovertemplate='%{label}<br>SAR %{value:,.0f}<br>%{percent}<extra></extra>'
-            ))
-            fig_rev.add_annotation(text=f"<b>{fmt_currency_m(total_mix)}</b><br><span style='font-size:9px'>إجمالي الإيرادات</span>", showarrow=False, font=dict(size=12, color=RWAZ_DARK))
-            apply_rwaz_plot_layout(fig_rev, height=240, showlegend=False)
-            fig_rev.update_layout(margin=dict(t=15,b=15,l=45,r=45))
+            df_rev_chart = df_rev_chart.sort_values('المبلغ_الرقمي', ascending=False).reset_index(drop=True)
+            total_mix = float(df_rev_chart['المبلغ_الرقمي'].sum())
+            df_rev_chart['النسبة'] = df_rev_chart['المبلغ_الرقمي'] / total_mix if total_mix > 0 else 0.0
+            color_map = {
+                'الإيجارات': RWAZ_GREEN,
+                'التطوير العقاري': RWAZ_PRIMARY,
+                'المقاولات': RWAZ_ACCENT,
+                'إيرادات أخري': '#9A8979',
+                'إيرادات أخرى': '#9A8979'
+            }
+            rev_colors = [color_map.get(str(x).strip(), RWAZ_MID) for x in df_rev_chart['نوع الايراد']]
+            fig_rev = make_subplots(
+                rows=1, cols=2, specs=[[{'type':'domain'}, {'type':'xy'}]],
+                column_widths=[0.36, 0.64], horizontal_spacing=0.10
+            )
+            fig_rev.add_trace(go.Pie(
+                labels=df_rev_chart['نوع الايراد'], values=df_rev_chart['المبلغ_الرقمي'], hole=.64,
+                marker=dict(colors=rev_colors, line=dict(color='#FFFFFF', width=2)),
+                textinfo='none', hovertemplate='%{label}<br>SAR %{value:,.0f}<br>%{percent}<extra></extra>',
+                sort=False
+            ), row=1, col=1)
+            bar_text = [f"{fmt_currency_compact(v)} | {fmt_share(s)}" for v, s in zip(df_rev_chart['المبلغ_الرقمي'], df_rev_chart['النسبة'])]
+            fig_rev.add_trace(go.Bar(
+                x=df_rev_chart['المبلغ_الرقمي'], y=df_rev_chart['نوع الايراد'], orientation='h',
+                marker_color=rev_colors, text=bar_text, textposition='outside', cliponaxis=False,
+                hovertemplate='%{y}<br>SAR %{x:,.0f}<extra></extra>'
+            ), row=1, col=2)
+            fig_rev.add_annotation(
+                x=0.18, y=0.50, xref='paper', yref='paper', showarrow=False,
+                text=f"<b>{fmt_currency_compact(total_mix)}</b><br><span style='font-size:9px'>إجمالي الإيرادات</span>",
+                font=dict(size=12, color=RWAZ_DARK), align='center'
+            )
+            apply_rwaz_plot_layout(fig_rev, height=245, showlegend=False)
+            max_rev = max(float(df_rev_chart['المبلغ_الرقمي'].max()), 1.0)
+            fig_rev.update_xaxes(visible=False, range=[0, max_rev*1.52], row=1, col=2)
+            fig_rev.update_yaxes(title='', tickfont=dict(size=9.5), autorange='reversed', row=1, col=2)
+            fig_rev.update_layout(margin=dict(t=8,b=8,l=10,r=95), bargap=.35)
             st.plotly_chart(fig_rev, use_container_width=True, config={'displayModeBar': False})
+            if total_mix > 0:
+                top_rev = df_rev_chart.iloc[0]
+                st.markdown(
+                    f"<div class='revenue-insight'>المصدر الرئيسي للإيرادات: <b>{top_rev['نوع الايراد']}</b> — {fmt_share(top_rev['النسبة'])} من إجمالي الإيرادات.</div>",
+                    unsafe_allow_html=True
+                )
 
 # ==============================================================================
 # PAGE 2: FINANCING & INSTALLMENTS
@@ -920,31 +1079,36 @@ elif page == "جدول التمويلات والاقساط":
     with d3: render_kpi("المتبقي للتمويلات", fmt_currency(total_debt_rem), "الرصيد المتبقي حالياً", "warning" if total_debt_rem > 0 else "positive")
     with d4: render_kpi("التمويلات النشطة", f"{active_count}", f"من إجمالي {len(df_loans_disp)}", "warning" if active_count else "positive")
 
-    if 'أصل التمويل' in df_loans_disp.columns and 'المتبقي للقرض' in df_loans_disp.columns:
-        rem_vals = pd.to_numeric(df_loans_disp['المتبقي للقرض'], errors='coerce').fillna(0)
-        orig_vals = pd.to_numeric(df_loans_disp['أصل التمويل'], errors='coerce').replace(0, np.nan)
-        df_loans_disp['نسبة السداد'] = ((orig_vals - rem_vals) / orig_vals).fillna(0).apply(lambda x: fmt_pct(x))
-        df_loans_disp['الحالة'] = rem_vals.apply(lambda x: "تم السداد بالكامل" if x <= 0 else "جاري السداد")
-
     tab_over, tab_loans, tab_inst = st.tabs(["نظرة تنفيذية", "القروض والتسهيلات", "جدول الأقساط"])
     with tab_over:
         if 'المتبقي للقرض' in df_loans_disp.columns and 'جهة التمويل' in df_loans_disp.columns:
             chart_debt = df_loans_disp.copy()
             chart_debt['المتبقي_الرقمي'] = pd.to_numeric(chart_debt['المتبقي للقرض'], errors='coerce').fillna(0)
-            chart_debt = chart_debt.sort_values('المتبقي_الرقمي', ascending=True)
+            chart_debt['أصل_رقمي'] = pd.to_numeric(chart_debt['أصل التمويل'], errors='coerce').fillna(0) if 'أصل التمويل' in chart_debt.columns else 0
+            chart_debt = chart_debt.sort_values('المتبقي_الرقمي', ascending=False).reset_index(drop=True)
+            debt_colors = [RWAZ_GREEN if v <= 0 else RWAZ_PRIMARY for v in chart_debt['المتبقي_الرقمي']]
+            debt_text = ['تم السداد بالكامل' if v <= 0 else fmt_currency_compact(v) for v in chart_debt['المتبقي_الرقمي']]
             fig_debt = go.Figure(go.Bar(
                 x=chart_debt['المتبقي_الرقمي'], y=chart_debt['جهة التمويل'], orientation='h',
-                marker_color=RWAZ_PRIMARY, text=[fmt_currency(v) for v in chart_debt['المتبقي_الرقمي']],
-                textposition='outside', hovertemplate='%{y}<br>SAR %{x:,.0f}<extra></extra>'
+                marker_color=debt_colors, text=debt_text, textposition='outside', cliponaxis=False,
+                customdata=np.stack([chart_debt['أصل_رقمي']], axis=-1),
+                hovertemplate='%{y}<br>المتبقي: SAR %{x:,.0f}<br>أصل التمويل: SAR %{customdata[0]:,.0f}<extra></extra>'
             ))
-            apply_rwaz_plot_layout(fig_debt, height=255)
-            fig_debt.update_layout(xaxis_title="", yaxis_title="", margin=dict(t=20,b=20,l=20,r=120))
+            max_debt = max(float(chart_debt['المتبقي_الرقمي'].max()), 1.0)
+            apply_rwaz_plot_layout(fig_debt, height=max(210, 55 + 42*len(chart_debt)))
+            fig_debt.update_layout(
+                xaxis=dict(title='', range=[0, max_debt*1.28], showgrid=False, zeroline=False, showticklabels=False),
+                yaxis=dict(title='', autorange='reversed', tickfont=dict(size=10)),
+                margin=dict(t=8,b=8,l=20,r=100), bargap=.34
+            )
             st.markdown("<div class='section-title'>الرصيد المتبقي حسب جهة التمويل</div>", unsafe_allow_html=True)
+            st.markdown(f"<div style='direction:rtl;text-align:right;font-size:10px;color:#684929;font-weight:800;margin-bottom:3px;'>إجمالي الدين المتبقي: <span class='ltr-num'>{fmt_currency_compact(total_debt_rem)}</span></div>", unsafe_allow_html=True)
             st.plotly_chart(fig_debt, use_container_width=True, config={'displayModeBar': False})
     with tab_loans:
         render_styled_dataframe(df_loans_disp, max_height=500)
     with tab_inst:
-        render_styled_dataframe(store['df_installments'].copy(), max_height=620)
+        df_inst_display = recalculate_installment_days(store['df_installments'])
+        render_styled_dataframe(df_inst_display, max_height=620)
 
 # ==============================================================================
 # PAGE 3: CASH FLOW & LIQUIDITY
@@ -1054,27 +1218,77 @@ elif page == "مشاريع الايجار":
         if not prop_metrics.empty:
             chart_pm = prop_metrics.copy()
             left, right = st.columns(2)
+
             with left:
-                occ_vals = pd.to_numeric(chart_pm['Occupancy'], errors='coerce').fillna(0) * 100
-                fig_occ = go.Figure(go.Bar(x=chart_pm['Project'], y=occ_vals, marker_color=[RWAZ_GREEN if v >= 90 else RWAZ_AMBER for v in occ_vals], text=[f"{v:.1f}%" for v in occ_vals], textposition='outside'))
-                fig_occ.add_hline(y=90, line_dash='dash', line_color=RWAZ_PRIMARY, annotation_text='المستهدف 90%')
-                apply_rwaz_plot_layout(fig_occ, height=260)
-                fig_occ.update_layout(yaxis_title="%", xaxis_title="")
+                occ_df = chart_pm[['Project','Occupancy']].copy()
+                occ_df['OccPct'] = pd.to_numeric(occ_df['Occupancy'], errors='coerce').fillna(0) * 100
+                occ_df = occ_df.sort_values('OccPct', ascending=True).reset_index(drop=True)
+                occ_colors = [RWAZ_RED if v < 70 else (RWAZ_AMBER if v < 90 else RWAZ_GREEN) for v in occ_df['OccPct']]
+                occ_h = max(300, 72 + 27*len(occ_df))
+                fig_occ = go.Figure()
+                fig_occ.add_trace(go.Bar(
+                    x=[100]*len(occ_df), y=occ_df['Project'], orientation='h',
+                    marker_color='#ECE7E1', hoverinfo='skip', showlegend=False, width=.36
+                ))
+                fig_occ.add_trace(go.Bar(
+                    x=occ_df['OccPct'], y=occ_df['Project'], orientation='h',
+                    marker_color=occ_colors, text=[f"{v:.1f}%" for v in occ_df['OccPct']],
+                    textposition='outside', cliponaxis=False, width=.20,
+                    hovertemplate='%{y}<br>الإشغال %{x:.1f}%<extra></extra>', showlegend=False
+                ))
+                fig_occ.add_vline(x=90, line_dash='dash', line_color=RWAZ_PRIMARY, line_width=1.5,
+                                  annotation_text='المستهدف 90%', annotation_position='top')
+                apply_rwaz_plot_layout(fig_occ, height=occ_h)
+                fig_occ.update_layout(
+                    barmode='overlay', xaxis=dict(range=[0,108], showgrid=False, title='', ticksuffix='%'),
+                    yaxis=dict(title='', autorange='reversed', tickfont=dict(size=9.5)),
+                    margin=dict(t=28,b=18,l=20,r=48), bargap=.48
+                )
                 st.markdown("<div class='section-title'>نسبة الإشغال حسب العقار</div>", unsafe_allow_html=True)
                 st.plotly_chart(fig_occ, use_container_width=True, config={'displayModeBar': False})
+
             with right:
-                noi_vals = pd.to_numeric(chart_pm['NOI'], errors='coerce').fillna(0)
-                fig_noi = go.Figure(go.Bar(x=chart_pm['Project'], y=noi_vals, marker_color=[RWAZ_GREEN if v >= 0 else RWAZ_RED for v in noi_vals], text=[fmt_currency_m(v, show_symbol=False) for v in noi_vals], textposition='outside'))
-                apply_rwaz_plot_layout(fig_noi, height=260)
-                fig_noi.update_layout(yaxis_title="SAR", xaxis_title="")
+                noi_df = chart_pm[['Project','NOI']].copy()
+                noi_df['NOI_num'] = pd.to_numeric(noi_df['NOI'], errors='coerce').fillna(0)
+                noi_df = noi_df.sort_values('NOI_num', ascending=False).reset_index(drop=True)
+                noi_colors = [RWAZ_GREEN if v >= 0 else RWAZ_RED for v in noi_df['NOI_num']]
+                noi_text = [fmt_currency_compact(v, decimals=1) for v in noi_df['NOI_num']]
+                noi_h = max(300, 72 + 27*len(noi_df))
+                fig_noi = go.Figure(go.Bar(
+                    x=noi_df['NOI_num'], y=noi_df['Project'], orientation='h',
+                    marker_color=noi_colors, text=noi_text, textposition='outside', cliponaxis=False,
+                    hovertemplate='%{y}<br>SAR %{x:,.0f}<extra></extra>', width=.55
+                ))
+                fig_noi.add_vline(x=0, line_color='#B7AEA5', line_width=1)
+                apply_rwaz_plot_layout(fig_noi, height=noi_h)
+                max_abs_noi = max(float(np.abs(noi_df['NOI_num']).max()), 1.0)
+                fig_noi.update_layout(
+                    xaxis=dict(range=[-max_abs_noi*1.28, max_abs_noi*1.35], showgrid=False, zeroline=False, title='', showticklabels=False),
+                    yaxis=dict(title='', autorange='reversed', tickfont=dict(size=9.5)),
+                    margin=dict(t=18,b=18,l=20,r=72), bargap=.38
+                )
                 st.markdown("<div class='section-title'>NOI حسب العقار</div>", unsafe_allow_html=True)
+                st.markdown(f"<div style='direction:rtl;text-align:right;font-size:9.5px;color:#684929;font-weight:800;margin-bottom:2px;'>إجمالي NOI للمحفظة: <span class='ltr-num'>{fmt_currency_compact(pd.to_numeric(chart_pm['NOI'], errors='coerce').sum())}</span></div>", unsafe_allow_html=True)
                 st.plotly_chart(fig_noi, use_container_width=True, config={'displayModeBar': False})
 
-            margin_vals = pd.to_numeric(chart_pm['Margin'], errors='coerce').fillna(0) * 100
-            fig_margin = go.Figure(go.Bar(x=chart_pm['Project'], y=margin_vals, marker_color=[RWAZ_GREEN if v >= 0 else RWAZ_RED for v in margin_vals], text=[f"{v:.1f}%" for v in margin_vals], textposition='outside'))
-            fig_margin.add_hline(y=0, line_color='#9CA3AF', line_width=1)
-            apply_rwaz_plot_layout(fig_margin, height=255)
-            fig_margin.update_layout(yaxis_title="%", xaxis_title="")
+            margin_df = chart_pm[['Project','Margin']].copy()
+            margin_df['MarginPct'] = pd.to_numeric(margin_df['Margin'], errors='coerce').fillna(0) * 100
+            margin_df = margin_df.sort_values('MarginPct', ascending=True).reset_index(drop=True)
+            margin_colors = [RWAZ_GREEN if v >= 0 else RWAZ_RED for v in margin_df['MarginPct']]
+            fig_margin = go.Figure(go.Bar(
+                x=margin_df['MarginPct'], y=margin_df['Project'], orientation='h',
+                marker_color=margin_colors, text=[f"{v:.1f}%" for v in margin_df['MarginPct']],
+                textposition='outside', cliponaxis=False, width=.55,
+                hovertemplate='%{y}<br>صافي هامش الربح %{x:.1f}%<extra></extra>'
+            ))
+            fig_margin.add_vline(x=0, line_color='#8C837A', line_width=1.2)
+            max_abs_margin = max(float(np.abs(margin_df['MarginPct']).max()), 1.0)
+            apply_rwaz_plot_layout(fig_margin, height=max(310, 72 + 28*len(margin_df)))
+            fig_margin.update_layout(
+                xaxis=dict(range=[-max_abs_margin*1.28, max_abs_margin*1.28], title='', ticksuffix='%', gridcolor='#EEE9E3', zeroline=False),
+                yaxis=dict(title='', autorange='reversed', tickfont=dict(size=9.5)),
+                margin=dict(t=18,b=24,l=20,r=55), bargap=.38
+            )
             st.markdown("<div class='section-title'>صافي هامش الربح حسب العقار</div>", unsafe_allow_html=True)
             st.plotly_chart(fig_margin, use_container_width=True, config={'displayModeBar': False})
     with tab_pnl:
@@ -1288,9 +1502,9 @@ elif page == "موديل الايجارات":
         with b3: render_kpi("إشغال Target IRR", fmt_pct(res_r['occ_for_target_irr']) if not np.isnan(res_r['occ_for_target_irr']) else "N/A", "لتحقيق العائد المستهدف", "positive" if not np.isnan(res_r['occ_for_target_irr']) and res_r['occ_for_target_irr'] <= 1 else "danger")
         with b4: render_kpi("إيجار التعادل / وحدة", fmt_currency(break_even_rent_unit) if not np.isnan(break_even_rent_unit) else "N/A", "عند الإشغال المستهدف", "warning")
         if first_loss_year:
-            st.warning(f"أول سنة يتحول فيها NOI إلى قيمة سالبة وفق الافتراضات الحالية: {first_loss_year}.")
+            render_compact_alert('warning', f"أول سنة يتحول فيها NOI إلى قيمة سالبة وفق الافتراضات الحالية: {first_loss_year}.")
         else:
-            st.success("لا يظهر NOI سلبي خلال مدة العقد وفق الافتراضات الحالية.")
+            render_compact_alert('success', "لا يظهر NOI سلبي خلال مدة العقد وفق الافتراضات الحالية.")
 
     with tab_r_pnl:
         render_styled_dataframe(pnl_r, max_height=520)
