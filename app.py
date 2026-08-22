@@ -62,7 +62,7 @@ st.markdown("""
 
 /* Remove Streamlit default top whitespace */
 [data-testid="stAppViewContainer"] > .main {
-    padding-top: 0 !important;
+    padding-top: 0.05 !important;
     margin-top: 0 !important;
 }
 
@@ -70,11 +70,11 @@ st.markdown("""
 .main .block-container,
 [data-testid="stMainBlockContainer"],
 [data-testid="stAppViewBlockContainer"] {
-    padding-top: 0.15rem !important;
-    padding-bottom: 0.30rem !important;
+    padding-top: 0.25rem !important;
+    padding-bottom: 0.35rem !important;
 
-    padding-left: 0.55rem !important;
-    padding-right: 0.55rem !important;
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
 
     margin-top: 0 !important;
     max-width: 100% !important;
@@ -84,7 +84,7 @@ st.markdown("""
 [data-testid="stMainBlockContainer"] > div:first-child,
 .main .block-container > div:first-child {
     margin-top: 0 !important;
-    padding-top: 0 !important;
+    padding-top: 0.05 !important;
 }
 
 /* Compact vertical spacing between Streamlit elements */
