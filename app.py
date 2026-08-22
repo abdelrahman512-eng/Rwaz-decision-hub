@@ -49,60 +49,15 @@ st.markdown("""
     }
     [data-testid="stHeader"] { display:none !important; height:0 !important; min-height:0 !important; }
     [data-testid="stToolbar"] { display:none !important; }
-    /* =========================================================
-   GLOBAL PAGE SPACING — RWAZ EXECUTIVE COMPACT LAYOUT
-   ========================================================= */
-
-[data-testid="stHeader"],
-[data-testid="stToolbar"] {
-    display: none !important;
-    height: 0 !important;
-    min-height: 0 !important;
-}
-
-/* Remove Streamlit default top whitespace */
-[data-testid="stAppViewContainer"] > .main {
-    padding-top: 0.05 !important;
-    margin-top: 0 !important;
-}
-
-/* Works with old + newer Streamlit versions */
-.main .block-container,
-[data-testid="stMainBlockContainer"],
-[data-testid="stAppViewBlockContainer"] {
-    padding-top: 0.25rem !important;
-    padding-bottom: 0.35rem !important;
-
-    padding-left: 0.75rem !important;
-    padding-right: 0.75rem !important;
-
-    margin-top: 0 !important;
-    max-width: 100% !important;
-}
-
-/* Remove any remaining space before first component */
-[data-testid="stMainBlockContainer"] > div:first-child,
-.main .block-container > div:first-child {
-    margin-top: 0 !important;
-    padding-top: 0.05 !important;
-}
-
-/* Compact vertical spacing between Streamlit elements */
-div[data-testid="stVerticalBlock"] {
-    gap: 0.16rem !important;
-}
-
-/* Remove default markdown vertical margins */
-.stMarkdown,
-div[data-testid="stMarkdownContainer"] {
-    margin-top: 0 !important;
-    margin-bottom: 0 !important;
-}
-
-div[data-testid="stMarkdownContainer"] p {
-    margin-top: 0 !important;
-    margin-bottom: 0 !important;
-}
+    [data-testid="stAppViewContainer"] > .main { padding-top:0 !important; }
+    .main .block-container {
+        padding-top: .05rem !important;
+        padding-bottom: .35rem !important;
+        padding-left: .70rem !important;
+        padding-right: .70rem !important;
+        max-width: 100% !important;
+    }
+    div[data-testid="stVerticalBlock"] { gap: .24rem !important; }
     .stMarkdown, div[data-testid="stMarkdownContainer"] { margin-bottom: 0 !important; }
 
     /* Arabic-first direction without reversing numeric fields */
@@ -114,43 +69,21 @@ div[data-testid="stMarkdownContainer"] p {
     input, .ltr-num, .term-code { direction: ltr !important; unicode-bidi: isolate; }
 
     /* Titles */
-   .page-title {
-    font-size: 18px;
-    font-weight: 800;
-    color: #FFF !important;
-    background: linear-gradient(
-        90deg,
-        var(--rwaz-dark),
-        var(--rwaz-primary)
-    );
-
-    padding: 6px 12px;
-    margin: 0 !important;
-
-    border-radius: 8px;
-    letter-spacing: -.2px;
-    box-shadow: 0 2px 7px rgba(63,45,30,.08);
-}
-
-.page-subtitle {
-    font-size: 10px;
-    color: var(--rwaz-muted);
-    font-weight: 600;
-
-    padding: 2px 2px 3px;
-    margin: 0 0 2px 0 !important;
-
-    border-bottom: 1px solid var(--rwaz-border);
-}
-
-.section-title {
-    font-size: 12px;
-    font-weight: 800;
-    color: var(--rwaz-primary);
-
-    margin-top: 3px !important;
-    margin-bottom: 2px !important;
-}
+    .page-title {
+        font-size: 19px; font-weight: 800; color: #FFF !important;
+        background: linear-gradient(90deg, var(--rwaz-dark), var(--rwaz-primary));
+        padding: 7px 13px; border-radius: 9px; letter-spacing: -.2px;
+        box-shadow: 0 3px 10px rgba(63,45,30,.10);
+    }
+    .page-subtitle {
+        font-size: 10.5px; color: var(--rwaz-muted); font-weight: 600;
+        padding: 3px 2px 5px; border-bottom: 1px solid var(--rwaz-border);
+        margin-bottom: 3px;
+    }
+    .section-title {
+        font-size: 12.5px; font-weight: 800; color: var(--rwaz-primary);
+        margin-top: 6px; margin-bottom: 4px;
+    }
 
     /* Sidebar */
     [data-testid="stSidebar"] {
@@ -210,56 +143,34 @@ div[data-testid="stMarkdownContainer"] p {
     .kpi-sub-warning { color:var(--rwaz-amber); }
     .kpi-sub-danger { color:var(--rwaz-red); }
     /* Compact Executive cards — Page 1 */
-.combined-card {
-    padding:5px 8px !important;
-    min-height:0 !important;
-}
-
-.combined-header {
-    border-bottom:1px solid #EFE9E2;
-    padding-bottom:3px;
-    margin-bottom:4px;
-}
-
-.combined-title {
-    font-size:9px;
-    color:var(--rwaz-mid);
-    font-weight:800;
-}
-
-.combined-value {
-    font-size:17px;
-    line-height:1.05;
-    color:var(--rwaz-text);
-    font-weight:900;
-    font-variant-numeric:tabular-nums;
-}
-
-.combined-sub {
-    font-size:8.3px;
-    line-height:1.15;
-    color:var(--rwaz-primary);
-    font-weight:700;
-}
-
-.mini-cell {
-    background:#FBF9F7;
-    border:1px solid #EEE6DD;
-    border-radius:6px;
-    padding:3px 5px;
-    text-align:right;
-    min-height:0;
-}
-
-.gauge-bar-bg {
-    background:#ECE6DF;
-    border-radius:8px;
-    height:6px;
-    width:100%;
-    overflow:hidden;
-    margin-top:4px;
-}
-    .gauge-bar-fill { background:linear-gradient(90deg, var(--rwaz-primary), var(--rwaz-accent)); height:100%; border-radius:10px; }
+    .combined-card {
+        padding:5px 8px !important;
+        min-height:0 !important;
+    }
+    .combined-header {
+        border-bottom:1px solid #EFE9E2;
+        padding-bottom:3px;
+        margin-bottom:4px;
+    }
+    .combined-title { font-size:9px; color:var(--rwaz-mid); font-weight:800; }
+    .combined-value {
+        font-size:17px; line-height:1.05; color:var(--rwaz-text); font-weight:900;
+        font-variant-numeric:tabular-nums;
+    }
+    .combined-sub {
+        font-size:8.3px; line-height:1.15; color:var(--rwaz-primary); font-weight:700;
+    }
+    .mini-cell { background:#FBF9F7; border:1px solid #EEE6DD; border-radius:7px; padding:5px 7px; text-align:right; }
+    .combined-card .mini-cell {
+        border-radius:6px; padding:3px 5px; min-height:0; line-height:1.15;
+    }
+    .gauge-bar-bg {
+        background:#ECE6DF; border-radius:8px; height:6px; width:100%; overflow:hidden; margin-top:4px;
+    }
+    .gauge-bar-fill {
+        background:linear-gradient(90deg, var(--rwaz-primary), var(--rwaz-accent));
+        height:100%; border-radius:8px;
+    }
 
     /* Decision summary */
     .decision-box {
@@ -332,35 +243,13 @@ div[data-testid="stMarkdownContainer"] p {
     .rwaz-table-wrap table tr:first-child th:last-child { border-top-right-radius:8px; }
 
     /* Compact executive alerts */
-   .exec-alert {
-    direction: rtl;
-    text-align: right;
-    display: flex;
-    align-items: center;
-
-    gap: 6px;
-
-    min-height: 58px;
-    height: 100%;
-
-    padding: 6px 7px;
-    margin: 2px 0;
-
-    border-radius: 8px;
-
-    font-size: 9px;
-    font-weight: 800;
-    line-height: 1.35;
-
-    border: 1px solid transparent;
-    box-sizing: border-box;
-}
-   .exec-alert .alert-dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    flex: 0 0 7px;
-}
+    .exec-alert {
+        direction:rtl; text-align:right; display:flex; align-items:center; gap:6px;
+        min-height:58px; height:100%; padding:6px 7px; margin:2px 0; border-radius:8px;
+        font-size:9px; font-weight:800; line-height:1.35; border:1px solid transparent;
+        box-sizing:border-box;
+    }
+    .exec-alert .alert-dot { width:7px; height:7px; border-radius:50%; flex:0 0 7px; }
     .exec-alert-danger { background:#FCE8E6; color:#9F231F; border-color:#F4C9C5; }
     .exec-alert-danger .alert-dot { background:#C53030; }
     .exec-alert-warning { background:#FFF6DE; color:#805315; border-color:#F0DFB0; }
@@ -1144,9 +1033,9 @@ if page == "الملخص التنفيذي والمركز المالي":
                 <div class="combined-value ltr-num" style="{value_color_style(total_cash)}">{fmt_currency(total_cash)}</div>
                 <div class="combined-sub">النقدية المتاحة بالحسابات</div>
             </div>
-            <div style="display:flex;gap:7px;">
-                <div class="mini-cell" style="flex:1;"><div style="font-size:9px;color:#7A7066;font-weight:700;">مصرف الراجحي</div><div class="ltr-num" style="font-size:12px;font-weight:900;{value_color_style(rajhi_cash)}">{fmt_currency(rajhi_cash)}</div></div>
-                <div class="mini-cell" style="flex:1;"><div style="font-size:9px;color:#7A7066;font-weight:700;">البنك الأهلي</div><div class="ltr-num" style="font-size:12px;font-weight:900;{value_color_style(snb_cash)}">{fmt_currency(snb_cash)}</div></div>
+            <div style="display:flex;gap:5px;">
+                <div class="mini-cell" style="flex:1;"><div style="font-size:9px;color:#7A7066;font-weight:700;">مصرف الراجحي</div><div class="ltr-num" style="font-size:11px;font-weight:900;{value_color_style(rajhi_cash)}">{fmt_currency(rajhi_cash)}</div></div>
+                <div class="mini-cell" style="flex:1;"><div style="font-size:9px;color:#7A7066;font-weight:700;">البنك الأهلي</div><div class="ltr-num" style="font-size:11px;font-weight:900;{value_color_style(snb_cash)}">{fmt_currency(snb_cash)}</div></div>
             </div>
         </div>""", unsafe_allow_html=True)
 
@@ -1154,13 +1043,13 @@ if page == "الملخص التنفيذي والمركز المالي":
         coll_pct_str = f"{coll_rate*100:.1f}%"
         st.markdown(f"""
         <div class="combined-card">
-            <div style="font-size:10px;color:#684929;font-weight:900;text-align:right;margin-bottom:5px;">أداء التحصيل</div>
-            <div style="display:flex;align-items:center;gap:8px;">
-                <div style="flex:1;display:flex;flex-direction:column;gap:5px;">
+            <div style="font-size:9px;color:#684929;font-weight:900;text-align:right;margin-bottom:3px;">أداء التحصيل</div>
+            <div style="display:flex;align-items:center;gap:5px;">
+                <div style="flex:1;display:flex;flex-direction:column;gap:4px;">
                     <div class="mini-cell" style="text-align:center;"><div class="ltr-num" style="font-size:11px;font-weight:900;{value_color_style(due_coll)}">{fmt_currency(due_coll)}</div><div style="font-size:8.5px;color:#7A7066;">المستحق</div></div>
                     <div class="mini-cell" style="text-align:center;"><div class="ltr-num" style="font-size:11px;font-weight:900;{value_color_style(act_coll)}">{fmt_currency(act_coll)}</div><div style="font-size:8.5px;color:#7A7066;">المحصل</div></div>
                 </div>
-                <div style="flex:1.05;text-align:center;"><div class="ltr-num" style="font-size:27px;font-weight:900;line-height:1;">{coll_pct_str}</div><div style="font-size:9px;color:#7A7066;font-weight:700;margin-top:4px;">كفاءة التحصيل</div><div class="gauge-bar-bg"><div class="gauge-bar-fill" style="width:{min(100,max(0,coll_rate*100)):.1f}%;"></div></div></div>
+                <div style="flex:1.05;text-align:center;"><div class="ltr-num" style="font-size:22px;font-weight:900;line-height:1;">{coll_pct_str}</div><div style="font-size:8.3px;color:#7A7066;font-weight:700;margin-top:3px;">كفاءة التحصيل</div><div class="gauge-bar-bg"><div class="gauge-bar-fill" style="width:{min(100,max(0,coll_rate*100)):.1f}%;"></div></div></div>
             </div>
         </div>""", unsafe_allow_html=True)
 
@@ -1177,9 +1066,9 @@ if page == "الملخص التنفيذي والمركز المالي":
         st.markdown(f"""
         <div class="combined-card">
             <div class="combined-header"><div class="combined-title">صافي أرصدة الشركاء</div><div class="combined-value ltr-num" style="{value_color_style(partners_net)}">{fmt_currency(partners_net)}</div><div class="combined-sub">إجمالي صافي حسابات الشركاء</div></div>
-            <div style="display:flex;gap:7px;">
-                <div class="mini-cell" style="flex:1;"><div style="font-size:9px;color:#7A7066;font-weight:700;">{p1_name}</div><div class="ltr-num" style="font-size:12px;font-weight:900;{value_color_style(p1_bal)}">{fmt_currency(p1_bal)}</div></div>
-                <div class="mini-cell" style="flex:1;"><div style="font-size:9px;color:#7A7066;font-weight:700;">{p2_name}</div><div class="ltr-num" style="font-size:12px;font-weight:900;{value_color_style(p2_bal)}">{fmt_currency(p2_bal)}</div></div>
+            <div style="display:flex;gap:5px;">
+                <div class="mini-cell" style="flex:1;"><div style="font-size:9px;color:#7A7066;font-weight:700;">{p1_name}</div><div class="ltr-num" style="font-size:11px;font-weight:900;{value_color_style(p1_bal)}">{fmt_currency(p1_bal)}</div></div>
+                <div class="mini-cell" style="flex:1;"><div style="font-size:9px;color:#7A7066;font-weight:700;">{p2_name}</div><div class="ltr-num" style="font-size:11px;font-weight:900;{value_color_style(p2_bal)}">{fmt_currency(p2_bal)}</div></div>
             </div>
         </div>""", unsafe_allow_html=True)
 
@@ -1230,30 +1119,23 @@ if page == "الملخص التنفيذي والمركز المالي":
 
     st.markdown("<div class='section-title'>التنبيهات والإجراءات الإدارية المباشرة</div>", unsafe_allow_html=True)
     alerts = sorted(alerts, key=lambda x: x[0])
-   if not alerts:
-    render_compact_alert(
-        'success',
-        "لا توجد تنبيهات حرجة وفق مؤشرات الصفحة الحالية."
-    )
 
-else:
-    visible_alerts = alerts[:5]
+    if not alerts:
+        render_compact_alert('success', "لا توجد تنبيهات حرجة وفق مؤشرات الصفحة الحالية.")
+    else:
+        visible_alerts = alerts[:5]
 
-    # عرض أهم التنبيهات جنب بعض
-    alert_cols = st.columns(len(visible_alerts))
-
-    for col, (_, kind, msg) in zip(alert_cols, visible_alerts):
-        with col:
-            render_compact_alert(kind, msg)
-
-    # باقي التنبيهات
-    if len(alerts) > 5:
-        with st.expander(
-            f"عرض جميع التنبيهات ({len(alerts)})",
-            expanded=False
-        ):
-            for _, kind, msg in alerts[5:]:
+        # Executive alert row: show the most important alerts side-by-side
+        alert_cols = st.columns(len(visible_alerts), gap="small")
+        for col, (_, kind, msg) in zip(alert_cols, visible_alerts):
+            with col:
                 render_compact_alert(kind, msg)
+
+        if len(alerts) > 5:
+            with st.expander(f"عرض جميع التنبيهات ({len(alerts)})", expanded=False):
+                for _, kind, msg in alerts[5:]:
+                    render_compact_alert(kind, msg)
+
     st.markdown("<div class='section-title'>المشاريع تحت الإنشاء ومزيج الإيرادات</div>", unsafe_allow_html=True)
     c1_page1, c2_page1 = st.columns([1.0, 1.0])
     with c1_page1:
