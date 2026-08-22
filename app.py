@@ -49,12 +49,17 @@ st.markdown("""
     }
     [data-testid="stHeader"] { display:none !important; height:0 !important; min-height:0 !important; }
     [data-testid="stToolbar"] { display:none !important; }
-    [data-testid="stAppViewContainer"] > .main { padding-top:0 !important; }
-    .main .block-container {
+    [data-testid="stAppViewContainer"] > .main { padding-top:0 !important; margin-top:0 !important; }
+
+    /* Global outer page margins = 30% of the previous spacing */
+    .main .block-container,
+    [data-testid="stMainBlockContainer"],
+    [data-testid="stAppViewBlockContainer"] {
         padding-top: 0rem !important;
-        padding-bottom: .2rem !important;
-        padding-left: .30rem !important;
-        padding-right: .30rem !important;
+        padding-bottom: .06rem !important;
+        padding-left: .09rem !important;
+        padding-right: .09rem !important;
+        margin-top: 0 !important;
         max-width: 100% !important;
     }
     div[data-testid="stVerticalBlock"] { gap: .24rem !important; }
@@ -299,6 +304,107 @@ st.markdown("""
     .revenue-mix-bar { height:100%; border-radius:5px; min-width:2px; }
     .revenue-mix-amount { direction:ltr; unicode-bidi:isolate; text-align:center; font-weight:800; color:#3F2D1E; white-space:nowrap; }
     .revenue-mix-share { direction:ltr; unicode-bidi:isolate; text-align:center; font-weight:900; white-space:nowrap; }
+
+    /* Development portfolio summary — fills the space below the projects table */
+    .dev-summary-wrap {
+        margin-top:5px;
+        direction:rtl;
+        text-align:right;
+    }
+    .dev-summary-kpis {
+        display:grid;
+        grid-template-columns:repeat(2, minmax(0, 1fr));
+        gap:6px;
+        margin-bottom:6px;
+    }
+    .dev-summary-card {
+        background:#FFF;
+        border:1px solid var(--rwaz-border);
+        border-radius:8px;
+        padding:7px 9px;
+        min-height:58px;
+        box-shadow:0 2px 7px rgba(63,45,30,.035);
+        display:flex;
+        flex-direction:column;
+        justify-content:center;
+    }
+    .dev-summary-label {
+        font-size:8.5px;
+        font-weight:800;
+        color:#756A60;
+        margin-bottom:3px;
+    }
+    .dev-summary-value {
+        font-size:14px;
+        line-height:1.1;
+        font-weight:950;
+        color:#3F2D1E;
+        font-variant-numeric:tabular-nums;
+    }
+    .dev-summary-note {
+        margin-top:2px;
+        font-size:8px;
+        font-weight:750;
+        color:#8D765E;
+        white-space:nowrap;
+        overflow:hidden;
+        text-overflow:ellipsis;
+    }
+    .dev-cost-mix-card {
+        background:#FFF;
+        border:1px solid var(--rwaz-border);
+        border-radius:8px;
+        padding:7px 9px 6px;
+        box-shadow:0 2px 7px rgba(63,45,30,.035);
+    }
+    .dev-cost-mix-title {
+        font-size:9px;
+        font-weight:900;
+        color:#684929;
+        margin-bottom:5px;
+    }
+    .dev-cost-stack {
+        display:flex;
+        width:100%;
+        height:20px;
+        overflow:hidden;
+        border-radius:6px;
+        background:#F1ECE6;
+        border:1px solid #E6DDD4;
+        direction:rtl;
+    }
+    .dev-cost-seg {
+        height:100%;
+        min-width:2px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        font-size:7.6px;
+        font-weight:900;
+        white-space:nowrap;
+        overflow:hidden;
+    }
+    .dev-cost-legend {
+        display:flex;
+        flex-wrap:wrap;
+        justify-content:flex-start;
+        gap:3px 8px;
+        margin-top:5px;
+    }
+    .dev-cost-legend-item {
+        display:flex;
+        align-items:center;
+        gap:4px;
+        color:#625B54;
+        font-size:7.6px;
+        font-weight:750;
+    }
+    .dev-cost-dot {
+        width:7px;
+        height:7px;
+        border-radius:2px;
+        flex:0 0 7px;
+    }
 
     /* Guidance cards */
     .term-card {
@@ -683,6 +789,88 @@ def render_revenue_mix_card(df_revenues):
     </div>
     """
     st.markdown(card, unsafe_allow_html=True)
+
+
+def render_dev_project_summary(df_dev_projects):
+    """Executive summary below the projects table. Presentation only; source data is never mutated."""
+    if df_dev_projects is None or df_dev_projects.empty:
+        return
+
+    work = df_dev_projects.copy()
+
+    project_candidates = ['اسم المشروع', 'المشروع', 'Project', 'Project Name']
+    cost_candidates = ['إجمالي التكلفة', 'اجمالي التكلفة', 'إجمالي التكلفه', 'Total Cost', 'Total cost']
+
+    project_col = next((c for c in project_candidates if c in work.columns), None)
+    cost_col = next((c for c in cost_candidates if c in work.columns), None)
+
+    if project_col is None or cost_col is None:
+        return
+
+    work['_project_name'] = work[project_col].astype(str).str.strip()
+    work['_cost'] = pd.to_numeric(work[cost_col], errors='coerce').fillna(0.0)
+    work = work[(work['_project_name'] != '') & (work['_project_name'].str.lower() != 'nan')].copy()
+
+    if work.empty:
+        return
+
+    total_cost = float(work['_cost'].sum())
+    if total_cost <= 0:
+        return
+
+    highest_idx = work['_cost'].idxmax()
+    highest_name = str(work.loc[highest_idx, '_project_name'])
+    highest_cost = float(work.loc[highest_idx, '_cost'])
+
+    work = work.sort_values('_cost', ascending=False).reset_index(drop=True)
+    work['_share'] = work['_cost'] / total_cost
+
+    # RWAZ executive palette; cycles safely if future projects are added.
+    palette = [RWAZ_GREEN, RWAZ_PRIMARY, RWAZ_ACCENT, '#E5C99E', '#9B7A56', '#D9D0C5']
+    work['_color'] = [palette[i % len(palette)] for i in range(len(work))]
+
+    stack_parts = []
+    legend_parts = []
+
+    for _, row in work.iterrows():
+        name = str(row['_project_name'])
+        share = float(row['_share'])
+        color = str(row['_color'])
+        width_pct = max(share * 100, 0.20)
+        label = f"{share*100:.1f}%" if share >= 0.055 else ''
+        text_color = '#3F2D1E' if color.upper() in {'#E5C99E', '#D9D0C5', '#C5A477'} else '#FFFFFF'
+
+        stack_parts.append(
+            f"<div class='dev-cost-seg' style='width:{width_pct:.4f}%;background:{color};color:{text_color};'>{label}</div>"
+        )
+        legend_parts.append(
+            f"<div class='dev-cost-legend-item'><span class='dev-cost-dot' style='background:{color};'></span><span>{name}</span></div>"
+        )
+
+    html = f"""
+    <div class='dev-summary-wrap'>
+        <div class='dev-summary-kpis'>
+            <div class='dev-summary-card'>
+                <div class='dev-summary-label'>إجمالي تكلفة المشاريع</div>
+                <div class='dev-summary-value ltr-num'>{fmt_currency_compact(total_cost)}</div>
+                <div class='dev-summary-note'>إجمالي محفظة المشاريع تحت الإنشاء</div>
+            </div>
+            <div class='dev-summary-card'>
+                <div class='dev-summary-label'>أعلى مشروع تكلفة</div>
+                <div class='dev-summary-value'>{highest_name}</div>
+                <div class='dev-summary-note ltr-num'>{fmt_currency_compact(highest_cost)}</div>
+            </div>
+        </div>
+
+        <div class='dev-cost-mix-card'>
+            <div class='dev-cost-mix-title'>توزيع تكلفة المشاريع</div>
+            <div class='dev-cost-stack'>{''.join(stack_parts)}</div>
+            <div class='dev-cost-legend'>{''.join(legend_parts)}</div>
+        </div>
+    </div>
+    """
+    st.markdown(html, unsafe_allow_html=True)
+
 
 # ==============================================================================
 # LAYER 1: DYNAMIC EXCEL DATA INGESTION ENGINE
@@ -1140,6 +1328,7 @@ if page == "الملخص التنفيذي والمركز المالي":
     c1_page1, c2_page1 = st.columns([1.0, 1.0])
     with c1_page1:
         render_styled_dataframe(store['df_dev_projects'].copy(), max_height=245)
+        render_dev_project_summary(store['df_dev_projects'].copy())
     with c2_page1:
         render_revenue_mix_card(store['df_revenues'].copy())
 
