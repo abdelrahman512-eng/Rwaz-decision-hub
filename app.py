@@ -49,15 +49,60 @@ st.markdown("""
     }
     [data-testid="stHeader"] { display:none !important; height:0 !important; min-height:0 !important; }
     [data-testid="stToolbar"] { display:none !important; }
-    [data-testid="stAppViewContainer"] > .main { padding-top:0 !important; }
-    .main .block-container {
-        padding-top: .05rem !important;
-        padding-bottom: .35rem !important;
-        padding-left: .70rem !important;
-        padding-right: .70rem !important;
-        max-width: 100% !important;
-    }
-    div[data-testid="stVerticalBlock"] { gap: .24rem !important; }
+    /* =========================================================
+   GLOBAL PAGE SPACING — RWAZ EXECUTIVE COMPACT LAYOUT
+   ========================================================= */
+
+[data-testid="stHeader"],
+[data-testid="stToolbar"] {
+    display: none !important;
+    height: 0 !important;
+    min-height: 0 !important;
+}
+
+/* Remove Streamlit default top whitespace */
+[data-testid="stAppViewContainer"] > .main {
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+}
+
+/* Works with old + newer Streamlit versions */
+.main .block-container,
+[data-testid="stMainBlockContainer"],
+[data-testid="stAppViewBlockContainer"] {
+    padding-top: 0.15rem !important;
+    padding-bottom: 0.30rem !important;
+
+    padding-left: 0.55rem !important;
+    padding-right: 0.55rem !important;
+
+    margin-top: 0 !important;
+    max-width: 100% !important;
+}
+
+/* Remove any remaining space before first component */
+[data-testid="stMainBlockContainer"] > div:first-child,
+.main .block-container > div:first-child {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+}
+
+/* Compact vertical spacing between Streamlit elements */
+div[data-testid="stVerticalBlock"] {
+    gap: 0.16rem !important;
+}
+
+/* Remove default markdown vertical margins */
+.stMarkdown,
+div[data-testid="stMarkdownContainer"] {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+}
+
+div[data-testid="stMarkdownContainer"] p {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+}
     .stMarkdown, div[data-testid="stMarkdownContainer"] { margin-bottom: 0 !important; }
 
     /* Arabic-first direction without reversing numeric fields */
@@ -69,21 +114,43 @@ st.markdown("""
     input, .ltr-num, .term-code { direction: ltr !important; unicode-bidi: isolate; }
 
     /* Titles */
-    .page-title {
-        font-size: 19px; font-weight: 800; color: #FFF !important;
-        background: linear-gradient(90deg, var(--rwaz-dark), var(--rwaz-primary));
-        padding: 7px 13px; border-radius: 9px; letter-spacing: -.2px;
-        box-shadow: 0 3px 10px rgba(63,45,30,.10);
-    }
-    .page-subtitle {
-        font-size: 10.5px; color: var(--rwaz-muted); font-weight: 600;
-        padding: 3px 2px 5px; border-bottom: 1px solid var(--rwaz-border);
-        margin-bottom: 3px;
-    }
-    .section-title {
-        font-size: 12.5px; font-weight: 800; color: var(--rwaz-primary);
-        margin-top: 6px; margin-bottom: 4px;
-    }
+   .page-title {
+    font-size: 18px;
+    font-weight: 800;
+    color: #FFF !important;
+    background: linear-gradient(
+        90deg,
+        var(--rwaz-dark),
+        var(--rwaz-primary)
+    );
+
+    padding: 6px 12px;
+    margin: 0 !important;
+
+    border-radius: 8px;
+    letter-spacing: -.2px;
+    box-shadow: 0 2px 7px rgba(63,45,30,.08);
+}
+
+.page-subtitle {
+    font-size: 10px;
+    color: var(--rwaz-muted);
+    font-weight: 600;
+
+    padding: 2px 2px 3px;
+    margin: 0 0 2px 0 !important;
+
+    border-bottom: 1px solid var(--rwaz-border);
+}
+
+.section-title {
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--rwaz-primary);
+
+    margin-top: 3px !important;
+    margin-bottom: 2px !important;
+}
 
     /* Sidebar */
     [data-testid="stSidebar"] {
