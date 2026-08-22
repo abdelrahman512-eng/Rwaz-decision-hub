@@ -59,8 +59,8 @@ st.markdown("""
         padding-top: .50rem !important;
         padding-bottom: .1rem !important;
         /* .09rem × 1.60 = .144rem */
-        padding-left: .5rem !important;
-        padding-right: .5rem !important;
+        padding-left: .7rem !important;
+        padding-right: .7rem !important;
         margin-top: 0 !important;
         max-width: 100% !important;
     }
