@@ -594,7 +594,7 @@ def render_styled_dataframe(df, max_height=None, table_kind=None):
         font_weight = 'font-weight:700;'
         text_color = '#1F2937;'
 
-               pnl_base_rows = {
+ pnl_base_rows = {
             'total units',
             'occupied units',
             'occupancy rate',
