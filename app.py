@@ -51,14 +51,16 @@ st.markdown("""
     [data-testid="stToolbar"] { display:none !important; }
     [data-testid="stAppViewContainer"] > .main { padding-top:0 !important; margin-top:0 !important; }
 
-    /* Global outer page margins = 30% of the previous spacing */
+    /* Global outer page margins — increased from the current compact values */
     .main .block-container,
     [data-testid="stMainBlockContainer"],
     [data-testid="stAppViewBlockContainer"] {
-        padding-top: 0rem !important;
+        /* Current top value was 0; use a small explicit executive breathing space. */
+        padding-top: .10rem !important;
         padding-bottom: .06rem !important;
-        padding-left: .09rem !important;
-        padding-right: .09rem !important;
+        /* .09rem × 1.60 = .144rem */
+        padding-left: .144rem !important;
+        padding-right: .144rem !important;
         margin-top: 0 !important;
         max-width: 100% !important;
     }
@@ -847,28 +849,29 @@ def render_dev_project_summary(df_dev_projects):
             f"<div class='dev-cost-legend-item'><span class='dev-cost-dot' style='background:{color};'></span><span>{name}</span></div>"
         )
 
-    html = f"""
-    <div class='dev-summary-wrap'>
-        <div class='dev-summary-kpis'>
-            <div class='dev-summary-card'>
-                <div class='dev-summary-label'>إجمالي تكلفة المشاريع</div>
-                <div class='dev-summary-value ltr-num'>{fmt_currency_compact(total_cost)}</div>
-                <div class='dev-summary-note'>إجمالي محفظة المشاريع تحت الإنشاء</div>
-            </div>
-            <div class='dev-summary-card'>
-                <div class='dev-summary-label'>أعلى مشروع تكلفة</div>
-                <div class='dev-summary-value'>{highest_name}</div>
-                <div class='dev-summary-note ltr-num'>{fmt_currency_compact(highest_cost)}</div>
-            </div>
-        </div>
-
-        <div class='dev-cost-mix-card'>
-            <div class='dev-cost-mix-title'>توزيع تكلفة المشاريع</div>
-            <div class='dev-cost-stack'>{''.join(stack_parts)}</div>
-            <div class='dev-cost-legend'>{''.join(legend_parts)}</div>
-        </div>
-    </div>
-    """
+    # Build one continuous HTML string so Streamlit never interprets the
+    # distribution card as an indented Markdown code block.
+    html = (
+        "<div class='dev-summary-wrap'>"
+            "<div class='dev-summary-kpis'>"
+                "<div class='dev-summary-card'>"
+                    "<div class='dev-summary-label'>إجمالي تكلفة المشاريع</div>"
+                    f"<div class='dev-summary-value ltr-num'>{fmt_currency_compact(total_cost)}</div>"
+                    "<div class='dev-summary-note'>إجمالي محفظة المشاريع تحت الإنشاء</div>"
+                "</div>"
+                "<div class='dev-summary-card'>"
+                    "<div class='dev-summary-label'>أعلى مشروع تكلفة</div>"
+                    f"<div class='dev-summary-value'>{highest_name}</div>"
+                    f"<div class='dev-summary-note ltr-num'>{fmt_currency_compact(highest_cost)}</div>"
+                "</div>"
+            "</div>"
+            "<div class='dev-cost-mix-card'>"
+                "<div class='dev-cost-mix-title'>توزيع تكلفة المشاريع</div>"
+                f"<div class='dev-cost-stack'>{''.join(stack_parts)}</div>"
+                f"<div class='dev-cost-legend'>{''.join(legend_parts)}</div>"
+            "</div>"
+        "</div>"
+    )
     st.markdown(html, unsafe_allow_html=True)
 
 
