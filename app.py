@@ -51,10 +51,10 @@ st.markdown("""
     [data-testid="stToolbar"] { display:none !important; }
     [data-testid="stAppViewContainer"] > .main { padding-top:0 !important; }
     .main .block-container {
-        padding-top: .05rem !important;
-        padding-bottom: .35rem !important;
-        padding-left: .70rem !important;
-        padding-right: .70rem !important;
+        padding-top: 0rem !important;
+        padding-bottom: .2rem !important;
+        padding-left: .30rem !important;
+        padding-right: .30rem !important;
         max-width: 100% !important;
     }
     div[data-testid="stVerticalBlock"] { gap: .24rem !important; }
