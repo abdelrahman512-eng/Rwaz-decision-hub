@@ -48,7 +48,7 @@ st.markdown("""
         --rwaz-red: #C53030;
     }
 
-    /* Clean shell — keep the header shell so the collapsed-sidebar control remains usable */
+    /* Clean shell — preserve Streamlit's header control layer so a collapsed sidebar can always be reopened. */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     header { visibility: visible !important; }
@@ -57,14 +57,48 @@ st.markdown("""
         color: var(--rwaz-text);
         font-family: Tahoma, "Segoe UI", Arial, sans-serif;
     }
+
+    /* IMPORTANT: do not collapse stHeader to height:0. Newer Streamlit builds place the
+       sidebar reopen button inside this layer; a zero-height parent can clip the control. */
     [data-testid="stHeader"] {
-        display:block !important; visibility:visible !important; background:transparent !important;
-        height:0 !important; min-height:0 !important;
+        display:flex !important;
+        visibility:visible !important;
+        position:fixed !important;
+        top:0 !important;
+        left:0 !important;
+        right:0 !important;
+        height:3rem !important;
+        min-height:3rem !important;
+        background:transparent !important;
+        box-shadow:none !important;
+        pointer-events:none !important;
+        z-index:999998 !important;
     }
-    [data-testid="stToolbar"] {display:none !important;}
-    [data-testid="stSidebarCollapsedControl"], [data-testid="collapsedControl"] {
-        display:flex !important; visibility:visible !important; opacity:1 !important;
-        position:fixed !important; top:9px !important; left:9px !important; z-index:999999 !important;
+    [data-testid="stToolbar"] {display:none !important; visibility:hidden !important;}
+
+    /* Streamlit has used both test ids across versions; support both. */
+    [data-testid="stSidebarCollapsedControl"],
+    [data-testid="collapsedControl"] {
+        display:flex !important;
+        visibility:visible !important;
+        opacity:1 !important;
+        pointer-events:auto !important;
+        position:fixed !important;
+        top:10px !important;
+        left:10px !important;
+        z-index:999999 !important;
+    }
+    [data-testid="stSidebarCollapsedControl"] button,
+    [data-testid="collapsedControl"] button {
+        display:flex !important;
+        visibility:visible !important;
+        opacity:1 !important;
+        pointer-events:auto !important;
+        background:#FFFFFF !important;
+        color:#3F2D1E !important;
+        border:1px solid #E3DDD5 !important;
+        border-radius:8px !important;
+        box-shadow:0 2px 8px rgba(63,45,30,.10) !important;
     }
     [data-testid="stAppViewContainer"] > .main { padding-top:0 !important; margin-top:0 !important; }
 
